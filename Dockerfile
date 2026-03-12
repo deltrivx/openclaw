@@ -1,17 +1,18 @@
 # Dockerfile
 # 目标：除新增功能外保持与官方一致（默认网关端口 18789、不改官方启动/行为）
-# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（conda 环境，纯二进制包），修复非交互 openclaw 调用
+# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（conda env + pip 仅二进制），修复非交互 openclaw 调用
+# 修复：将 conda 复杂求解拆分为多步，并改用 mamba 提升成功率；Python 降为 3.10（wheel 覆盖面更广）
 
 FROM ghcr.io/openclaw/openclaw:latest
 
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
-org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + Piper (Huayan) + faster-whisper (conda env) + ffmpeg; non-interactive openclaw fixed" \
+org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + Piper (Huayan) + faster-whisper (conda env + binary wheels) + ffmpeg; non-interactive openclaw fixed" \
 org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
 maintainer="DeltrivX"
 
 USER root
 
-# 必要系统依赖（尽量精简，避免 apt 100）
+# 必要系统依赖（不改变官方其他行为）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 chromium chromium-common chromium-driver \
 fonts-wqy-zenhei fonts-wqy-microhei \
@@ -24,7 +25,7 @@ PUPPETEER_SKIP_DOWNLOAD=1 \
 PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
 TZ=Asia/Shanghai
 
-# 安装 Miniforge（更稳的 conda-forge 二进制通道）
+# 安装 Miniforge（conda-forge 通道）并安装 mamba 加速求解
 ENV CONDA_DIR=/opt/conda
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN set -eux; \
@@ -39,24 +40,24 @@ bash /tmp/miniforge.sh -b -p "$CONDA_DIR"; \
 rm -f /tmp/miniforge.sh; \
 conda config --system --add channels conda-forge; \
 conda config --system --set channel_priority strict; \
-conda update -y -n base -c defaults conda; \
-conda clean -afy
+conda install -y -n base -c conda-forge mamba && conda clean -afy
 
-# 创建独立环境并安装 ASR 相关的纯二进制包（无源码编译）
-RUN conda create -y -n gov -c conda-forge \
-python=3.11 \
-faster-whisper=1.0.3 \
-ctranslate2=4.2.1 \
-tokenizers=0.15.1 \
-onnxruntime \
-openblas \
-&& conda clean -afy
+# 分步创建环境（降低冲突概率）
+# 1) 仅创建空环境（Python 3.10 兼容性更广）
+RUN mamba create -y -n gov python=3.10 && conda clean -afy
 
-# 默认使用 gov 环境
+# 2) 在环境内逐步安装依赖：openblas/onnxruntime/ctranslate2
+RUN mamba install -y -n gov -c conda-forge openblas onnxruntime && conda clean -afy
+RUN mamba install -y -n gov -c conda-forge ctranslate2=4.2.1 && conda clean -afy
+
+# 3) 在环境内用 pip 安装仅二进制的 faster-whisper 与 tokenizers
 ENV PATH=$CONDA_DIR/envs/gov/bin:$PATH
-
-# 快速校验（不影响构建）
-RUN python -V && python -c "import faster_whisper, ctranslate2, tokenizers; print('conda env ok')"
+ENV PIP_NO_CACHE_DIR=1
+ENV PIP_DEFAULT_TIMEOUT=240
+ENV PIP_ONLY_BINARY=:all:
+RUN python -V && pip -V && \
+pip install --no-cache-dir --only-binary=:all: "tokenizers==0.15.1" "faster-whisper==1.0.3" && \
+python -c "import faster_whisper, ctranslate2, tokenizers; print('asr env ok')"
 
 # 安装 Piper 与中文女声 Huayan 模型（离线 TTS；仅新增功能）
 ARG PIPER_VERSION=1.2.0
