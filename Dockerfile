@@ -1,21 +1,21 @@
-# Dockerfile — 开箱即用增强版 OpenClaw（内置 ocrmypdf + clawhub + Tesseract 中文 + GitHub CLI）
+# Dockerfile — 开箱即用增强版 OpenClaw（内置 ocrmypdf + clawhub + Tesseract 中文 + GitHub CLI + 浏览器中文化）
 # 组件：Chromium + ffmpeg + faster‑whisper（conda+mamba + pip 二进制轮子）
 #      + Piper(OHF‑Voice/piper1‑gpl, Huayan via HuggingFace)
 #      + Tesseract OCR（chi_sim）+ ocrmypdf + poppler-utils
-#      + clawhub（技能包管理器）+ GitHub CLI（gh）
-# 一致性：保持官方默认端口与启动行为；保留非交互 openclaw 调用修复（oc 包装）
+#      + ClawHub（技能包管理器）+ GitHub CLI（gh）
+#      + 浏览器中文化（zh_CN.UTF-8 本地化 + 中文语言首选项）
 
 FROM ghcr.io/openclaw/openclaw:latest
 
-LABEL org.opencontainers.image.title="deltrivx/openclaw" \
-      org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper + Piper (piper1-gpl, Huayan) + Tesseract(chi_sim) + OCRmyPDF + Poppler + ClawHub + GitHub CLI" \
-      org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
-      maintainer="DeltrivX"
+LABEL org.opencontainers.image.title="openclaw-enhanced-cn" \
+      org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper + Piper (Huayan) + Tesseract(chi_sim) + OCRmyPDF + Poppler + ClawHub + gh + zh_CN 中文本地化" \
+      org.opencontainers.image.source="https://github.com/openclaw/openclaw"
 
 USER root
 
-# 基础系统依赖（Chromium/字体/ffmpeg/Tesseract 中文简体/ocrmypdf/Poppler/Node）+ GitHub CLI（官方APT源）
 ENV DEBIAN_FRONTEND=noninteractive
+
+# 基础系统依赖 + gh（官方APT源）
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -25,7 +25,7 @@ RUN set -eux; \
       tesseract-ocr tesseract-ocr-chi-sim \
       ocrmypdf poppler-utils qpdf ghostscript pngquant \
       nodejs npm \
-      ca-certificates curl jq tini bash bzip2 gnupg; \
+      ca-certificates curl jq tini bash bzip2 gnupg locales; \
     mkdir -p /etc/apt/keyrings; \
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
       | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null; \
@@ -34,17 +34,27 @@ RUN set -eux; \
       > /etc/apt/sources.list.d/github-cli.list; \
     apt-get update; \
     apt-get install -y --no-install-recommends gh git openssh-client; \
+    # 中文本地化（生成 zh_CN.UTF-8）
+    sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen || true; \
+    locale-gen zh_CN.UTF-8; \
+    update-locale LANG=zh_CN.UTF-8 LC_ALL=zh_CN.UTF-8 LANGUAGE=zh_CN:zh; \
+    printf 'LANG=zh_CN.UTF-8\nLC_ALL=zh_CN.UTF-8\nLANGUAGE=zh_CN:zh\n' > /etc/default/locale; \
     apt-get purge -y --auto-remove gnupg; \
     rm -rf /var/lib/apt/lists/*
 
-# 环境变量（浏览器路径/下载跳过/时区/Tesseract语言）
-ENV CHROME_PATH=/usr/bin/chromium \
+# 运行时中文优先 & 浏览器中文
+ENV LANG=zh_CN.UTF-8 \
+    LC_ALL=zh_CN.UTF-8 \
+    LANGUAGE=zh_CN:zh \
+    CHROME_PATH=/usr/bin/chromium \
+    CHROME_ARGS=--lang=zh-CN \
+    PLAYWRIGHT_CHROMIUM_ARGS=--lang=zh-CN \
     PUPPETEER_SKIP_DOWNLOAD=1 \
     PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
     TZ=Asia/Shanghai \
     TESS_LANG=chi_sim+eng
 
-# 安装 Miniforge（conda-forge）+ mamba（稳定解算）
+# 安装 Miniforge（conda-forge）+ mamba
 ENV CONDA_DIR=/opt/conda
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN set -eux; \
@@ -59,19 +69,19 @@ RUN set -eux; \
     conda config --system --set channel_priority strict && \
     conda install -y -n base -c conda-forge mamba && conda clean -afy
 
-# 创建 Python 3.10 环境（wheel 覆盖更广），安装底层依赖
+# Python 环境（ASR 依赖）
 RUN mamba create -y -n gov python=3.10 && conda clean -afy
 ENV PATH=$CONDA_DIR/envs/gov/bin:$PATH
 RUN mamba install -y -n gov -c conda-forge openblas onnxruntime && conda clean -afy
 
-# 仅二进制轮子安装 ASR 组件（避免源码编译/ABI 风险）
+# 仅二进制轮子安装 ASR 组件
 ENV PIP_NO_CACHE_DIR=1 PIP_DEFAULT_TIMEOUT=240 PIP_ONLY_BINARY=:all:
 RUN python -V && pip -V
 RUN pip install --no-cache-dir --only-binary=:all: "numpy==1.26.4"
 RUN pip install --no-cache-dir --only-binary=:all: "ctranslate2==4.3.1" "tokenizers==0.15.1" "faster-whisper==1.0.3"
 RUN python -c "import faster_whisper, ctranslate2, tokenizers; print('asr env ok')"
 
-# Piper = OHF‑Voice/piper1‑gpl（通过 manylinux wheel 安装；可用 PIPER_WHEEL_URL 覆盖）
+# Piper = OHF‑Voice/piper1‑gpl（可选直链）
 ARG PIPER1_VERSION=1.4.1
 ARG PIPER_WHEEL_URL=""
 RUN set -eux; \
@@ -90,7 +100,7 @@ RUN set -eux; \
   pip install --no-cache-dir "$WHEEL"; \
   command -v piper >/dev/null 2>&1 || { echo "piper console script not found after wheel install"; exit 22; }
 
-# 使用 HuggingFace 模型（Huayan medium）作为 Piper 声线（多源回退 + 可选直链参数）
+# Huayan 模型（多源回退）
 ARG PIPER_URL_MODEL_ONNX=""
 ARG PIPER_URL_MODEL_JSON=""
 ENV PIPER_MODEL_DIR=/opt/piper/models
@@ -117,18 +127,13 @@ RUN set -eux; \
 # Piper 自检（不阻断构建）
 RUN bash -lc 'echo "你好，世界" | piper -m /opt/piper/models/zh-CN-huayan-medium.onnx -f /tmp/tts.wav || true'
 
-# 安装 clawhub（技能包管理器）
+# 安装 ClawHub（技能包管理器）
 RUN npm i -g clawhub && clawhub --help >/dev/null 2>&1 || true
 
 # 验证 gh CLI
 RUN gh --version && git --version || true
 
-# 非交互/后台调用 openclaw 修复（oc 包装）
-RUN printf '%s\n' '#!/usr/bin/env bash' 'exec bash -lc "openclaw \"$@\""' > /usr/local/bin/oc && \
-    chmod +x /usr/local/bin/oc && \
-    ln -sf /usr/local/bin/oc /usr/local/bin/openclaw-cli
-
-# 健康检查：确保 CLI 可用
+# 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
   CMD ["bash","-lc","openclaw --version || oc --version || node -v || python -V || exit 1"]
 
