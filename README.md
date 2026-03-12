@@ -1,6 +1,6 @@
 # 开箱即用增强版
 
-面向“生产就绪”的一体化镜像：内置 Chromium、ffmpeg、faster‑whisper（仅二进制轮子）、Piper（中文女声 Huayan medium）、Tesseract OCR（中文简体）、OCRmyPDF（扫描 PDF → 可检索）、Poppler（pdftotext/渲染工具），并预装 ClawHub（技能包管理器）。
+面向“生产就绪”的一体化镜像：内置 Chromium、ffmpeg、faster‑whisper（仅二进制轮子）、Piper（中文女声 Huayan medium）、Tesseract OCR（中文简体）、OCRmyPDF（扫描 PDF → 可检索）、Poppler（pdftotext/渲染工具），并预装 ClawHub（技能包管理器）与 GitHub CLI（gh）。
 
 > 基于官方镜像 `ghcr.io/openclaw/openclaw:latest` 二次封装，专注“开箱即用 + 稳定构建 + 易部署”。
 
@@ -17,12 +17,14 @@
   - OCRmyPDF + Poppler：扫描 PDF → 可检索 PDF（保留版式），pdftotext 文本抽取
 - 技能生态
   - ClawHub 预装（npm i -g clawhub），可直接搜索/安装多智能体/工具型技能
+- 协作与开发
+  - GitHub CLI（gh）预装：仓库/Issue/PR/Release/Actions 流水线操作更顺畅（作者/版权：GitHub, Inc.）
 - 运行体验
   - 非交互 `openclaw` 调用修复（oc 包装），docker exec 下也能稳定执行
 
 ---
 
-## 🚀 快速开始（docker‑compose）
+## 🚀 快速开始（Unraid / docker‑compose）
 保存为 `docker-compose.yml`：
 ```yaml
 version: "3.9"
@@ -36,14 +38,17 @@ services:
       TZ: "Asia/Shanghai"
       # 可选：ClawHub 自动登录（明文，建议后续改用 secrets）
       # CLAWHUB_TOKEN: "<你的_clawhub_token>"
+      # 可选：GitHub CLI 非交互登录（建议最小权限/短期令牌，生产用 OIDC）
+      # GH_TOKEN: "<你的_github_token>"
     volumes:
-      - /root/.openclaw:/root/.openclaw
-      - /root/.openclaw:/root/.clawhub
-    # 以环境变量自动写入 token（启用 CLAWHUB_TOKEN 后解注释）
+      - /mnt/user/appdata/openclaw:/root/.openclaw
+      - /mnt/user/appdata/openclaw/.clawhub:/root/.clawhub
+    # 以环境变量自动写入 token（启用 CLAWHUB_TOKEN/GH_TOKEN 后可解注释）
     # command: >
     #   bash -lc '
     #   mkdir -p ~/.clawhub &&
-    #   printf "%s" "$CLAWHUB_TOKEN" > ~/.clawhub/token && chmod 600 ~/.clawhub/token &&
+    #   [ -z "$CLAWHUB_TOKEN" ] || { printf "%s" "$CLAWHUB_TOKEN" > ~/.clawhub/token && chmod 600 ~/.clawhub/token; } &&
+    #   [ -z "$GH_TOKEN" ] || { printf "%s" "$GH_TOKEN" | gh auth login --with-token && gh auth setup-git; } &&
     #   exec openclaw gateway start
     #   '
     ports:
@@ -69,6 +74,18 @@ docker exec -it openclaw bash -lc 'clawhub --help && clawhub search "multi agent
 docker exec -it openclaw bash -lc 'cd /root/.openclaw && clawhub install multi-agent-roles --no-input'
 ```
 
+GitHub CLI（gh）
+```bash
+# 容器内（建议最小权限/短期 GH_TOKEN；CI 优先 OIDC）
+docker exec -it openclaw bash -lc 'gh --version && gh auth status || true'
+# 非交互登录（示例）
+docker exec -it openclaw bash -lc 'printf "%s" "$GH_TOKEN" | gh auth login --with-token && gh auth setup-git'
+# 常见操作：查看仓库/PR/Issue
+docker exec -it openclaw bash -lc 'gh repo view; gh pr list --limit 5; gh issue list --limit 5'
+# 发布 release（示例）
+# docker exec -it openclaw bash -lc 'gh release create v1.0.0 --generate-notes'
+```
+
 OCR / PDF 工具
 ```bash
 # Tesseract（中文+英文）
@@ -91,8 +108,10 @@ chromium --version && chromium-driver --version
 python -c "import faster_whisper,ctranslate2,tokenizers; print('asr ok')" && piper --help | head -n 1
 # OCR / PDF
 tesseract --version && ocrmypdf --version && pdftotext -v
-# ClawHub
+# 技能生态
 clawhub --help | head -n 1
+# GitHub CLI（作者：GitHub, Inc.）
+gh --version && gh auth status || true
 ```
 
 ---
@@ -101,7 +120,7 @@ clawhub --help | head -n 1
 - 采用 conda+mamba + pip 二进制轮子，避免在 CI/buildx 下的源码编译不确定性
 - Piper 走 manylinux wheel（OHF‑Voice/piper1‑gpl），Huayan 模型通过 HuggingFace 多源回退下载
 - 保留 oc 包装，`docker exec <ctr> openclaw …` 在非交互场景可直接使用
-- 版本号展示维持官方默认（括号可能仍为 unknown）；如需可读版本信息，建议在 README 或日志中引用镜像标签（日期/短 SHA）
+- gh 预装，配合最小权限 GH Token 或 OIDC，便于持续集成与自动化发布
 
 ---
 
@@ -109,6 +128,7 @@ clawhub --help | head -n 1
 - OpenClaw 核心项目与镜像：
   - 项目：https://github.com/openclaw/openclaw （原作者/贡献者）
   - 镜像：`ghcr.io/openclaw/openclaw`
+- GitHub CLI（gh）：https://github.com/cli/cli  作者/版权：GitHub, Inc.
 - Piper（本地 TTS 引擎）：
   - rhasspy/piper（作者：Michael Hansen / Rhasspy 团队）：https://github.com/rhasspy/piper
   - OHF‑Voice/piper1‑gpl（作者：OHF‑Voice）：https://github.com/OHF-Voice/piper1-gpl
@@ -124,18 +144,17 @@ clawhub --help | head -n 1
 - 技能生态：
   - ClawHub（CLI/Registry）：https://clawhub.com
 
-> 上述开源项目与模型均归属于各自的原作者及社区，本文仅在工程层面进行整合与复用，**明确标注来源与作者**，并遵循各自许可证条款。
+> 本 README 仅在工程层面整合与引用外部项目，**不复制上游正文**，并明确标注来源与作者，遵循各自许可证条款。
 
 ---
 
-## ⚠️ 许可与使用声明（非商业）
-- 本仓库以“仅供学习与研究”为目的发布，默认 **非商业使用**。
-- 如需商用/再分发，请分别确认并遵循所有上游项目与模型的许可证（包括但不限于 OpenClaw、Piper/piper1‑gpl 及其模型、faster‑whisper/CTranslate2/tokenizers、OCRmyPDF/Poppler/Tesseract 等）。
-- 如涉及商业化或内容安全，请自行进行合规审查与授权确认；本仓库作者不对因使用产生的合规/版权/内容风险承担责任。
+## ⚠️ 许可与使用声明
+- 默认 **非商业** 场景示例。商用/再分发请分别确认所有上游项目与模型的许可证（含 Piper 及其模型、faster‑whisper/CTranslate2/tokenizers、OCRmyPDF/Poppler/Tesseract、OpenClaw 等）。
+- 如涉及商业化或内容安全，请自行进行合规审查与授权确认；作者不对因此产生的合规/版权/内容风险承担责任。
 
 ---
 
 ## 🛠️ FAQ
-- 端口/挂载：
+- 端口/挂载
   - 官方端口 `18789`；官方工作区 `/root/.openclaw`
   - Unraid 推荐挂载：`/mnt/user/appdata/openclaw:/root/.openclaw`
