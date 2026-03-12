@@ -1,4 +1,5 @@
-# Dockerfile（含中文声明）— 开箱即用增强版 OpenClaw
+# syntax=docker/dockerfile:1.6
+# Dockerfile（含中文声明）— 开箱即用增强版 OpenClaw（方案A：本机构建自动生成版本信息）
 # 组件：Chromium + ffmpeg + faster‑whisper（conda+mamba + pip 二进制轮子）+ Piper(OHF‑Voice/piper1‑gpl, Huayan via HuggingFace)
 # 一致性：保持官方默认端口 18789 与启动行为；修复容器内非交互 docker exec openclaw
 #
@@ -16,6 +17,34 @@ LABEL org.opencontainers.image.title="deltrivx/openclaw" \
 
 USER root
 
+# 运行时环境变量（浏览器路径/下载跳过/时区）
+ENV CHROME_PATH=/usr/bin/chromium \
+    PUPPETEER_SKIP_DOWNLOAD=1 \
+    PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
+    TZ=Asia/Shanghai
+
+# --- 构建元数据注入（由 CI 或本机构建自动生成） ---
+ARG GIT_COMMIT=unknown
+ARG BUILD_DATE=unknown
+ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
+    OPENCLAW_BUILD_DATE=${BUILD_DATE}
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.build-bust="${GIT_COMMIT}-${BUILD_DATE}"
+
+# 写入版本文件（后续若本机挂载 .git 会被自动刷新）
+RUN mkdir -p /usr/local/share && \
+    /bin/sh -lc 'printf "commit=%s\nbuilt=%s\n" "${OPENCLAW_COMMIT_SHA:-unknown}" "${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt'
+
+# 本机构建：挂载 .git 读取短 SHA 与构建时间（BuildKit，需要 # syntax 指令）
+RUN --mount=type=bind,source=.git,target=/src/.git \
+    /bin/sh -lc 'if [ -d /src/.git ]; then \
+      c=$(git -C /src rev-parse --short HEAD 2>/dev/null || echo unknown); \
+      d=$(date -u +%Y-%m-%dT%H:%M:%SZ); \
+      sed -i "s/^commit=.*/commit=$c/" /usr/local/share/openclaw-build.txt; \
+      sed -i "s/^built=.*/built=$d/" /usr/local/share/openclaw-build.txt; \
+    fi'
+
 # 基础系统依赖（Chromium/字体/ffmpeg/常用工具）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     chromium chromium-common chromium-driver \
@@ -23,22 +52,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     ffmpeg \
     ca-certificates curl jq tini bash bzip2 \
  && rm -rf /var/lib/apt/lists/*
-
-# 运行时环境变量（浏览器路径/下载跳过/时区）
-ENV CHROME_PATH=/usr/bin/chromium \
-    PUPPETEER_SKIP_DOWNLOAD=1 \
-    PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
-    TZ=Asia/Shanghai
-
-# --- 构建元数据注入：用于修复 openclaw --version 后缀 (unknown) ---
-ARG GIT_COMMIT
-ARG BUILD_DATE
-ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
-    OPENCLAW_BUILD_DATE=${BUILD_DATE}
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.created="${BUILD_DATE}"
-RUN mkdir -p /usr/local/share && \
-    /bin/sh -lc 'printf "commit=%s\nbuilt=%s\n" "${OPENCLAW_COMMIT_SHA:-unknown}" "${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt'
 
 # 安装 Miniforge（conda-forge）+ mamba（稳定解算）
 ENV CONDA_DIR=/opt/conda
