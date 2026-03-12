@@ -17,7 +17,7 @@ permissions:
 contents: read
 packages: write
 env:
-IMAGE_NAME: ghcr.io/${{ github.repository }} # e.g. ghcr.io/deltrivx/openclaw（全小写）
+IMAGE_NAME: ghcr.io/${{ github.repository }}
 steps:
 - uses: actions/checkout@v4
 
@@ -26,8 +26,7 @@ steps:
 
 - name: Normalize image name to lowercase
 id: img
-run: |
-echo "name=${IMAGE_NAME,,}" >> $GITHUB_OUTPUT
+run: echo "name=${IMAGE_NAME,,}" >> $GITHUB_OUTPUT
 
 - name: Login to GHCR
 uses: docker/login-action@v3
@@ -57,7 +56,3 @@ tags: ${{ steps.meta.outputs.tags }}
 labels: ${{ steps.meta.outputs.labels }}
 cache-from: type=gha
 cache-to: type=gha,mode=max
-# build-args: | # 可选：如需自定义直链避开限流
-# PIPER_WHEEL_URL=...
-# PIPER_URL_MODEL_ONNX=...
-# PIPER_URL_MODEL_JSON=...
