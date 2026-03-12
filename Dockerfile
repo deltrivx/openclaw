@@ -1,8 +1,6 @@
 # Dockerfile
 # 目标：除新增功能外保持与官方一致（默认网关端口 18789、不改官方启动/行为）
-# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（conda 环境，纯二进制包，避免 pip 编译）
-# 修复：非交互 openclaw 调用（oc 包装）
-# 说明：移除会导致 apt 100 的构建工具依赖（rustc/cargo/execstack 等），仅保留必要系统包
+# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（conda 环境，纯二进制包），修复非交互 openclaw 调用
 
 FROM ghcr.io/openclaw/openclaw:latest
 
@@ -13,7 +11,7 @@ maintainer="DeltrivX"
 
 USER root
 
-# 必要系统依赖（不改变官方其他行为）
+# 必要系统依赖（尽量精简，避免 apt 100）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 chromium chromium-common chromium-driver \
 fonts-wqy-zenhei fonts-wqy-microhei \
@@ -26,19 +24,19 @@ PUPPETEER_SKIP_DOWNLOAD=1 \
 PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
 TZ=Asia/Shanghai
 
-# 安装 Miniconda（更稳的二进制包来源）
+# 安装 Miniforge（更稳的 conda-forge 二进制通道）
 ENV CONDA_DIR=/opt/conda
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN set -eux; \
 arch="$(uname -m)"; \
 case "$arch" in \
-x86_64) mc_arch="x86_64" ;; \
-aarch64) mc_arch="aarch64" ;; \
+x86_64) mf_arch="x86_64" ;; \
+aarch64) mf_arch="aarch64" ;; \
 *) echo "Unsupported arch: $arch"; exit 1 ;; \
 esac; \
-curl -fsSL -o /tmp/miniconda.sh "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${mc_arch}.sh"; \
-bash /tmp/miniconda.sh -b -p "$CONDA_DIR"; \
-rm -f /tmp/miniconda.sh; \
+curl -fsSL -o /tmp/miniforge.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-${mf_arch}.sh"; \
+bash /tmp/miniforge.sh -b -p "$CONDA_DIR"; \
+rm -f /tmp/miniforge.sh; \
 conda config --system --add channels conda-forge; \
 conda config --system --set channel_priority strict; \
 conda update -y -n base -c defaults conda; \
