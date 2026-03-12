@@ -9,6 +9,21 @@
 
 FROM ghcr.io/openclaw/openclaw:latest
 
+# 自动版本元数据（由 CI 注入；本地无则回落 unknown）
+ARG GIT_COMMIT=unknown
+ARG BUILD_DATE=unknown
+ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
+OPENCLAW_BUILD_DATE=${BUILD_DATE}
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
+org.opencontainers.image.created="${BUILD_DATE}" \
+org.opencontainers.image.build-bust="${GIT_COMMIT}-${BUILD_DATE}"
+
+# 可选：提供人工查看的版本文件与命令
+RUN printf '%s\n' "commit=${OPENCLAW_COMMIT_SHA}" "built=${OPENCLAW_BUILD_DATE}" > /usr/local/share/openclaw-build.txt && \
+printf '%s\n' '#!/usr/bin/env bash' \
+'echo "OpenClaw build: ${OPENCLAW_COMMIT_SHA:-unknown} @ ${OPENCLAW_BUILD_DATE:-unknown}"' \
+> /usr/local/bin/openclaw-version && chmod +x /usr/local/bin/openclaw-version
+
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
       org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper (conda+mamba+binary wheels) + Piper (OHF-Voice/piper1-gpl, Huayan), non-interactive openclaw fixed" \
       org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
