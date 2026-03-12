@@ -133,6 +133,32 @@ RUN printf '%s\n' '#!/usr/bin/env bash' 'exec bash -lc "openclaw \"$@\""' > /usr
     chmod +x /usr/local/bin/oc && \
     ln -sf /usr/local/bin/oc /usr/local/bin/openclaw-cli
 
+# openclaw --version 套壳：仅在 --version 时追加构建信息；其他命令透传
+RUN set -eux; \
+  ORIG_PATH="$(command -v openclaw || true)"; \
+  if [ -n "$ORIG_PATH" ]; then mv "$ORIG_PATH" /usr/local/bin/openclaw.orig; fi; \
+  cat > /usr/local/bin/openclaw <<'SH' && chmod +x /usr/local/bin/openclaw
+#!/usr/bin/env sh
+# wrapper: 修复 --version 展示；其他命令全部透传
+if [ "$#" -eq 1 ] && [ "$1" = "--version" ]; then
+  if command -v /usr/local/bin/openclaw.orig >/dev/null 2>&1; then
+    /usr/local/bin/openclaw.orig --version || true
+  else
+    oc --version 2>/dev/null || echo "OpenClaw (unknown)"
+  fi
+  if [ -f /usr/local/share/openclaw-build.txt ]; then
+    COMMIT=$(sed -n 's/^commit=//p' /usr/local/share/openclaw-build.txt)
+    BUILT=$(sed -n 's/^built=//p'  /usr/local/share/openclaw-build.txt)
+    echo "Build: ${COMMIT:-unknown} @ ${BUILT:-unknown}"
+  fi
+  exit 0
+fi
+if command -v /usr/local/bin/openclaw.orig >/dev/null 2>&1; then
+  exec /usr/local/bin/openclaw.orig "$@"
+fi
+exec oc "$@"
+SH
+
 # 健康检查：确保 CLI 可用
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
   CMD ["bash","-lc","openclaw --version || oc --version || node -v || python -V || exit 1"]
