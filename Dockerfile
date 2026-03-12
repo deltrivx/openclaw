@@ -2,6 +2,7 @@
 # 目标：除新增功能外保持与官方一致（默认网关端口 18789、不改官方启动/行为）
 # 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（隔离 venv）
 # 修复：非交互 openclaw 调用；针对 ctranslate2 可执行栈报错（execstack -c 清除标志）
+# 修正：去掉 heredoc，全部使用 python -c，避免 “unterminated heredoc”
 
 # ---- Stage 1: 预构建独立 Python 虚拟环境（并修复可执行栈标志）
 FROM python:3.11-slim AS pyenv
@@ -29,7 +30,7 @@ RUN python -m venv /opt/gov && \
 RUN set -eux; \
 find /opt/gov -type f -name "libctranslate2*.so*" -exec execstack -c {} + || true; \
 find /opt/gov -type f -name "libonnxruntime*.so*" -exec execstack -c {} + || true; \
-/opt/gov/bin/python -V && /opt/gov/bin/python - <<'PY'\nimport ctranslate2, tokenizers, faster_whisper; print('pyenv ok')\nPY
+/opt/gov/bin/python -V && /opt/gov/bin/python -c "import ctranslate2, tokenizers, faster_whisper; print('pyenv ok')"
 
 # ---- Stage 2: 最终镜像（官方基础 + 新增组件；其余保持官方默认）
 FROM ghcr.io/openclaw/openclaw:latest
@@ -54,7 +55,7 @@ COPY --from=pyenv /opt/gov /opt/gov
 ENV PATH=/opt/gov/bin:${PATH}
 
 # 快速校验（不影响构建流程）
-RUN python -V && python - <<'PY'\nimport ctranslate2, tokenizers, faster_whisper; print('runtime ok')\nPY
+RUN python -V && python -c "import ctranslate2, tokenizers, faster_whisper; print('runtime ok')"
 
 # 安装 Piper 与中文女声 Huayan 模型（离线 TTS；仅新增功能）
 ARG PIPER_VERSION=1.2.0
@@ -86,4 +87,4 @@ CMD openclaw --version || oc --version || node -v || python -V || exit 1
 # 官方默认网关端口：18789（保持一致）
 EXPOSE 18789
 
-# ENTRYPOINT/CMD：保持与官方一致（不覆盖官方默认启动）
+# ENTRYPOINT/CMD：保持与官方一致（不覆盖官方默认启
