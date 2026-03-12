@@ -1,40 +1,47 @@
 # Dockerfile
-# 目标：除新增功能外，其余与官方保持一致（默认网关端口 18789、不修改官方启动/行为）
-# 新增功能：内置 Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（隔离 pyenv），修复非交互 openclaw 调用
+# 目标：除新增功能外保持与官方一致（默认网关端口 18789、不改官方启动/行为）
+# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（隔离 venv）
+# 修复：非交互 openclaw 调用；针对 ctranslate2 可执行栈报错（execstack -c 清除标志）
 
-# ---- Stage 1: 预构建独立 Python 虚拟环境（避免在最终镜像内编译/装包导致 buildx 失败）
+# ---- Stage 1: 预构建独立 Python 虚拟环境（并修复可执行栈标志）
 FROM python:3.11-slim AS pyenv
 ENV PIP_NO_CACHE_DIR=1
-ENV PIP_DEFAULT_TIMEOUT=180
+ENV PIP_DEFAULT_TIMEOUT=240
 ENV PIP_PREFER_BINARY=1
-ENV UV_HTTP_TIMEOUT=180
+ENV UV_HTTP_TIMEOUT=240
 
-# 必备系统依赖（含 venv 所需的 python3-venv）
+# 必备构建与修复工具（包含 execstack，用于清除 .so 的可执行栈标志）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 python3-venv python3-dev \
 build-essential rustc cargo pkg-config cmake git \
 libopenblas-dev libomp-dev ca-certificates curl \
+execstack \
 && rm -rf /var/lib/apt/lists/*
 
 # 预构建虚拟环境 + 安装 ASR 依赖（更兼容的版本组合）
 RUN python -m venv /opt/gov && \
 /opt/gov/bin/pip install --upgrade pip setuptools wheel "maturin==1.5.1" "cmake>=3.26" && \
-/opt/gov/bin/pip install --no-cache-dir --prefer-binary "numpy<2" && \
+/opt/gov/bin/pip install --no-cache-dir --prefer-binary "numpy==1.26.4" && \
 /opt/gov/bin/pip install --no-cache-dir --prefer-binary "ctranslate2==4.2.1" "tokenizers==0.15.1" && \
-/opt/gov/bin/pip install --no-cache-dir --prefer-binary "faster-whisper==1.0.3" && \
-/opt/gov/bin/python -V && /opt/gov/bin/python -c "import ctranslate2, tokenizers, faster_whisper; print('pyenv ok')"
+/opt/gov/bin/pip install --no-cache-dir --prefer-binary "faster-whisper==1.0.3"
 
-# ---- Stage 2: 最终镜像（官方基础 + 仅追加新增功能，其他保持一致）
+# 关键修复：移除 ctranslate2/依赖库的“可执行栈”标志，避免内核拒绝加载
+RUN set -eux; \
+find /opt/gov -type f -name "libctranslate2*.so*" -exec execstack -c {} + || true; \
+find /opt/gov -type f -name "libonnxruntime*.so*" -exec execstack -c {} + || true; \
+/opt/gov/bin/python -V && /opt/gov/bin/python - <<'PY'\nimport ctranslate2, tokenizers, faster_whisper; print('pyenv ok')\nPY
+
+# ---- Stage 2: 最终镜像（官方基础 + 新增组件；其余保持官方默认）
 FROM ghcr.io/openclaw/openclaw:latest
 
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
-org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + Piper (Huayan) + faster-whisper (isolated pyenv) + ffmpeg; non-interactive openclaw fixed" \
+org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + Piper (Huayan) + faster-whisper (isolated venv) + ffmpeg; non-interactive openclaw fixed" \
 org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
 maintainer="DeltrivX"
 
 USER root
 
-# 与官方保持一致，仅追加我们所需系统依赖（不改官方行为/端口）
+# 仅追加必要系统依赖（不改变官方其他行为）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 chromium chromium-common chromium-driver \
 fonts-wqy-zenhei fonts-wqy-microhei \
@@ -47,9 +54,9 @@ COPY --from=pyenv /opt/gov /opt/gov
 ENV PATH=/opt/gov/bin:${PATH}
 
 # 快速校验（不影响构建流程）
-RUN python -V && python -c "import ctranslate2, tokenizers, faster_whisper; print('runtime ok')"
+RUN python -V && python - <<'PY'\nimport ctranslate2, tokenizers, faster_whisper; print('runtime ok')\nPY
 
-# 安装 Piper 与中文女声 Huayan medium（离线 TTS；仅新增功能）
+# 安装 Piper 与中文女声 Huayan 模型（离线 TTS；仅新增功能）
 ARG PIPER_VERSION=1.2.0
 RUN set -eux; \
 arch=$(uname -m); \
@@ -79,4 +86,4 @@ CMD openclaw --version || oc --version || node -v || python -V || exit 1
 # 官方默认网关端口：18789（保持一致）
 EXPOSE 18789
 
-# ENTRYPOINT/CMD：保持与官方一致（不覆盖官方镜像的默认启动流程）
+# ENTRYPOINT/CMD：保持与官方一致（不覆盖官方默认启动）
