@@ -1,7 +1,7 @@
 # Dockerfile
 # 保持与官方一致（默认网关 18789、不改官方启动/行为）
-# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（conda env + pip 仅二进制轮子）
-# 修复：非交互 openclaw 调用；修正 HEALTHCHECK 语法为 JSON 数组格式
+# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声，带多源回退下载）、faster-whisper（conda env + pip 仅二进制轮子）
+# 修复：非交互 openclaw 调用；修正 HEALTHCHECK 语法
 
 FROM ghcr.io/openclaw/openclaw:latest
 
@@ -58,7 +58,7 @@ pip install --no-cache-dir --only-binary=:all: "numpy==1.26.4" && \
 pip install --no-cache-dir --only-binary=:all: "ctranslate2==4.3.1" "tokenizers==0.15.1" "faster-whisper==1.0.3" && \
 python -c "import faster_whisper, ctranslate2, tokenizers; print('asr env ok')"
 
-# 安装 Piper 与中文女声 Huayan 模型（离线 TTS；仅新增功能）
+# 安装 Piper 与中文女声 Huayan 模型（带多源回退，避免 404/限流）
 ARG PIPER_VERSION=1.2.0
 RUN set -eux; \
 arch=$(uname -m); \
@@ -68,20 +68,26 @@ aarch64) piper_pkg="piper_linux_aarch64" ;; \
 armv7l) piper_pkg="piper_linux_armv7l" ;; \
 *) echo "Unsupported arch: $arch"; exit 1 ;; \
 esac; \
-mkdir -p /opt/piper/models && \
-cd /opt/piper && \
-curl -fsSL -o piper.tar.gz "https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/${piper_pkg}.tar.gz" && \
-tar -xzf piper.tar.gz && rm piper.tar.gz && \
-install -m 0755 piper /usr/local/bin/piper && \
-curl -fsSL -o /opt/piper/models/zh-CN-huayan-medium.onnx "https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx" && \
-curl -fsSL -o /opt/piper/models/zh-CN-huayan-medium.onnx.json "https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx.json"
-
-# 非交互/后台调用 openclaw 修复（不改变官方命令，仅追加包装以兼容 docker exec）
+mkdir -p /opt/piper/models && cd /opt/piper; \
+curl -fSLS --retry 3 --retry-delay 2 -o piper.tar.gz "https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/${piper_pkg}.tar.gz" || \
+curl -fSLS --retry 3 --retry-delay 2 -o piper.tar.gz "https://ghproxy.com/https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/${piper_pkg}.tar.gz"; \
+tar -xzf piper.tar.gz && rm piper.tar.gz; \
+install -m 0755 piper /usr/local/bin/piper; \
+set +e; \
+curl -fSLS --retry 3 --retry-delay 2 -o /opt/piper/models/zh-CN-huayan-medium.onnx "https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx"; rc1=$?; \
+curl -fSLS --retry 3 --retry-delay 2 -o /opt/piper/models/zh-CN-huayan-medium.onnx.json "https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx.json"; rc2=$?; \
+if [ $rc1 -ne 0 ] || [ $rc2 -ne 0 ]; then \
+echo "Primary GH model download failed, trying HuggingFace mirror..."; \
+curl -fSLS --retry 3 --retry-delay 2 -o /opt/piper/models/zh-CN-huayan-medium.onnx "https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh-CN-huayan-medium.onnx?download=true" && \
+curl -fSLS --retry 3 --retry-delay 2 -o /opt/piper/models/zh-CN-huayan-medium.onnx.json "https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh-CN-huayan-medium.onnx.json?download=true" || \
+{ echo 'Failed to fetch Huayan model from all sources'; exit 22; }; \
+fi; \
+set -e# 非交互/后台调用 openclaw 修复（不改变官方命令，仅追加包装以兼容 docker exec）
 RUN printf '%s\n' '#!/usr/bin/env bash' 'exec bash -lc "openclaw \"$@\""' > /usr/local/bin/oc && \
 chmod +x /usr/local/bin/oc && \
 ln -sf /usr/local/bin/oc /usr/local/bin/openclaw-cli
 
-# 健康检查（JSON 数组格式，避免解析错误）
+# 健康检查（JSON 数组格式）
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
 CMD ["bash","-lc","openclaw --version || oc --version || node -v || python -V || exit 1"]
 
