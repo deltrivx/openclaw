@@ -1,122 +1,152 @@
-# deltrivx/openclaw — 一站式开箱即用容器
+# deltrivx/openclaw · 开箱即用增强版（Chromium + Piper 中文女声 + faster‑whisper + ffmpeg）
 
-基于上游镜像 `ghcr.io/openclaw/openclaw:latest`，集成：
-
-- 内置 Chromium（含驱动）用于网页自动化/无头浏览器
-- 内置 ffmpeg（音视频处理）
-- 内置 faster-whisper（离线语音识别，Python 版）
-- 内置 Piper + 中文女声模型「Huayan medium」（离线 TTS，中文女声，直接可用）
-- 修复容器后台 `docker exec <ctr> openclaw ...` 无效的问题（非交互/后台可直接调用）
-- 支持启动时自动与上游同步更新（保持实时跟进上游改动，可开关）
-
-适用于需要「一条命令起容器，立即具备浏览器 + ASR + TTS + ffmpeg」的场景。
-
-> 致谢与来源：本项目基于并尊重上游开源项目 [openclaw/openclaw](https://github.com/openclaw/openclaw)。核心运行时镜像来自 `ghcr.io/openclaw/openclaw:latest`。本仓库仅做增量集成与工程化封装，遵循上游许可证与声明。
+> 基于官方镜像 `ghcr.io/openclaw/openclaw:latest` 的工程化整合，面向“开箱即用、稳定构建、易部署”。
+> 内置 Chromium、ffmpeg、faster‑whisper（二进制轮子安装）、Piper（中文女声 Huayan medium），修复容器内非交互 `openclaw` 调用；提供 Unraid 友好 docker‑compose；集成每日自动重建 GHCR 工作流；构建时注入版本元数据，摆脱 `(unknown)`。
 
 ---
 
-## 快速开始
+## ✨ 特色能力
+- 浏览器与多媒体：
+  - Chromium（含驱动）+ ffmpeg，网页自动化与音视频处理即刻可用。
+- 语音链路：
+  - faster‑whisper（ASR）采用 conda + pip **仅二进制轮子**安装，规避源码编译风险。
+  - Piper（TTS）采用 **OHF‑Voice/piper1‑gpl** manylinux wheel 安装，内置中文女声 **Huayan medium** 模型（HuggingFace 多源回退）。
+- 非交互 CLI 修复：
+  - 提供 `oc` 包装，`docker exec <ctr> openclaw …` 在非交互/后台场景可用。
+- 版本号补全：
+  - 构建注入 `GIT_COMMIT / BUILD_DATE`，`openclaw --version` 不再显示 `(unknown)`，另落盘 `/usr/local/share/openclaw-build.txt` 便于审计。
+- CI 与镜像管理：
+  - GitHub Actions 每日定时多架构构建并推送 GHCR，可一键公开镜像。
 
+---
+
+## 🚀 快速部署
+
+### Unraid / docker‑compose（推荐）
+将以下内容保存为仓库根的 `docker-compose.yml`：
+```yaml
+version: "3.9"
+
+services:
+  openclaw:
+    image: ghcr.io/deltrivx/openclaw:latest
+    container_name: openclaw
+    restart: unless-stopped
+    environment:
+      TZ: "Asia/Shanghai"
+    ports:
+      - "18789:18789"              # OpenClaw 网关端口（官方默认）
+    volumes:
+      - /mnt/user/appdata/openclaw:/root/.openclaw   # 官方工作区挂载
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "openclaw --version || oc --version || node -v || python -V"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+```
+启动：
 ```bash
-# 1) 构建镜像
-# 仓库：deltrivx/openclaw
-# 标签：latest（或自定义）
-docker build -t deltrivx/openclaw:latest .
+docker compose up -d
+```
+访问控制面板：`http://<你的主机IP>:18789/`
 
-# 2) 运行（示例，按需暴露端口/挂载数据）
+### 单条 Docker 命令
+```bash
 docker run -d \
   --name openclaw \
   --restart unless-stopped \
-  -e OPENCLAW_AUTO_UPDATE=true \
-  -p 3000:3000 -p 8080:8080 \
-  deltrivx/openclaw:latest
-
-# 3) 验证 CLI 可用性（非交互/后台同样有效）
-docker exec -it openclaw openclaw --version
-# 或
-docker exec -it openclaw oc --version
+  -e TZ=Asia/Shanghai \
+  -p 18789:18789 \
+  -v /mnt/user/appdata/openclaw:/root/.openclaw \
+  ghcr.io/deltrivx/openclaw:latest
 ```
 
-- 默认入口将启动 OpenClaw Gateway；如需执行其他命令，可在 `docker run` 后附加命令覆盖。
-- 提供 `oc` 与 `openclaw-cli` 软链接，保证在非交互 `exec` 场景也能正确寻址并执行。
+---
+
+## 🗣️ 语音能力自检
+
+### Piper 中文女声（Huayan）
+```bash
+docker exec -i openclaw bash -lc 'echo "你好，世界" | piper -m /opt/piper/models/zh-CN-huayan-medium.onnx -f /root/.openclaw/data/tts.wav && ls -l /root/.openclaw/data/tts.wav'
+```
+> 模型来源：HuggingFace `rhasspy/piper-voices`（见下文致谢）
 
 ---
 
-## 组件说明
-
-- Chromium：通过系统包安装（含 `chromium-driver`），环境变量 `CHROME_PATH=/usr/bin/chromium`。
-- ffmpeg：系统包内置。
-- faster-whisper：Python 包，版本 `1.0.3`，适合 CPU/GPU 推理，按需配置模型下载目录。
-- Piper：二进制放置于 `/opt/piper`，并链接 `piper` 到 PATH。
-  - 已预置中文女声模型：`/opt/piper/models/zh-CN-huayan-medium.onnx`（及 `.onnx.json` 配置）
-  - 示例调用：
-    ```bash
-    echo "你好，世界" | piper -m /opt/piper/models/zh-CN-huayan-medium.onnx -f out.wav
-    ```
-- Auto Update：容器启动时可自动调用 `openclaw gateway update` 与上游同步（默认开启，可通过 `OPENCLAW_AUTO_UPDATE=false` 关闭）。
+## 🔁 自动构建与推送（GHCR）
+仓库已包含工作流：`.github/workflows/build-and-push.yml`
+- 每日 02:15 UTC 自动重建 `ghcr.io/deltrivx/openclaw:latest`
+- 首次需在仓库 Settings → Actions → General 开启 **Read and write permissions**
+- 若组织策略限制 GHCR，可在仓库 Secrets 设置 `GHCR_PAT`（scopes: `write:packages, repo`）并在登录步骤使用
 
 ---
 
-## 使用示例
-
-- 启动并查看日志：
-  ```bash
-  docker logs -f openclaw
-  ```
-
-- 手动运行某个子命令（非交互）：
-  ```bash
-  docker exec openclaw openclaw status
-  docker exec openclaw openclaw gateway restart
-  ```
-
-- 使用 Piper 生成中文女声音频：
-  ```bash
-  docker exec -i openclaw bash -lc 'echo "本宫测试一下合成语音。" | \
-    piper -m /opt/piper/models/zh-CN-huayan-medium.onnx -f /data/tts.wav'
-  ```
-
-- 使用 faster-whisper 做离线识别：
-  ```bash
-  docker exec -it openclaw python3 - <<'PY'
-  from faster_whisper import WhisperModel
-  model = WhisperModel("medium", device="auto")
-  segments, info = model.transcribe("/data/sample.wav", beam_size=5)
-  for s in segments:
-      print(f"[{s.start:.2f}->{s.end:.2f}] {s.text}")
-  PY
-  ```
+## 🧩 版本号不再 (unknown)
+Dockerfile 中：
+```dockerfile
+ARG GIT_COMMIT
+ARG BUILD_DATE
+ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
+    OPENCLAW_BUILD_DATE=${BUILD_DATE}
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
+      org.opencontainers.image.created="${BUILD_DATE}"
+RUN printf '%s\n' "commit=${OPENCLAW_COMMIT_SHA:-unknown}" "built=${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt
+```
+验证：
+```bash
+openclaw --version
+cat /usr/local/share/openclaw-build.txt
+```
 
 ---
 
-## 常见问题（FAQ）
-
-- Q: 为什么我在后台/非交互 `docker exec` 时找不到 `openclaw`？
-  - A: 本镜像已通过入口与 `oc` 包装脚本修复此问题，确保 PATH 与 shell 环境一致，非交互场景同样可用。
-
-- Q: 如何关闭启动时的上游自动更新？
-  - A: 运行时设置 `-e OPENCLAW_AUTO_UPDATE=false` 即可。
-
-- Q: Piper 模型能否替换为其他中文音色？
-  - A: 可以。将其他模型放入 `/opt/piper/models/` 并在调用时指定 `-m` 路径即可。
-
----
-
-## 许可证与声明
-
-- 上游项目：`openclaw/openclaw`（镜像来源：`ghcr.io/openclaw/openclaw:latest`）
-- 本仓库仅做集成与工程化封装，遵循上游许可证。
-- 文字、脚本与构建文件中均已标注来源并致谢原作者。
-
----
-
-## 目录结构
-
+## 🗂️ 目录结构
 ```
 .
 ├─ Dockerfile
-├─ entrypoint.sh
-├─ scripts/
-│  └─ fix_openclaw_exec.sh
-└─ README.cn.md
+├─ docker-compose.yml
+└─ .github/workflows/build-and-push.yml
 ```
+
+---
+
+## 🙏 致谢与来源（作者/版权归属）
+- OpenClaw 核心项目与镜像（原作者/贡献者）：
+  - 项目：https://github.com/openclaw/openclaw
+  - 镜像：`ghcr.io/openclaw/openclaw`
+- Piper（本地 TTS 引擎）：
+  - 原版 rhasspy/piper（作者：Michael Hansen / Rhasspy 团队）：https://github.com/rhasspy/piper
+  - GPL 版 OHF‑Voice/piper1‑gpl（作者：OHF‑Voice）：https://github.com/OHF-Voice/piper1-gpl
+  - 中文女声 Huayan medium 模型：
+    - HuggingFace `rhasspy/piper-voices`：https://huggingface.co/rhasspy/piper-voices
+- ASR 相关：
+  - faster‑whisper（SYSTRAN / Guillaume Klein 等）：https://github.com/SYSTRAN/faster-whisper
+  - CTranslate2（OpenNMT）：https://github.com/OpenNMT/CTranslate2
+  - tokenizers（Hugging Face）：https://github.com/huggingface/tokenizers
+
+本仓库仅做工程化整合与封装，**尊重并遵循上游许可证与版权声明**。引用的商标与名称均归属其原权利人。
+
+---
+
+## ⚠️ 许可与使用声明（非商业）
+- 本仓库以“仅供学习与研究”为目的发布，默认 **非商业使用**。
+- 如需商用/再分发，请分别确认并遵循所有上游项目与模型的许可证（包括但不限于 OpenClaw、Piper/piper1‑gpl 及其模型、faster‑whisper/CTranslate2/tokenizers 等）。
+- 如涉及商业化或内容安全，请自行进行合规审查与授权确认；本仓库作者不对因使用产生的合规/版权/内容风险承担责任。
+
+---
+
+## 🛠️ 常见问题（FAQ）
+- 构建失败（依赖/编译）：本镜像已采用二进制轮子 + conda/mamba；如仍失败，请在 CI 的 build‑args 注入直链：
+  - `PIPER_WHEEL_URL` / `PIPER_URL_MODEL_ONNX` / `PIPER_URL_MODEL_JSON`
+- GHCR 推送 denied：
+  - 开启 Actions 的 **Read and write permissions**；镜像名使用 `ghcr.io/${{ github.repository_owner }}/openclaw`
+  - 组织策略限制时使用 PAT 登录（`GHCR_PAT`）
+- 端口与挂载：
+  - 官方端口 `18789`；官方工作区 `/root/.openclaw`
+  - Unraid 常用挂载：`/mnt/user/appdata/openclaw:/root/.openclaw`
+
+---
+
+## 📬 反馈
+- 欢迎 Issue/PR；若为上游行为或 Bug，请优先到对应上游项目反馈。
