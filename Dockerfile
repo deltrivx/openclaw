@@ -1,27 +1,31 @@
-# Dockerfile — 开箱即用增强版 OpenClaw（恢复官方版本展示行为；内置 Tesseract + chi_sim）
-# 组件：Chromium + ffmpeg + faster‑whisper（conda+mamba + pip 二进制轮子）+ Piper(OHF‑Voice/piper1‑gpl, Huayan via HuggingFace) + Tesseract OCR（中文简体）
+# Dockerfile — 开箱即用增强版 OpenClaw（内置 ocrmypdf + clawhub + Tesseract 中文）
+# 组件：Chromium + ffmpeg + faster‑whisper（conda+mamba + pip 二进制轮子）
+#      + Piper(OHF‑Voice/piper1‑gpl, Huayan via HuggingFace)
+#      + Tesseract OCR（chi_sim）+ ocrmypdf + poppler-utils
+#      + clawhub（技能包管理器）
 # 一致性：保持官方默认端口与启动行为；保留非交互 openclaw 调用修复（oc 包装）
-# 备注：已移除所有版本号元数据注入与 --version 套壳，恢复官方默认 (unknown) 行为
 
 FROM ghcr.io/openclaw/openclaw:latest
 
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
-      org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper + Piper (piper1-gpl, Huayan) + Tesseract (chi_sim); oc wrapper for non-interactive exec" \
+      org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper + Piper (piper1-gpl, Huayan) + Tesseract(chi_sim) + OCRmyPDF + Poppler + ClawHub" \
       org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
       maintainer="DeltrivX"
 
 USER root
 
-# 基础系统依赖（Chromium/字体/ffmpeg/Tesseract 中文简体/常用工具）
+# 基础系统依赖（Chromium/字体/ffmpeg/Tesseract 中文简体/ocrmypdf/Poppler/Node）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     chromium chromium-common chromium-driver \
     fonts-wqy-zenhei fonts-wqy-microhei \
     ffmpeg \
     tesseract-ocr tesseract-ocr-chi-sim \
+    ocrmypdf poppler-utils qpdf ghostscript pngquant \
+    nodejs npm \
     ca-certificates curl jq tini bash bzip2 \
  && rm -rf /var/lib/apt/lists/*
 
-# 环境变量（浏览器路径/下载跳过/时区）
+# 环境变量（浏览器路径/下载跳过/时区/Tesseract语言）
 ENV CHROME_PATH=/usr/bin/chromium \
     PUPPETEER_SKIP_DOWNLOAD=1 \
     PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
@@ -49,9 +53,7 @@ ENV PATH=$CONDA_DIR/envs/gov/bin:$PATH
 RUN mamba install -y -n gov -c conda-forge openblas onnxruntime && conda clean -afy
 
 # 仅二进制轮子安装 ASR 组件（避免源码编译/ABI 风险）
-ENV PIP_NO_CACHE_DIR=1 \
-    PIP_DEFAULT_TIMEOUT=240 \
-    PIP_ONLY_BINARY=:all:
+ENV PIP_NO_CACHE_DIR=1 PIP_DEFAULT_TIMEOUT=240 PIP_ONLY_BINARY=:all:
 RUN python -V && pip -V
 RUN pip install --no-cache-dir --only-binary=:all: "numpy==1.26.4"
 RUN pip install --no-cache-dir --only-binary=:all: "ctranslate2==4.3.1" "tokenizers==0.15.1" "faster-whisper==1.0.3"
@@ -102,6 +104,9 @@ RUN set -eux; \
 
 # Piper 自检（不阻断构建）
 RUN bash -lc 'echo "你好，世界" | piper -m /opt/piper/models/zh-CN-huayan-medium.onnx -f /tmp/tts.wav || true'
+
+# 安装 clawhub（技能包管理器）
+RUN npm i -g clawhub && clawhub --help >/dev/null 2>&1 || true
 
 # 非交互/后台调用 openclaw 修复（oc 包装）
 RUN printf '%s\n' '#!/usr/bin/env bash' 'exec bash -lc "openclaw \"$@\""' > /usr/local/bin/oc && \
