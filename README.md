@@ -37,7 +37,7 @@ services:
     ports:
       - "18789:18789"              # OpenClaw 网关端口（官方默认）
     volumes:
-      - /mnt/user/appdata/openclaw:/root/.openclaw   # 官方工作区挂载
+      - /root/.openclaw:/root/.openclaw   # 官方工作区挂载
     healthcheck:
       test: ["CMD", "bash", "-lc", "openclaw --version || oc --version || node -v || python -V"]
       interval: 30s
@@ -58,7 +58,7 @@ docker run -d \
   --restart unless-stopped \
   -e TZ=Asia/Shanghai \
   -p 18789:18789 \
-  -v /mnt/user/appdata/openclaw:/root/.openclaw \
+  -v /root/.openclaw:/root/.openclaw \
   ghcr.io/deltrivx/openclaw:latest
 ```
 
