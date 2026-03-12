@@ -1,57 +1,32 @@
-# syntax=docker/dockerfile:1.6
-# Dockerfile（含中文声明）— 开箱即用增强版 OpenClaw（方案A：本机构建自动生成版本信息）
-# 组件：Chromium + ffmpeg + faster‑whisper（conda+mamba + pip 二进制轮子）+ Piper(OHF‑Voice/piper1‑gpl, Huayan via HuggingFace)
-# 一致性：保持官方默认端口 18789 与启动行为；修复容器内非交互 docker exec openclaw
-#
-# 使用声明（非商业）：
-# 本镜像仅供学习与研究，默认非商业使用。若用于商业或再分发，请分别遵循所有上游项目与模型的许可条款
-# （含但不限于：OpenClaw、Piper/piper1‑gpl 及其模型、faster‑whisper/CTranslate2/tokenizers 等）。
-# 本仓库作者不对因使用产生的合规/版权/内容风险承担责任。请务必在遵循相关许可证的前提下使用。
+# Dockerfile — 开箱即用增强版 OpenClaw（恢复官方版本展示行为；内置 Tesseract + chi_sim）
+# 组件：Chromium + ffmpeg + faster‑whisper（conda+mamba + pip 二进制轮子）+ Piper(OHF‑Voice/piper1‑gpl, Huayan via HuggingFace) + Tesseract OCR（中文简体）
+# 一致性：保持官方默认端口与启动行为；保留非交互 openclaw 调用修复（oc 包装）
+# 备注：已移除所有版本号元数据注入与 --version 套壳，恢复官方默认 (unknown) 行为
 
 FROM ghcr.io/openclaw/openclaw:latest
 
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
-      org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper (conda+mamba+binary wheels) + Piper (OHF-Voice/piper1-gpl, Huayan), non-interactive openclaw fixed" \
+      org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper + Piper (piper1-gpl, Huayan) + Tesseract (chi_sim); oc wrapper for non-interactive exec" \
       org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
       maintainer="DeltrivX"
 
 USER root
 
-# 运行时环境变量（浏览器路径/下载跳过/时区）
-ENV CHROME_PATH=/usr/bin/chromium \
-    PUPPETEER_SKIP_DOWNLOAD=1 \
-    PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
-    TZ=Asia/Shanghai
-
-# --- 构建元数据注入（由 CI 或本机构建自动生成） ---
-ARG GIT_COMMIT=unknown
-ARG BUILD_DATE=unknown
-ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
-    OPENCLAW_BUILD_DATE=${BUILD_DATE}
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.build-bust="${GIT_COMMIT}-${BUILD_DATE}"
-
-# 写入版本文件（后续若本机挂载 .git 会被自动刷新）
-RUN mkdir -p /usr/local/share && \
-    /bin/sh -lc 'printf "commit=%s\nbuilt=%s\n" "${OPENCLAW_COMMIT_SHA:-unknown}" "${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt'
-
-# 本机构建：挂载 .git 读取短 SHA 与构建时间（BuildKit，需要 # syntax 指令）
-RUN --mount=type=bind,source=.git,target=/src/.git \
-    /bin/sh -lc 'if [ -d /src/.git ]; then \
-      c=$(git -C /src rev-parse --short HEAD 2>/dev/null || echo unknown); \
-      d=$(date -u +%Y-%m-%dT%H:%M:%SZ); \
-      sed -i "s/^commit=.*/commit=$c/" /usr/local/share/openclaw-build.txt; \
-      sed -i "s/^built=.*/built=$d/" /usr/local/share/openclaw-build.txt; \
-    fi'
-
-# 基础系统依赖（Chromium/字体/ffmpeg/常用工具）
+# 基础系统依赖（Chromium/字体/ffmpeg/Tesseract 中文简体/常用工具）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     chromium chromium-common chromium-driver \
     fonts-wqy-zenhei fonts-wqy-microhei \
     ffmpeg \
+    tesseract-ocr tesseract-ocr-chi-sim \
     ca-certificates curl jq tini bash bzip2 \
  && rm -rf /var/lib/apt/lists/*
+
+# 环境变量（浏览器路径/下载跳过/时区）
+ENV CHROME_PATH=/usr/bin/chromium \
+    PUPPETEER_SKIP_DOWNLOAD=1 \
+    PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
+    TZ=Asia/Shanghai \
+    TESS_LANG=chi_sim+eng
 
 # 安装 Miniforge（conda-forge）+ mamba（稳定解算）
 ENV CONDA_DIR=/opt/conda
@@ -132,32 +107,6 @@ RUN bash -lc 'echo "你好，世界" | piper -m /opt/piper/models/zh-CN-huayan-m
 RUN printf '%s\n' '#!/usr/bin/env bash' 'exec bash -lc "openclaw \"$@\""' > /usr/local/bin/oc && \
     chmod +x /usr/local/bin/oc && \
     ln -sf /usr/local/bin/oc /usr/local/bin/openclaw-cli
-
-# openclaw --version 套壳：仅在 --version 时追加构建信息；其他命令透传
-RUN set -eux; \
-  ORIG_PATH="$(command -v openclaw || true)"; \
-  if [ -n "$ORIG_PATH" ]; then mv "$ORIG_PATH" /usr/local/bin/openclaw.orig; fi; \
-  cat > /usr/local/bin/openclaw <<'SH' && chmod +x /usr/local/bin/openclaw
-#!/usr/bin/env sh
-# wrapper: 修复 --version 展示；其他命令全部透传
-if [ "$#" -eq 1 ] && [ "$1" = "--version" ]; then
-  if command -v /usr/local/bin/openclaw.orig >/dev/null 2>&1; then
-    /usr/local/bin/openclaw.orig --version || true
-  else
-    oc --version 2>/dev/null || echo "OpenClaw (unknown)"
-  fi
-  if [ -f /usr/local/share/openclaw-build.txt ]; then
-    COMMIT=$(sed -n 's/^commit=//p' /usr/local/share/openclaw-build.txt)
-    BUILT=$(sed -n 's/^built=//p'  /usr/local/share/openclaw-build.txt)
-    echo "Build: ${COMMIT:-unknown} @ ${BUILT:-unknown}"
-  fi
-  exit 0
-fi
-if command -v /usr/local/bin/openclaw.orig >/dev/null 2>&1; then
-  exec /usr/local/bin/openclaw.orig "$@"
-fi
-exec oc "$@"
-SH
 
 # 健康检查：确保 CLI 可用
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
