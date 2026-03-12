@@ -14,7 +14,7 @@
 
 ---
 
-## 🚀 快速部署（Unraid / docker‑compose）
+## 🚀 快速部署（docker‑compose）
 将以下内容保存为仓库根的 `docker-compose.yml`：
 ```yaml
 version: "3.9"
@@ -29,7 +29,7 @@ services:
     ports:
       - "18789:18789"              # OpenClaw 网关端口（官方默认）
     volumes:
-      - /mnt/user/appdata/openclaw:/root/.openclaw   # 官方工作区挂载
+      - /root/.openclaw:/root/.openclaw   # 官方工作区挂载
     healthcheck:
       test: ["CMD", "bash", "-lc", "openclaw --version || oc --version || node -v || python -V"]
       interval: 30s
