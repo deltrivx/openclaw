@@ -1,7 +1,9 @@
 # Dockerfile
-# 目标：完整功能开箱即用（Chromium + ffmpeg + faster-whisper + Piper Huayan），保持官方默认端口/行为（18789）。
-# 方案：Miniforge + mamba（稳定二进制包），pip 仅二进制轮子安装 ASR 组件；Piper 二进制与模型多源回退，避免下载失败。
-# 同时修复容器内非交互 docker exec openclaw 失效问题。
+# 目标：完整功能开箱即用（Chromium + ffmpeg + faster-whisper + Piper Huayan），并保持官方默认端口/行为（18789）。
+# 稳定性策略：
+# - ASR：Miniforge + mamba（conda-forge 二进制）+ pip 仅二进制轮子，避免源码编译失败
+# - Piper：多源回退下载（二进制与模型），任一成功即用
+# - 修复：容器内非交互 docker exec openclaw 失效问题（oc 包装）；HEALTHCHECK 语法正确
 
 FROM ghcr.io/openclaw/openclaw:latest
 
@@ -12,7 +14,7 @@ maintainer="DeltrivX"
 
 USER root
 
-# 基础系统依赖（不改官方其他行为）
+# 基础系统依赖（不改变官方其他行为）
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 chromium chromium-common chromium-driver \
 fonts-wqy-zenhei fonts-wqy-microhei \
@@ -48,50 +50,72 @@ ENV PATH=$CONDA_DIR/envs/gov/bin:$PATH
 RUN mamba install -y -n gov -c conda-forge openblas onnxruntime && conda clean -afy
 
 # 使用 pip 仅二进制轮子安装 ASR 组件（避免源码编译/ABI 不兼容）
-ENV PIP_NO_CACHE_DIR=1
-ENV PIP_DEFAULT_TIMEOUT=240
-ENV PIP_ONLY_BINARY=:all:
+ENV PIP_NO_CACHE_DIR=1 \
+PIP_DEFAULT_TIMEOUT=240 \
+PIP_ONLY_BINARY=:all:
 RUN python -V && pip -V
 RUN pip install --no-cache-dir --only-binary=:all: "numpy==1.26.4"
 RUN pip install --no-cache-dir --only-binary=:all: "ctranslate2==4.3.1" "tokenizers==0.15.1" "faster-whisper==1.0.3"
 RUN python -c "import faster_whisper, ctranslate2, tokenizers; print('asr env ok')"
 
-# 安装 Piper 二进制（多源回退：jsDelivr -> GitHub -> ghproxy+GitHub）
+# Piper 二进制与模型（多源回退）
 ARG PIPER_VERSION=1.2.0
+
+# 安装 Piper 可执行文件（多源回退，任一成功即止）
 RUN set -eux; \
 arch="$(uname -m)"; \
 case "$arch" in \
-x86_64) piper_pkg="piper_linux_x86_64" ;; \
-aarch64) piper_pkg="piper_linux_aarch64" ;; \
-armv7l) piper_pkg="piper_linux_armv7l" ;; \
+x86_64) piper_pkg="piper_linux_x86_64.tar.gz" ;; \
+aarch64) piper_pkg="piper_linux_aarch64.tar.gz" ;; \
+armv7l) piper_pkg="piper_linux_armv7l.tar.gz" ;; \
 *) echo "Unsupported arch: $arch" && exit 1 ;; \
 esac; \
 mkdir -p /opt/piper/models && cd /opt/piper; \
-# 1) jsDelivr（GitHub 镜像 CDN）
-curl -fL --retry 3 --retry-delay 2 -o piper.tar.gz "https://cdn.jsdelivr.net/gh/rhasspy/piper@v${PIPER_VERSION}/${piper_pkg}.tar.gz" || \
-# 2) GitHub Releases
-curl -fL --retry 3 --retry-delay 2 -o piper.tar.gz "https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/${piper_pkg}.tar.gz" || \
-# 3) ghproxy + GitHub
-curl -fL --retry 3 --retry-delay 2 -o piper.tar.gz "https://ghproxy.com/https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/${piper_pkg}.tar.gz"; \
+urls=( \
+"https://cdn.jsdelivr.net/gh/rhasspy/piper@v${PIPER_VERSION}/${piper_pkg}" \
+"https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/${piper_pkg}" \
+"https://ghproxy.com/https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/${piper_pkg}" \
+); \
+ok=0; \
+for u in "${urls[@]}"; do \
+echo "[piper] trying $u"; \
+if curl -fL --retry 3 --retry-delay 2 -o piper.tar.gz "$u"; then ok=1; break; fi; \
+done; \
+[ "$ok" -eq 1 ] || { echo "[piper] all sources failed"; exit 22; }; \
 tar -xzf piper.tar.gz && rm piper.tar.gz; \
-install -m 0755 piper /usr/local/bin/piper
+# 兼容不同包结构：优先 ./piper，其次在解包目录内查找
+if [ -f ./piper ]; then \
+install -m 0755 ./piper /usr/local/bin/piper; \
+else \
+found_bin="$(find . -maxdepth 2 -type f -name 'piper' | head -n1)"; \
+[ -n "$found_bin" ] && install -m 0755 "$found_bin" /usr/local/bin/piper || { echo "[piper] binary not found in archive"; exit 22; }; \
+fi; \
+/usr/local/bin/piper --help >/dev/null 2>&1 || true
 
-# 下载 Huayan 模型（优先 HuggingFace 稳定直链，失败则回退 GitHub Releases）
+# 下载 Huayan 模型（多源回退）
 ENV PIPER_MODEL_DIR=/opt/piper/models
-RUN set -eux; mkdir -p "$PIPER_MODEL_DIR"
 RUN set -eux; \
-curl -fL --retry 3 --retry-delay 2 \
--o "$PIPER_MODEL_DIR/zh-CN-huayan-medium.onnx" \
-"https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh-CN-huayan-medium.onnx?download=true" || \
-curl -fL --retry 3 --retry-delay 2 \
--o "$PIPER_MODEL_DIR/zh-CN-huayan-medium.onnx" \
-"https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx"
-RUN set -eux; \
-curl -fL --retry 3 --retry-delay 2 \
--o "$PIPER_MODEL_DIR/zh-CN-huayan-medium.onnx.json" \"https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh-CN-huayan-medium.onnx.json?download=true" || \
-curl -fL --retry 3 --retry-delay 2 \
--o "$PIPER_MODEL_DIR/zh-CN-huayan-medium.onnx.json" \
-"https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx.json"
+mkdir -p "$PIPER_MODEL_DIR"; \
+m_ok=0; \
+for u in \
+"https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh-CN-huayan-medium.onnx?download=true" \
+"https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx" \"https://ghproxy.com/https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx" \
+; do \
+echo "[piper-model] trying $u"; \
+if curl -fL --retry 3 --retry-delay 2 -o "$PIPER_MODEL_DIR/zh-CN-huayan-medium.onnx" "$u"; then m_ok=1; break; fi; \
+done; \
+[ "$m_ok" -eq 1 ] || { echo "[piper-model] all sources failed (onnx)"; exit 22; }; \
+j_ok=0; \
+for u in \
+"https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh-CN-huayan-medium.onnx.json?download=true" \
+"https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx.json" \
+"https://ghproxy.com/https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/zh-CN-huayan-medium.onnx.json" \
+; do \
+echo "[piper-model] trying $u"; \
+if curl -fL --retry 3 --retry-delay 2 -o "$PIPER_MODEL_DIR/zh-CN-huayan-medium.onnx.json" "$u"; then j_ok=1; break; fi; \
+done; \
+[ "$j_ok" -eq 1 ] || { echo "[piper-model] all sources failed (json)"; exit 22; }; \
+echo "Piper + Huayan ready at $PIPER_MODEL_DIR"
 
 # Piper 自检（不阻断构建）
 RUN bash -lc 'echo "你好，世界" | piper -m /opt/piper/models/zh-CN-huayan-medium.onnx -f /tmp/tts.wav || true'
