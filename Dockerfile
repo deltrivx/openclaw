@@ -1,14 +1,11 @@
 # Dockerfile
-# 目标：完整功能开箱即用（Chromium + ffmpeg + faster-whisper + Piper Huayan），并保持官方默认端口/行为（18789）。
-# 稳定性策略：
-# - ASR：Miniforge + mamba（conda-forge 二进制）+ pip 仅二进制轮子，避免源码编译失败
-# - Piper：多源回退下载（二进制与模型），任一成功即用
-# - 修复：容器内非交互 docker exec openclaw 失效问题（oc 包装）；HEALTHCHECK 语法正确
+# 目标：完整开箱即用（Chromium + ffmpeg + faster-whisper + Piper），Piper 模型改为 HuggingFace 直链（Huayan medium）。
+# 保持官方默认端口/行为（18789），并修复容器内非交互 docker exec openclaw 失效问题（oc 包装）。
 
 FROM ghcr.io/openclaw/openclaw:latest
 
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
-org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + ffmpeg + faster-whisper (conda+mamba+binary wheels) + Piper (Huayan), non-interactive openclaw fixed" \
+org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + ffmpeg + faster-whisper (conda+mamba+binary wheels) + Piper (Huayan via HuggingFace), non-interactive openclaw fixed" \
 org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
 maintainer="DeltrivX"
 
@@ -58,10 +55,8 @@ RUN pip install --no-cache-dir --only-binary=:all: "numpy==1.26.4"
 RUN pip install --no-cache-dir --only-binary=:all: "ctranslate2==4.3.1" "tokenizers==0.15.1" "faster-whisper==1.0.3"
 RUN python -c "import faster_whisper, ctranslate2, tokenizers; print('asr env ok')"
 
-# Piper 二进制与模型（多源回退）
+# 安装 Piper 可执行文件（二进制，多源回退）
 ARG PIPER_VERSION=1.2.0
-
-# 安装 Piper 可执行文件（多源回退，任一成功即止）
 RUN set -eux; \
 arch="$(uname -m)"; \
 case "$arch" in \
@@ -83,7 +78,6 @@ if curl -fL --retry 3 --retry-delay 2 -o piper.tar.gz "$u"; then ok=1; break; fi
 done; \
 [ "$ok" -eq 1 ] || { echo "[piper] all sources failed"; exit 22; }; \
 tar -xzf piper.tar.gz && rm piper.tar.gz; \
-# 兼容不同包结构：优先 ./piper，其次在解包目录内查找
 if [ -f ./piper ]; then \
 install -m 0755 ./piper /usr/local/bin/piper; \
 else \
@@ -92,7 +86,7 @@ found_bin="$(find . -maxdepth 2 -type f -name 'piper' | head -n1)"; \
 fi; \
 /usr/local/bin/piper --help >/dev/null 2>&1 || true
 
-# 下载 Huayan 模型（多源回退）
+# 使用 HuggingFace 模型（Huayan medium）作为 Piper 声线（多源回退，HF 为首选）
 ENV PIPER_MODEL_DIR=/opt/piper/models
 RUN set -eux; \
 mkdir -p "$PIPER_MODEL_DIR"; \
@@ -115,7 +109,7 @@ echo "[piper-model] trying $u"; \
 if curl -fL --retry 3 --retry-delay 2 -o "$PIPER_MODEL_DIR/zh-CN-huayan-medium.onnx.json" "$u"; then j_ok=1; break; fi; \
 done; \
 [ "$j_ok" -eq 1 ] || { echo "[piper-model] all sources failed (json)"; exit 22; }; \
-echo "Piper + Huayan ready at $PIPER_MODEL_DIR"
+echo "Piper + Huayan (HuggingFace) ready at $PIPER_MODEL_DIR"
 
 # Piper 自检（不阻断构建）
 RUN bash -lc 'echo "你好，世界" | piper -m /opt/piper/models/zh-CN-huayan-medium.onnx -f /tmp/tts.wav || true'
