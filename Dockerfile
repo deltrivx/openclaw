@@ -19,10 +19,15 @@ org.opencontainers.image.created="${BUILD_DATE}" \
 org.opencontainers.image.build-bust="${GIT_COMMIT}-${BUILD_DATE}"
 
 # 可选：提供人工查看的版本文件与命令
-RUN printf '%s\n' "commit=${OPENCLAW_COMMIT_SHA}" "built=${OPENCLAW_BUILD_DATE}" > /usr/local/share/openclaw-build.txt && \
-printf '%s\n' '#!/usr/bin/env bash' \
-'echo "OpenClaw build: ${OPENCLAW_COMMIT_SHA:-unknown} @ ${OPENCLAW_BUILD_DATE:-unknown}"' \
-> /usr/local/bin/openclaw-version && chmod +x /usr/local/bin/openclaw-version
+# 版本文件
+RUN printf 'commit=%s\nbuilt=%s\n' "${OPENCLAW_COMMIT_SHA:-unknown}" "${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt
+
+# openclaw-version 辅助命令
+RUN cat > /usr/local/bin/openclaw-version <<'SH' && chmod +x /usr/local/bin/openclaw-version
+#!/usr/bin/env sh
+echo "OpenClaw build: ${OPENCLAW_COMMIT_SHA:-unknown} @ ${OPENCLAW_BUILD_DATE:-unknown}"
+SH
+
 
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
       org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper (conda+mamba+binary wheels) + Piper (OHF-Voice/piper1-gpl, Huayan), non-interactive openclaw fixed" \
