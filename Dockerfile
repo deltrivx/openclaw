@@ -1,23 +1,23 @@
-# 多阶段构建（最稳）：在独立 Python 构建环境先打 wheels，再拷入 OpenClaw 基镜像安装
-# 规避 buildx 下 pip 源码编译不稳定/网络抖动问题，提升成功率
+# Dockerfile
+# 多阶段构建（更稳）：先在独立 Python 环境打 wheels，再拷入 OpenClaw 基镜像安装
+# 同时内置 Chromium/ffmpeg/Piper（Huayan）/faster-whisper，修复非交互 openclaw 调用
 
 # ---- Stage 1: build Python wheels
 FROM python:3.11-slim AS wheels
-ENV PIP_NO_CACHE_DIR=1 \
-PIP_DEFAULT_TIMEOUT=180 \
-PIP_PREFER_BINARY=1 \
-UV_HTTP_TIMEOUT=180
+ENV PIP_NO_CACHE_DIR=1
+ENV PIP_DEFAULT_TIMEOUT=180
+ENV PIP_PREFER_BINARY=1
+ENV UV_HTTP_TIMEOUT=180
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 build-essential rustc cargo pkg-config cmake git \
 libopenblas-dev libomp-dev curl ca-certificates \
 && rm -rf /var/lib/apt/lists/*
 RUN python -V && pip -V
 RUN mkdir -p /wheels
-# 锁定更兼容的版本组合，优先 manylinux 轮子（失败才会源码编译）
+# 锁定更兼容的版本组合，优先 manylinux 轮子
 RUN pip wheel --no-cache-dir --wheel-dir /wheels "numpy<2"
 RUN pip wheel --no-cache-dir --wheel-dir /wheels "ctranslate2==4.2.1" "tokenizers==0.15.1"
 RUN pip wheel --no-cache-dir --wheel-dir /wheels "faster-whisper==1.0.3"
-# 可选：列出 wheels 以便诊断
 RUN ls -lh /wheels
 
 # ---- Stage 2: final image
@@ -39,16 +39,16 @@ python3 python3-pip python3-venv python3-dev \
 ca-certificates curl jq tini bash \
 && rm -rf /var/lib/apt/lists/*
 
-ENV CHROME_PATH=/usr/bin/chromium \
-PUPPETEER_SKIP_DOWNLOAD=1 \
-PLAYWRIGHT_BROWSERS_PATH=/usr/bin \
-PIP_NO_CACHE_DIR=1 \
-PIP_DEFAULT_TIMEOUT=180 \
-PIP_PREFER_BINARY=1 \
-UV_HTTP_TIMEOUT=180 \
-TZ=Asia/Shanghai
+ENV CHROME_PATH=/usr/bin/chromium
+ENV PUPPETEER_SKIP_DOWNLOAD=1
+ENV PLAYWRIGHT_BROWSERS_PATH=/usr/bin
+ENV PIP_NO_CACHE_DIR=1
+ENV PIP_DEFAULT_TIMEOUT=180
+ENV PIP_PREFER_BINARY=1
+ENV UV_HTTP_TIMEOUT=180
+ENV TZ=Asia/Shanghai
 
-# 拷入预构建 wheels 并离线安装（避免在基镜像内再拉网/编译）
+# 离线安装 wheels（避免在基镜像内再拉网/编译）
 COPY --from=wheels /wheels /wheels
 RUN python3 -V && pip3 -V && pip3 install --no-cache-dir /wheels/*
 
@@ -97,10 +97,9 @@ RUN printf '%s\n' \
 # oc/openclaw-cli 包装：保证非交互/后台可直接 openclaw
 RUN printf '%s\n' '#!/usr/bin/env bash' 'exec bash -lc "openclaw \"$@\""' > /usr/local/bin/oc && \
 chmod +x /usr/local/bin/oc && \
-ln -sf /usr/local/bin/oc /usr/local/bin/openclaw-cli
-
-# 运行时开关ENV OPENCLAW_AUTO_UPDATE=true \
-OPENCLAW_UPDATE_CHANNEL=stable
+ln -sf /usr/local/bin/oc /usr/local/bin/openclaw-cli# 运行时开关（分行写，避免旧版 Docker 解析问题）
+ENV OPENCLAW_AUTO_UPDATE=true
+ENV OPENCLAW_UPDATE_CHANNEL=stable
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
