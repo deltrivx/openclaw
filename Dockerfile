@@ -1,12 +1,12 @@
 # Dockerfile
 # 目标：除新增功能外保持与官方一致（默认网关端口 18789、不改官方启动/行为）
-# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（conda env + pip 仅二进制），修复非交互 openclaw 调用
-# 修复：将 conda 复杂求解拆分为多步，并改用 mamba 提升成功率；Python 降为 3.10（wheel 覆盖面更广）
+# 新增：Chromium、ffmpeg、Piper（Huayan 中文女声）、faster-whisper（conda 环境 + pip 仅二进制轮子），修复非交互 openclaw 调用
+# 修复：避免 conda 安装 ctranslate2 版本缺失；改为 pip 仅二进制安装，并用 execstack -c 清除 .so 可执行栈标志
 
 FROM ghcr.io/openclaw/openclaw:latest
 
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
-org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + Piper (Huayan) + faster-whisper (conda env + binary wheels) + ffmpeg; non-interactive openclaw fixed" \
+org.opencontainers.image.description="OpenClaw (official defaults) + Chromium + Piper (Huayan) + faster-whisper (conda env + pip wheels) + ffmpeg; non-interactive openclaw fixed" \
 org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
 maintainer="DeltrivX"
 
@@ -42,22 +42,28 @@ conda config --system --add channels conda-forge; \
 conda config --system --set channel_priority strict; \
 conda install -y -n base -c conda-forge mamba && conda clean -afy
 
-# 分步创建环境（降低冲突概率）
-# 1) 仅创建空环境（Python 3.10 兼容性更广）
+# 分步创建环境（Python 3.10 轮子覆盖更广）
 RUN mamba create -y -n gov python=3.10 && conda clean -afy
-
-# 2) 在环境内逐步安装依赖：openblas/onnxruntime/ctranslate2
-RUN mamba install -y -n gov -c conda-forge openblas onnxruntime && conda clean -afy
-RUN mamba install -y -n gov -c conda-forge ctranslate2=4.2.1 && conda clean -afy
-
-# 3) 在环境内用 pip 安装仅二进制的 faster-whisper 与 tokenizers
 ENV PATH=$CONDA_DIR/envs/gov/bin:$PATH
+
+# 先用 conda 安装底层运行库（纯二进制）
+RUN mamba install -y -n gov -c conda-forge openblas onnxruntime && conda clean -afy
+
+# 再用 pip 仅二进制安装 ASR 组件（避免源码编译/缺 wheel）
 ENV PIP_NO_CACHE_DIR=1
 ENV PIP_DEFAULT_TIMEOUT=240
 ENV PIP_ONLY_BINARY=:all:
 RUN python -V && pip -V && \
-pip install --no-cache-dir --only-binary=:all: "tokenizers==0.15.1" "faster-whisper==1.0.3" && \
-python -c "import faster_whisper, ctranslate2, tokenizers; print('asr env ok')"
+pip install --no-cache-dir --only-binary=:all: "numpy==1.26.4" && \
+pip install --no-cache-dir --only-binary=:all: "ctranslate2==4.3.1" "tokenizers==0.15.1" "faster-whisper==1.0.3"
+
+# 清除可能的可执行栈标志，避免运行时报错（需要 execstack）
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends execstack && rm -rf /var/lib/apt/lists/* && \
+find "$CONDA_DIR/envs/gov" -type f -name "libctranslate2*.so*" -exec execstack -c {} + || true && \
+find "$CONDA_DIR/envs/gov" -type f -name "libonnxruntime*.so*" -exec execstack -c {} + || true
+
+# 快速校验（不影响构建）
+RUN python -c "import faster_whisper, ctranslate2, tokenizers; print('asr env ok')"
 
 # 安装 Piper 与中文女声 Huayan 模型（离线 TTS；仅新增功能）
 ARG PIPER_VERSION=1.2.0
@@ -84,9 +90,3 @@ ln -sf /usr/local/bin/oc /usr/local/bin/openclaw-cli
 
 # 健康检查（与官方一致性：仅检查 CLI 可用）
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
-CMD openclaw --version || oc --version || node -v || python -V || exit 1
-
-# 官方默认网关端口：18789（保持一致）
-EXPOSE 18789
-
-# ENTRYPOINT/CMD：保持与官方一致（不覆盖官方默认启动）
