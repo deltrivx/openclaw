@@ -16,10 +16,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-
-    env:
-      IMAGE: ghcr.io/${{ github.repository_owner }}/openclaw
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,22 +26,12 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to GHCR
+      - name: Login to GHCR (PAT)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value={{date 'YYYYMMDD-HHmm'}}
-            type=sha,format=short
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -55,8 +41,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           pull: true
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            GIT_COMMIT=${{ github.sha }}
-            BUILD_DATE=${{ steps.meta.outputs.created }}
+          tags: ghcr.io/${{ github.repository_owner }}/openclaw:latest
