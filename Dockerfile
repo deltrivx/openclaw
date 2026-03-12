@@ -38,10 +38,7 @@ ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
       org.opencontainers.image.created="${BUILD_DATE}"
 RUN mkdir -p /usr/local/share && \
-    /bin/sh -c 'cat > /usr/local/share/openclaw-build.txt <<EOF
-commit=${OPENCLAW_COMMIT_SHA:-unknown}
-built=${OPENCLAW_BUILD_DATE:-unknown}
-EOF'
+    /bin/sh -lc 'printf "commit=%s\nbuilt=%s\n" "${OPENCLAW_COMMIT_SHA:-unknown}" "${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt'
 
 # 安装 Miniforge（conda-forge）+ mamba（稳定解算）
 ENV CONDA_DIR=/opt/conda
