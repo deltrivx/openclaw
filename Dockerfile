@@ -9,26 +9,6 @@
 
 FROM ghcr.io/openclaw/openclaw:latest
 
-# 自动版本元数据（由 CI 注入；本地无则回落 unknown）
-ARG GIT_COMMIT=unknown
-ARG BUILD_DATE=unknown
-ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
-OPENCLAW_BUILD_DATE=${BUILD_DATE}
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-org.opencontainers.image.created="${BUILD_DATE}" \
-org.opencontainers.image.build-bust="${GIT_COMMIT}-${BUILD_DATE}"
-
-# 可选：提供人工查看的版本文件与命令
-# 版本文件
-RUN printf 'commit=%s\nbuilt=%s\n' "${OPENCLAW_COMMIT_SHA:-unknown}" "${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt
-
-# openclaw-version 辅助命令
-RUN cat > /usr/local/bin/openclaw-version <<'SH' && chmod +x /usr/local/bin/openclaw-version
-#!/usr/bin/env sh
-echo "OpenClaw build: ${OPENCLAW_COMMIT_SHA:-unknown} @ ${OPENCLAW_BUILD_DATE:-unknown}"
-SH
-
-
 LABEL org.opencontainers.image.title="deltrivx/openclaw" \
       org.opencontainers.image.description="OpenClaw + Chromium + ffmpeg + faster-whisper (conda+mamba+binary wheels) + Piper (OHF-Voice/piper1-gpl, Huayan), non-interactive openclaw fixed" \
       org.opencontainers.image.source="https://github.com/deltrivx/openclaw" \
@@ -57,7 +37,11 @@ ENV OPENCLAW_COMMIT_SHA=${GIT_COMMIT} \
     OPENCLAW_BUILD_DATE=${BUILD_DATE}
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
       org.opencontainers.image.created="${BUILD_DATE}"
-RUN printf '%s\n' "commit=${OPENCLAW_COMMIT_SHA:-unknown}" "built=${OPENCLAW_BUILD_DATE:-unknown}" > /usr/local/share/openclaw-build.txt
+RUN mkdir -p /usr/local/share && \
+    /bin/sh -c 'cat > /usr/local/share/openclaw-build.txt <<EOF
+commit=${OPENCLAW_COMMIT_SHA:-unknown}
+built=${OPENCLAW_BUILD_DATE:-unknown}
+EOF'
 
 # 安装 Miniforge（conda-forge）+ mamba（稳定解算）
 ENV CONDA_DIR=/opt/conda
