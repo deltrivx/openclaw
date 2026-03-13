@@ -19,7 +19,6 @@
 - Playwright Chromium：已内置，浏览器目录：`/ms-playwright`
 - 兼容其它程序调用：提供稳定路径（软链到 Playwright Chromium）：
   - `/usr/bin/chromium`
-  - `/usr/bin/google-chrome`
 - 中文环境：镜像默认设置 `LANG/LC_ALL=zh_CN.UTF-8`，并安装 `fonts-noto-cjk`；
   Playwright 侧如需更强一致性，建议启动时附加：`--lang=zh-CN`、`--accept-lang=zh-CN,zh`。
 

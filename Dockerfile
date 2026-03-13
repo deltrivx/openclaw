@@ -57,8 +57,7 @@ RUN npm i -g playwright@1.58.2 \
  && node -p "require('playwright/package.json').version" \
  && CHROME_BIN="$(find /ms-playwright -type f \( -path '*/chrome-linux*/chrome' -o -path '*/chrome-linux*/chrome-wrapper' -o -path '*/chrome-linux64/chrome' \) 2>/dev/null | head -n 1)" \
  && test -n "$CHROME_BIN" \
- && ln -sf "$CHROME_BIN" /usr/bin/chromium \
- && ln -sf "$CHROME_BIN" /usr/bin/google-chrome
+ && ln -sf "$CHROME_BIN" /usr/bin/chromium
 
 # ---- Python packages ----
 # Install into system python3 (user confirmed using --break-system-packages).
