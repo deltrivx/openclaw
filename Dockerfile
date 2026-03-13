@@ -16,16 +16,20 @@ ENV DEBIAN_FRONTEND=noninteractive \
     NPM_CONFIG_AUDIT=false
 
 # -------- System deps + gh (APT) + Chromium/OCR/PDF/Node --------
-# 只缓存 /var/cache/apt，避免 /var/lib/apt 锁冲突
+# 只缓存 /var/cache/apt（不要缓存 /var/lib/apt，避免锁冲突）
 RUN --mount=type=cache,target=/var/cache/apt \
     set -eux; \
-    # 清理潜在锁并重试 apt 操作
+    # 清理潜在锁 & 修复未完成的 dpkg 配置
     rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock-frontend || true; \
     dpkg --configure -a || true; \
+    # apt-get update（带重试与锁清理）
     for i in 1 2 3; do \
-      apt-get update && break || (sleep 2; \
+      apt-get update && break || ( \
+        echo "[warn] apt-get update failed, retry #$i" >&2; \
+        sleep 2; \
         rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock-frontend || true; \
-        dpkg --configure -a || true); \
+        dpkg --configure -a || true \
+      ); \
     done; \
     apt-get install -y --no-install-recommends \
       ca-certificates curl gnupg git openssh-client bash \
@@ -40,9 +44,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
       > /etc/apt/sources.list.d/github-cli.list; \
     for i in 1 2 3; do \
-      apt-get update && break || (sleep 2; \
+      apt-get update && break || ( \
+        echo "[warn] apt-get update (gh repo) failed, retry #$i" >&2; \
+        sleep 2; \
         rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock-frontend || true; \
-        dpkg --configure -a || true); \
+        dpkg --configure -a || true \
+      ); \
     done; \
     apt-get install -y --no-install-recommends gh; \
     apt-get clean; \
@@ -73,4 +80,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
 
 # -------- Defaults --------
 WORKDIR /app
+# 前台网关（容器友好）；如有配置文件：-e OPENCLAW_CONFIG=/root/.openclaw/config.yaml
 CMD ["bash","-lc","OPENCLAW_LOG_LEVEL=${OPENCLAW_LOG_LEVEL} openclaw gateway"]
