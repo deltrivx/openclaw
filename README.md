@@ -18,6 +18,8 @@
   - 已内置 Playwright Chromium（`/ms-playwright`），`chromium.launch()` 可直接用
 - ffmpeg（音视频处理）
 - faster‑whisper（Python 包，尽量使用二进制 wheel 安装）
+- Python Playwright（安装在系统 python3，可直接 `python3 -c "import playwright"`）
+- PyYAML（`pyyaml`，用于 Python 脚本解析 YAML）
 - Piper TTS（内置二进制）
   - 中文女声：Huayan medium
 - Tesseract OCR（含简体中文 `chi_sim`）
@@ -88,6 +90,27 @@ const { chromium } = require('playwright');
   await b.close();
 })();
 NODE
+```
+
+### Playwright（Python）
+
+```bash
+python3 -c "import importlib.metadata as m; print(m.version('playwright'))"
+python3 - <<'PY'
+from playwright.sync_api import sync_playwright
+with sync_playwright() as p:
+    b = p.chromium.launch(headless=True)
+    page = b.new_page()
+    page.goto('https://example.com', wait_until='domcontentloaded')
+    print(page.title())
+    b.close()
+PY
+```
+
+### PyYAML
+
+```bash
+python3 -c "import yaml; print('pyyaml ok')"
 ```
 
 ### OCR / PDF
