@@ -77,10 +77,10 @@ RUN python3 -m venv /opt/whisper-venv \
  && /opt/whisper-venv/bin/pip install --no-cache-dir --upgrade pip \
  && /opt/whisper-venv/bin/pip install --no-cache-dir --only-binary=:all: faster-whisper ctranslate2
 
-# Python Playwright (match Node Playwright major; reuse bundled browsers)
+# Python Playwright (PyPI versioning differs from Node; reuse bundled browsers)
 RUN python3 -m venv /opt/py-venv \
  && /opt/py-venv/bin/pip install --no-cache-dir --upgrade pip \
- && /opt/py-venv/bin/pip install --no-cache-dir playwright==1.58.2 \
+ && /opt/py-venv/bin/pip install --no-cache-dir "playwright>=1.50,<2" \
  && /opt/py-venv/bin/python -c "import playwright; print('python-playwright ok')"
 
 # Default PATH includes both venvs (python-playwright + faster-whisper)
