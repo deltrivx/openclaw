@@ -3,7 +3,7 @@
 ############################
 # Builder: build OpenClaw from upstream source (for source-level 汉化 patching)
 ############################
-FROM node:20-bookworm AS builder
+FROM node:22-bookworm AS builder
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG OPENCLAW_REF=main
@@ -22,6 +22,8 @@ RUN git clone --depth 1 --branch ${OPENCLAW_REF} https://github.com/openclaw/ope
 # For now, we prove the build pipeline works.
 
 RUN pnpm install --frozen-lockfile
+# Required for build:docker (generates A2UI bundle assets)
+RUN pnpm canvas:a2ui:bundle
 RUN pnpm build:docker
 
 ############################
@@ -47,8 +49,8 @@ RUN apt-get update \
 ENV LANG=zh_CN.UTF-8
 ENV LC_ALL=zh_CN.UTF-8
 
-# Node 20 (runtime)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+# Node 22 (runtime)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
  && apt-get update \
  && apt-get install -y --no-install-recommends nodejs \
  && rm -rf /var/lib/apt/lists/*
