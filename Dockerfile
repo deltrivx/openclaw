@@ -2,10 +2,8 @@
 
 # OpenClaw enhanced base — fast rebuilds
 # - gh CLI + Chromium/ffmpeg + Tesseract/OCRmyPDF/Poppler + Node.js
-# - Playwright (interactive) preinstalled (Chromium engine cached)
-# - OpenClaw CLI preinstalled
-# - Foreground gateway by default (container-friendly; no systemd)
-# - BuildKit cache mounts for apt/npm to speed up rebuilds
+# - Playwright (interactive) + OpenClaw CLI (preinstalled)
+# - Foreground gateway; BuildKit cache mounts for faster builds
 
 FROM debian:bookworm-slim
 
@@ -17,12 +15,18 @@ ENV DEBIAN_FRONTEND=noninteractive \
     NPM_CONFIG_FUND=false \
     NPM_CONFIG_AUDIT=false
 
-# --- System deps + gh (official APT) + Chromium/OCR/PDF/Node ---
-# Use BuildKit cache for apt to speed up subsequent builds
+# -------- System deps + gh (APT) + Chromium/OCR/PDF/Node --------
+# 只缓存 /var/cache/apt，避免 /var/lib/apt 锁冲突
 RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=cache,target=/var/lib/apt \
     set -eux; \
-    apt-get update; \
+    # 清理潜在锁并重试 apt 操作
+    rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock-frontend || true; \
+    dpkg --configure -a || true; \
+    for i in 1 2 3; do \
+      apt-get update && break || (sleep 2; \
+        rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock-frontend || true; \
+        dpkg --configure -a || true); \
+    done; \
     apt-get install -y --no-install-recommends \
       ca-certificates curl gnupg git openssh-client bash \
       chromium chromium-common chromium-driver ffmpeg \
@@ -35,36 +39,38 @@ RUN --mount=type=cache,target=/var/cache/apt \
     chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg; \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
       > /etc/apt/sources.list.d/github-cli.list; \
-    apt-get update; \
+    for i in 1 2 3; do \
+      apt-get update && break || (sleep 2; \
+        rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock-frontend || true; \
+        dpkg --configure -a || true); \
+    done; \
     apt-get install -y --no-install-recommends gh; \
+    apt-get clean; \
     rm -rf /var/lib/apt/lists/*
 
-# Avoid npm trying to fetch GitHub repos via ssh:// or git@ form (use HTTPS)
+# 避免 npm 依赖走 ssh:// 或 git@ 形式
 RUN git config --global url."https://github.com/".insteadOf "git@github.com:" \
  && git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" \
  && git config --global advice.detachedHead false
 
-# --- Preinstall Playwright + OpenClaw CLI ---
-# Use cached npm dir to speed up rebuilds
+# -------- Preinstall Playwright + OpenClaw CLI --------
 RUN --mount=type=cache,target=/root/.npm \
     set -eux; \
     npm i -g playwright openclaw@${OPENCLAW_VERSION}; \
-    # Install Chromium engine and deps once (cached at PLAYWRIGHT_BROWSERS_PATH)
     npx --yes playwright install --with-deps chromium; \
     npx --yes playwright install-deps chromium || true
 
-# --- Basic verifications (non-fatal) ---
+# -------- Basic verifications (non-fatal) --------
 RUN gh --version || true \
  && chromium --version || true \
  && node -e "try{require('playwright');console.log('playwright ok')}catch(e){console.log('no playwright')}" \
  && openclaw --version || true
 
-# --- Gateway port + healthcheck ---
+# -------- Gateway port + healthcheck --------
 EXPOSE 18789
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
   CMD curl -fsS http://127.0.0.1:18789/ >/dev/null || exit 1
 
-# --- Defaults ---
+# -------- Defaults --------
 WORKDIR /app
-# Foreground gateway; supply config with -e OPENCLAW_CONFIG=/root/.openclaw/config.yaml or use --allow-unconfigured
-CMD ["bash", "-lc", "OPENCLAW_LOG_LEVEL=${OPENCLAW_LOG_LEVEL} openclaw gateway"]
+CMD ["bash","-lc","OPENCLAW_LOG_LEVEL=${OPENCLAW_LOG_LEVEL} openclaw gateway"]
