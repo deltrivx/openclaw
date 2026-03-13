@@ -19,7 +19,6 @@ RUN mkdir -p /var/lib/apt/lists/partial /var/cache/apt/archives/partial \
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     ca-certificates curl wget git unzip xz-utils \
-    chromium \
     ffmpeg \
     tesseract-ocr tesseract-ocr-chi-sim \
     ocrmypdf \
