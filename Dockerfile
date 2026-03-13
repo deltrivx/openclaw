@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
-# Base requirement: upstream comes from openclaw/openclaw:latest
-FROM openclaw/openclaw:latest
+# Base requirement: upstream comes from OpenClaw official image.
+# Note: OpenClaw images are hosted on GitHub Container Registry (GHCR).
+FROM ghcr.io/openclaw/openclaw:latest
 
 ARG DEBIAN_FRONTEND=noninteractive
 
