@@ -28,12 +28,42 @@
 
 ---
 
-## 🚀 快速开始
+## 🚀 快速开始（Unraid / docker‑compose）
+保存为 `docker-compose.yml`：
+```yaml
+version: "3.9"
 
-### 1) 拉取镜像
-
+services:
+  openclaw:
+    image: ghcr.io/deltrivx/openclaw:latest
+    container_name: openclaw
+    restart: unless-stopped
+    environment:
+      TZ: "Asia/Shanghai"
+      # 可选：ClawHub 自动登录（明文，建议后续改用 secrets）
+      # CLAWHUB_TOKEN: "<你的_clawhub_token>"
+    volumes:
+      - /mnt/user/appdata/openclaw:/root/.openclaw
+      - /mnt/user/appdata/openclaw/.clawhub:/root/.clawhub
+    # 以环境变量自动写入 token（启用 CLAWHUB_TOKEN 后解注释）
+    # command: >
+    #   bash -lc '
+    #   mkdir -p ~/.clawhub &&
+    #   printf "%s" "$CLAWHUB_TOKEN" > ~/.clawhub/token && chmod 600 ~/.clawhub/token &&
+    #   exec openclaw gateway start
+    #   '
+    ports:
+      - "18789:18789"  # OpenClaw 网关端口（官方默认）
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "openclaw --version || oc --version || node -v || python -V"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+```
+启动：
 ```bash
-docker pull deltrivx/openclaw:latest
+docker compose up -d
 ```
 
 ### 2) 运行（示例）
