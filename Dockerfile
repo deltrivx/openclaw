@@ -40,9 +40,12 @@ RUN if ! node -v 2>/dev/null | grep -q '^v20\.'; then \
     fi
 
 # --- Playwright ---
-# Install Playwright globally (so `require('playwright')` works).
+# Install Playwright globally.
+# Note: Node does NOT automatically include global npm modules in `require()` resolution.
+# We set NODE_PATH so `require('playwright')` works everywhere.
 # We rely on system Chromium, so skip Playwright browser downloads.
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV NODE_PATH=/usr/local/lib/node_modules
 RUN npm i -g playwright@1.58.2 \
  && node -p "require('playwright/package.json').version"
 
