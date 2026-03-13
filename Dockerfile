@@ -79,6 +79,10 @@ RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip 
 RUN python3 -m pip install --no-cache-dir --break-system-packages "playwright>=1.50,<2" \
  && python3 -c "import playwright; print('system-python-playwright ok')"
 
+# PyYAML (for parsing YAML in Python scripts)
+RUN python3 -m pip install --no-cache-dir --break-system-packages pyyaml \
+ && python3 -c "import yaml; print('pyyaml ok')"
+
 # Ensure Python Playwright uses the same browser cache we bundle for Node.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
