@@ -31,9 +31,8 @@
 - Poppler（`pdftotext` 等）
 
 ### 5) 语音/转写
-- Piper（二进制）+ 中文女声 Huayan medium（本地可合成）
 - edge-tts（Python 包）
-- faster‑whisper + ctranslate2（Python 包，优先二进制 wheel）
+- faster‑whisper + ctranslate2（Python 包，优先二进制 wheel 安装）
 
 ### 6) 工具链
 - ClawHub CLI
@@ -74,14 +73,6 @@ with sync_playwright() as p:
     print(page.title())
     b.close()
 PY
-```
-
-### Piper（本地语音合成）
-```bash
-echo "你好，我是本地语音合成测试。" \
-| /opt/piper/piper --model /opt/piper/voices/zh/zh_CN-huayan-medium.onnx --output_file /tmp/piper-test.wav
-ls -lh /tmp/piper-test.wav
-file /tmp/piper-test.wav
 ```
 
 ---

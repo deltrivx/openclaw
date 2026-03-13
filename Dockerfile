@@ -72,25 +72,6 @@ RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip 
  && python3 -c "import edge_tts; print('edge-tts ok')" \
  && python3 -c "import playwright; print('python-playwright ok')"
 
-# ---- Piper TTS + Huayan (medium) ----
-ARG PIPER_VERSION=1.2.0
-RUN mkdir -p /opt/piper \
- && cd /opt/piper \
- && curl -fL -o piper.tar.gz https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64.tar.gz \
- && tar -xzf piper.tar.gz --strip-components=1 \
- && rm -f piper.tar.gz
-
-RUN mkdir -p /opt/piper/voices/zh \
- && cd /opt/piper/voices/zh \
- && (curl -fL -o zh_CN-huayan-medium.onnx https://github.com/rhasspy/piper-voices/releases/latest/download/zh_CN-huayan-medium.onnx \
-   && curl -fL -o zh_CN-huayan-medium.onnx.json https://github.com/rhasspy/piper-voices/releases/latest/download/zh_CN-huayan-medium.onnx.json) \
-  || (echo "rhasspy/piper-voices latest asset not found; falling back to HuggingFace"; \
-      curl -fL -o zh_CN-huayan-medium.onnx https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx \
-      && curl -fL -o zh_CN-huayan-medium.onnx.json https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx.json)
-
-ENV PIPER_BIN=/opt/piper/piper
-ENV PIPER_VOICE_ZH_HUAYAN_MEDIUM=/opt/piper/voices/zh/zh_CN-huayan-medium.onnx
-
 # ---- Skills directory convention ----
 # You requested skills default to /root/.agents/skills.
 # We create it and symlink the workspace skills dir to it for compatibility.
