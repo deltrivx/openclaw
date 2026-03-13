@@ -108,8 +108,8 @@ cd /root/.openclaw/workspace
 npm init -y >/dev/null 2>&1 || true
 npm i --no-save playwright minimist
 npx --yes playwright install --with-deps chromium
----
 ```
+---
 ## 🧩 组件版本与自检
 ```bash
 # 浏览器
@@ -123,9 +123,7 @@ clawhub --help | head -n 1
 # GitHub CLI（作者：GitHub, Inc.）
 gh --version && gh auth status || true
 ```
-
 ---
-
 ## 🔧 设计与取舍
 - 采用 conda+mamba + pip 二进制轮子，避免在 CI/buildx 下的源码编译不确定性
 - Piper 走 manylinux wheel（OHF‑Voice/piper1‑gpl），Huayan 模型通过 HuggingFace 多源回退下载
