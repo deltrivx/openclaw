@@ -82,12 +82,17 @@ RUN mkdir -p /opt/piper \
  && tar -xzf piper.tar.gz --strip-components=1 \
  && rm -f piper.tar.gz
 
-# Huayan medium voice (Chinese female). Source: rhasspy/piper-voices
-# If URL changes, update here.
-RUN mkdir -p /opt/piper/voices/zh \
- && cd /opt/piper/voices/zh \
- && curl -fL -o zh_CN-huayan-medium.onnx https://github.com/rhasspy/piper-voices/releases/latest/download/zh_CN-huayan-medium.onnx \
- && curl -fL -o zh_CN-huayan-medium.onnx.json https://github.com/rhasspy/piper-voices/releases/latest/download/zh_CN-huayan-medium.onnx.json
+# Huayan medium voice (Chinese female).
+# Primary source: rhasspy/piper-voices (may not always publish this asset as a "latest" release)
+# Fallback source: Hugging Face mirror repo.
+RUN set -e; \
+  mkdir -p /opt/piper/voices/zh; \
+  cd /opt/piper/voices/zh; \
+  (curl -fL -o zh_CN-huayan-medium.onnx https://github.com/rhasspy/piper-voices/releases/latest/download/zh_CN-huayan-medium.onnx \
+   && curl -fL -o zh_CN-huayan-medium.onnx.json https://github.com/rhasspy/piper-voices/releases/latest/download/zh_CN-huayan-medium.onnx.json) \
+  || (echo "rhasspy/piper-voices latest asset not found; falling back to HuggingFace"; \
+      curl -fL -o zh_CN-huayan-medium.onnx https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx \
+      && curl -fL -o zh_CN-huayan-medium.onnx.json https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx.json)
 
 ENV PIPER_BIN=/opt/piper/piper
 ENV PIPER_VOICE_ZH_HUAYAN_MEDIUM=/opt/piper/voices/zh/zh_CN-huayan-medium.onnx
