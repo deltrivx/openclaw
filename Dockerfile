@@ -66,25 +66,20 @@ RUN type -p gh >/dev/null 2>&1 || ( \
 # Officially installed via npm.
 RUN npm i -g clawhub@latest
 
-# --- Python venvs ---
-# Use dedicated venvs to avoid Debian/Ubuntu PEP-668 "externally managed" pip restrictions.
+# --- Python ---
+# Install Python and pip.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends python3 python3-venv python3-pip \
+ && apt-get install -y --no-install-recommends python3 python3-pip \
  && rm -rf /var/lib/apt/lists/*
 
 # faster-whisper (binary wheels only)
-RUN python3 -m venv /opt/whisper-venv \
- && /opt/whisper-venv/bin/pip install --no-cache-dir --upgrade pip \
- && /opt/whisper-venv/bin/pip install --no-cache-dir --only-binary=:all: faster-whisper ctranslate2
+RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip \
+ && python3 -m pip install --no-cache-dir --break-system-packages --only-binary=:all: faster-whisper ctranslate2
 
-# Python Playwright (PyPI versioning differs from Node; reuse bundled browsers)
-RUN python3 -m venv /opt/py-venv \
- && /opt/py-venv/bin/pip install --no-cache-dir --upgrade pip \
- && /opt/py-venv/bin/pip install --no-cache-dir "playwright>=1.50,<2" \
- && /opt/py-venv/bin/python -c "import playwright; print('python-playwright ok')"
+# Python Playwright (installed into system python; PyPI versioning differs from Node)
+RUN python3 -m pip install --no-cache-dir --break-system-packages "playwright>=1.50,<2" \
+ && python3 -c "import playwright; print('system-python-playwright ok')"
 
-# Default PATH includes both venvs (python-playwright + faster-whisper)
-ENV PATH="/opt/py-venv/bin:/opt/whisper-venv/bin:${PATH}"
 # Ensure Python Playwright uses the same browser cache we bundle for Node.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
