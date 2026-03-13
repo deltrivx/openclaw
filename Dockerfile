@@ -48,7 +48,12 @@ ENV NODE_PATH=/usr/local/lib/node_modules
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN npm i -g playwright@1.58.2 \
  && npx playwright install chromium \
- && node -p "require('playwright/package.json').version"
+ && node -p "require('playwright/package.json').version" \
+ # Provide a stable browser executable path under /usr/bin for other tools/scripts.
+ && CHROME_BIN="$(ls -1 /ms-playwright/chromium-*/chrome-linux/chrome 2>/dev/null | head -n 1)" \
+ && test -n "$CHROME_BIN" \
+ && ln -sf "$CHROME_BIN" /usr/bin/chromium \
+ && ln -sf "$CHROME_BIN" /usr/bin/google-chrome
 
 # --- GitHub CLI (gh) ---
 RUN type -p gh >/dev/null 2>&1 || ( \

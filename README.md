@@ -16,6 +16,7 @@
 - Playwright（Node 版）
   - 全局可 `require('playwright')`
   - 已内置 Playwright Chromium（`/ms-playwright`），`chromium.launch()` 可直接用
+  - 额外提供稳定可执行路径：`/usr/bin/chromium` 与 `/usr/bin/google-chrome`（软链到 Playwright Chromium）
 - ffmpeg（音视频处理）
 - faster‑whisper（Python 包，尽量使用二进制 wheel 安装）
 - Python Playwright（安装在系统 python3，可直接 `python3 -c "import playwright"`）
