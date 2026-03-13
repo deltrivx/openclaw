@@ -45,10 +45,10 @@ RUN git config --global url."https://github.com/".insteadOf "git@github.com:" \
  && npm config set prefer-online true \
  && npm config set fund false \
  && npm config set audit false
-# 可选设置国内镜像（如需）：
+# 可选国内镜像（如需）：
 # RUN npm config set registry https://registry.npmmirror.com
 
-# -------- 预装 Playwright + OpenClaw CLI （带重试，避免临时网络失败） --------
+# -------- 预装 Playwright + OpenClaw CLI （带重试） --------
 RUN set -eux; \
     for i in 1 2 3; do \
       npm i -g --unsafe-perm=true playwright && break || (echo "[warn] npm i playwright retry #$i" >&2; sleep 5); \
@@ -56,11 +56,20 @@ RUN set -eux; \
     for i in 1 2 3; do \
       npm i -g --unsafe-perm=true openclaw@${OPENCLAW_VERSION} && break || (echo "[warn] npm i openclaw@${OPENCLAW_VERSION} retry #$i" >&2; sleep 5); \
     done; \
-    # 下载 Chromium 引擎与依赖（若 with-deps 失败，退化为仅引擎）
     npx --yes playwright install --with-deps chromium || npx --yes playwright install chromium; \
     npx --yes playwright install-deps chromium || true
 
-# -------- 基本自检（非致命） --------
+# -------- 基本自检（非致命；修正引号与 || true） --------
 RUN gh --version || true \
  && chromium --version || true \
- && node -e "try{require('playwright');console.log('playwright ok')}catch(e){console.log('no playwright')}
+ && node -e 'try{require("playwright");console.log("playwright ok")}catch(e){console.log("no playwright")}' || true \
+ && openclaw --version || true
+
+# -------- 网关端口 + 健康检查 --------
+EXPOSE 18789
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
+  CMD curl -fsS http://127.0.0.1:18789/ >/dev/null || exit 1
+
+# -------- 默认前台网关（容器友好） --------
+WORKDIR /app
+CMD ["bash","-lc","OPENCLAW_LOG_LEVEL=${OPENCLAW_LOG_LEVEL} openclaw gateway"]
