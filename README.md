@@ -109,7 +109,7 @@ npm init -y >/dev/null 2>&1 || true
 npm i --no-save playwright minimist
 npx --yes playwright install --with-deps chromium
 ---
-
+```
 ## 🧩 组件版本与自检
 ```bash
 # 浏览器
