@@ -1,13 +1,15 @@
 # syntax=docker/dockerfile:1
 
-# Debian-based image with GitHub CLI (gh) + Chromium stack + Playwright (可交互) 预装
-# Works on linux/amd64 and linux/arm64; suitable for buildx
+# OpenClaw enhanced base: gh CLI + Chromium stack + Playwright (interactive) + OpenClaw CLI (preinstalled)
+# Debian-based; suitable for buildx (amd64/arm64 depending on base availability)
 
 FROM debian:bookworm-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    CHROME_PATH=/usr/bin/chromium
 
-# Base deps + GitHub CLI (official APT) + Chromium/OCR/PDF/Node
+# System deps + gh (official APT) + Chromium/OCR/PDF/Node
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       ca-certificates \
@@ -38,17 +40,20 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends gh \
  && rm -rf /var/lib/apt/lists/*
 
-# Playwright 预装（含浏览器依赖 + Chromium 引擎）；缓存到 /ms-playwright 以便运行时使用
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
-    CHROME_PATH=/usr/bin/chromium
-RUN npm i -g playwright \
+# Preinstall Playwright (CLI + Chromium engine) and OpenClaw CLI
+RUN npm i -g playwright openclaw@latest \
  && npx --yes playwright install --with-deps chromium \
  && npx --yes playwright install-deps chromium || true
 
-# Verify tools（不因失败中断）
-RUN gh --version && git --version && chromium --version || true
-RUN node -e "try{require('playwright');console.log('playwright ok')}catch(e){console.log(e?.message||'no playwright')}"
+# Basic verifications (non-fatal)
+RUN gh --version || true \
+ && chromium --version || true \
+ && node -e "try{require('playwright');console.log('playwright ok')}catch(e){console.log('no playwright')}" \
+ && openclaw --version || true
 
 # Default working dir
 WORKDIR /app
+
+# Default command: keep interactive shell; run with
+#  docker run ... ghcr.io/your/image bash -lc 'openclaw gateway start'
 CMD ["bash"]
