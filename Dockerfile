@@ -66,17 +66,27 @@ RUN type -p gh >/dev/null 2>&1 || ( \
 # Officially installed via npm.
 RUN npm i -g clawhub@latest
 
-# --- faster-whisper (binary wheels only) ---
-# We intentionally do not build from source.
-# Use a dedicated venv to avoid Debian/Ubuntu PEP-668 "externally managed" pip restrictions.
+# --- Python venvs ---
+# Use dedicated venvs to avoid Debian/Ubuntu PEP-668 "externally managed" pip restrictions.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends python3 python3-venv python3-pip \
- && rm -rf /var/lib/apt/lists/* \
- && python3 -m venv /opt/whisper-venv \
+ && rm -rf /var/lib/apt/lists/*
+
+# faster-whisper (binary wheels only)
+RUN python3 -m venv /opt/whisper-venv \
  && /opt/whisper-venv/bin/pip install --no-cache-dir --upgrade pip \
  && /opt/whisper-venv/bin/pip install --no-cache-dir --only-binary=:all: faster-whisper ctranslate2
 
-ENV PATH="/opt/whisper-venv/bin:${PATH}"
+# Python Playwright (match Node Playwright major; reuse bundled browsers)
+RUN python3 -m venv /opt/py-venv \
+ && /opt/py-venv/bin/pip install --no-cache-dir --upgrade pip \
+ && /opt/py-venv/bin/pip install --no-cache-dir playwright==1.58.2 \
+ && /opt/py-venv/bin/python -c "import playwright; print('python-playwright ok')"
+
+# Default PATH includes both venvs (python-playwright + faster-whisper)
+ENV PATH="/opt/py-venv/bin:/opt/whisper-venv/bin:${PATH}"
+# Ensure Python Playwright uses the same browser cache we bundle for Node.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # --- Piper TTS + Huayan (medium) zh female voice ---
 # Piper releases binaries; voices hosted separately. We download into /opt/piper.
