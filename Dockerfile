@@ -43,10 +43,12 @@ RUN if ! node -v 2>/dev/null | grep -q '^v20\.'; then \
 # Install Playwright globally.
 # Note: Node does NOT automatically include global npm modules in `require()` resolution.
 # We set NODE_PATH so `require('playwright')` works everywhere.
-# We rely on system Chromium, so skip Playwright browser downloads.
-ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+# Also pre-download Playwright's Chromium so `chromium.launch()` works out-of-the-box
+# (no more "please run npx playwright install").
 ENV NODE_PATH=/usr/local/lib/node_modules
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN npm i -g playwright@1.58.2 \
+ && npx playwright install chromium \
  && node -p "require('playwright/package.json').version"
 
 # --- GitHub CLI (gh) ---
