@@ -62,14 +62,16 @@ RUN type -p gh >/dev/null 2>&1 || ( \
 RUN npm i -g clawhub@latest
 
 # --- faster-whisper (binary wheels only) ---
-# We intentionally do not build from source. We install Python + pip only as needed to fetch wheels.
-# NOTE: faster-whisper depends on ctranslate2; both have prebuilt wheels for manylinux.
+# We intentionally do not build from source.
+# Use a dedicated venv to avoid Debian/Ubuntu PEP-668 "externally managed" pip restrictions.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends python3 python3-pip \
+ && apt-get install -y --no-install-recommends python3 python3-venv python3-pip \
  && rm -rf /var/lib/apt/lists/* \
- && python3 -m pip install --no-cache-dir --upgrade pip \
- && python3 -m pip install --no-cache-dir --only-binary=:all: faster-whisper ctranslate2 \
- && true
+ && python3 -m venv /opt/whisper-venv \
+ && /opt/whisper-venv/bin/pip install --no-cache-dir --upgrade pip \
+ && /opt/whisper-venv/bin/pip install --no-cache-dir --only-binary=:all: faster-whisper ctranslate2
+
+ENV PATH="/opt/whisper-venv/bin:${PATH}"
 
 # --- Piper TTS + Huayan (medium) zh female voice ---
 # Piper releases binaries; voices hosted separately. We download into /opt/piper.
