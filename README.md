@@ -1,68 +1,70 @@
-# OpenClaw 容器镜像（增强版）
+# DeltrivX OpenClaw 增强版镜像（All‑in‑One 工具链容器）
 
 本仓库用于构建并发布镜像：
 
-- 镜像名：`deltrivx/openclaw:latest`
+- 镜像：`deltrivx/openclaw:latest`
 - 上游基础镜像：`ghcr.io/openclaw/openclaw:latest`
-- 目标：**在不改变 OpenClaw 原有功能的基础上**，内置常用多媒体/浏览器/语音/OCR 工具链，开箱即用。
+- 目标：在 **不改变 OpenClaw 原有功能** 的前提下，把常用的浏览器自动化 / 音视频 / 语音 / OCR / PDF 工具链直接内置到同一个容器里，开箱即用。
 
-> 说明：本仓库仅提供容器镜像的“打包与集成”。OpenClaw 本体版权与商标归 OpenClaw 项目所有；其他第三方组件版权归各自作者所有。
+> 说明：本仓库仅做“打包与集成”。OpenClaw 版权与商标归 OpenClaw 项目所有；第三方组件版权归各自作者所有。
 
 ---
 
-## ✨ 内置能力一览
+## ✨ 内置能力（当前镜像基线）
 
-- Node.js 20+
-- Chromium（用于浏览器自动化/网页渲染）
-- Playwright 环境（含依赖）
+- Node.js 20+（基于上游镜像，必要时自动补齐）
+- Playwright（Node 版）
+  - 全局可 `require('playwright')`
+  - 已内置 Playwright Chromium（`/ms-playwright`），`chromium.launch()` 可直接用
 - ffmpeg（音视频处理）
-- faster-whisper（仅安装二进制 wheel：`faster-whisper` + `ctranslate2`）
+- faster‑whisper（Python 包，尽量使用二进制 wheel 安装）
 - Piper TTS（内置二进制）
-  - 中文女声：**Huayan medium**（`zh_CN-huayan-medium`）
+  - 中文女声：Huayan medium
 - Tesseract OCR（含简体中文 `chi_sim`）
 - OCRmyPDF（扫描 PDF → 可检索 PDF）
 - Poppler（`pdftotext` 等 PDF 工具）
 - ClawHub CLI（技能包管理器）
 - GitHub CLI（`gh`）
-- 修复容器中交互终端 `openclaw` 不生效的常见问题（引入 `tini` + 合理的 `TERM`）
+- 交互终端兼容性增强：`tini` + `TERM=xterm-256color`
+
+> 备注：为精简体积，系统 apt 的 `chromium` 已移除；浏览器自动化以 Playwright 自带 Chromium 为准。
 
 ---
 
-## 🚀 快速开始（Unraid / docker‑compose）
-保存为 `docker-compose.yml`：
-```yaml
+## 🚀 快速开始
 
+### 1) 拉取镜像
+
+```bash
+docker pull deltrivx/openclaw:latest
+```
+
+### 2) 运行（最简）
+
+```bash
+docker run --rm -it --name openclaw deltrivx/openclaw:latest
+```
+
+### 3) docker‑compose（适合 Unraid / 家用服务器）
+
+保存为 `docker-compose.yml`：
+
+```yaml
 services:
   openclaw:
-    image: ghcr.io/deltrivx/openclaw:latest
+    image: deltrivx/openclaw:latest
     container_name: openclaw
     restart: unless-stopped
     environment:
       TZ: "Asia/Shanghai"
-      # 可选：ClawHub 自动登录（明文，建议后续改用 secrets）
-      # CLAWHUB_TOKEN: "<你的_clawhub_token>"
     volumes:
       - /mnt/user/appdata/openclaw:/root/.openclaw
       - /mnt/user/appdata/openclaw/.clawhub:/root/.clawhub
-    # 以环境变量自动写入 token（启用 CLAWHUB_TOKEN 后解注释）
-    # command: >
-    #   bash -lc '
-    #   mkdir -p ~/.clawhub &&
-    #   printf "%s" "$CLAWHUB_TOKEN" > ~/.clawhub/token && chmod 600 ~/.clawhub/token &&
-    #   exec openclaw gateway start
-    #   '
     ports:
-      - "18789:18789"  # OpenClaw 网关端口（官方默认）
-    healthcheck:
-      test: ["CMD", "bash", "-lc", "openclaw --version || oc --version || node -v || python -V"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      - "18789:18789"  # OpenClaw 网关端口（以你实际配置为准）
 ```
 
-
-### 2) 启动
+启动：
 
 ```bash
 docker compose up -d
@@ -70,57 +72,79 @@ docker compose up -d
 
 ---
 
-## 🧰 组件来源与版权声明（避免侵权）
+## ✅ 自检清单（确认环境可用）
 
-本镜像集成了多个开源项目：
+### Playwright（Node）
 
-- **OpenClaw**：上游基础镜像 `openclaw/openclaw:latest`（来源：OpenClaw 官方仓库/镜像）
-- **Chromium / Playwright**：Chromium 来自 Debian/Ubuntu 系统包；Playwright 来自 Microsoft Playwright 项目（npm 包）
-- **ffmpeg**：来自 Debian/Ubuntu 系统包（FFmpeg 项目）
-- **faster-whisper / ctranslate2**：来自 PyPI 二进制 wheel（原作者项目）
-- **Piper**：二进制来自 rhasspy/piper GitHub Releases
-- **Huayan (zh_CN-huayan-medium) 语音模型**：来自 rhasspy/piper-voices Releases
-- **Tesseract OCR**：来自 Debian/Ubuntu 系统包（Tesseract 项目）
-- **OCRmyPDF**：来自 Debian/Ubuntu 系统包（OCRmyPDF 项目）
-- **Poppler**：来自 Debian/Ubuntu 系统包（Poppler 项目）
-- **ClawHub CLI**：npm 包（clawhub）
-- **GitHub CLI (gh)**：GitHub 官方 apt 源
+```bash
+node -p "require('playwright/package.json').version"
+node - <<'NODE'
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch({ headless: true });
+  const p = await b.newPage();
+  await p.goto('https://example.com', { waitUntil: 'domcontentloaded' });
+  console.log(await p.title());
+  await b.close();
+})();
+NODE
+```
 
-如需在企业/生产环境使用，请务必自行复核各组件 License 及其依赖的许可条款。
+### OCR / PDF
+
+```bash
+tesseract --version | head
+ocrmypdf --version
+pdftotext -v 2>&1 | head -n 1
+```
+
+### 音视频
+
+```bash
+ffmpeg -version | head -n 2
+```
+
+---
+
+## 🔄 上游同步与自动构建
+
+仓库包含 GitHub Actions（`.github/workflows/sync-upstream.yml`）：
+
+- push / PR / schedule / 手动触发（workflow_dispatch）均可构建
+- 构建完成后推送：`deltrivx/openclaw:latest`
+
+---
+
+## 🧾 组件来源与作者声明（避免侵权）
+
+本镜像集成多个开源项目，来源与作者（不完整但覆盖核心组件）：
+
+- **OpenClaw**：上游基础镜像 `ghcr.io/openclaw/openclaw:latest`
+- **Playwright**：Microsoft Playwright（npm 包 / Python 包）
+- **Playwright Chromium**：由 Playwright 官方分发的浏览器构建（随 `npx playwright install chromium` 下载）
+- **ffmpeg**：FFmpeg 项目（系统包）
+- **faster‑whisper / ctranslate2**：PyPI（优先二进制 wheel）
+- **Piper**：rhasspy/piper（GitHub Releases 二进制）
+- **Huayan voice model**：rhasspy/piper‑voices（若直链缺失则使用公开镜像源）
+- **Tesseract OCR**：Tesseract 项目（系统包）
+- **OCRmyPDF**：OCRmyPDF 项目（系统包）
+- **Poppler**：Poppler 项目（系统包）
+- **ClawHub CLI**：clawhub（npm）
+- **GitHub CLI**：GitHub 官方（apt）
+
+请在使用前自行核对各组件 License；如用于企业/生产/商业环境，请完成合规审查。
 
 ---
 
 ## 📜 非商业说明
 
-- 本仓库的目标是**学习与个人使用**的容器打包集成。
-- **不提供任何商业授权保证**；也不对第三方组件许可的适配性作出承诺。
-- 若你计划将该镜像用于商业用途，请自行进行 License 合规审查。
-
----
-
-## 🔄 上游自动同步（镜像更新）
-
-仓库包含 GitHub Actions：
-
-- 定时拉取上游 `ghcr.io/openclaw/openclaw:latest` 的更新
-- 触发镜像重新构建
-- 推送到 Docker Hub：`deltrivx/openclaw:latest`
-
-详见：`.github/workflows/sync-upstream.yml`
-
----
-
-## 🏗️ 本地构建
-
-```bash
-docker build -t deltrivx/openclaw:latest .
-```
+- 本仓库以学习与个人使用为目的进行容器打包集成。
+- 不提供任何商业授权保证；对第三方组件许可的适配性不作承诺。
 
 ---
 
 ## 📚 文档
 
-- `docs/BUILD.md`：构建与发布说明
-- `docs/COMPONENTS.md`：组件清单、版本与来源
-- `docs/TROUBLESHOOTING.md`：常见问题（含 openclaw 终端交互）
-
+- `docs/BUILD.md`：构建与发布
+- `docs/COMPONENTS.md`：组件清单
+- `docs/TROUBLESHOOTING.md`：常见问题
