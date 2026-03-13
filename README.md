@@ -29,7 +29,7 @@
 - GitHub CLI（`gh`）
 - 交互终端兼容性增强：`tini` + `TERM=xterm-256color`
 
-> 备注：为精简体积，系统 apt 的 `chromium` 已移除；浏览器自动化以 Playwright 自带 Chromium 为准。
+> 说明：本镜像使用容器内 **真实浏览器自动化**（Playwright + 内置 Chromium `/ms-playwright`），不依赖任何远程静态截图服务（如 mShots）。
 
 ---
 
