@@ -97,7 +97,17 @@ docker exec -it openclaw bash -lc 'ocrmypdf /root/.openclaw/in.pdf /root/.opencl
 # pdftotext（原生文本PDF抽取，无OCR）
 docker exec -it openclaw bash -lc 'pdftotext /root/.openclaw/in.pdf /root/.openclaw/out.txt'
 ```
+## 🖱️ Playwright 可交互功能（新增说明）
 
+本镜像/工作区已提供 Playwright 支持，可在容器内完成“打开页面、点击元素、登录截图、全页截图”等自动化操作，适用于 KDocs/后台页面/需登录后的点击流程。
+
+### 快速开始（容器内）
+安装依赖（首次）：
+```bash
+cd /root/.openclaw/workspace
+npm init -y >/dev/null 2>&1 || true
+npm i --no-save playwright minimist
+npx --yes playwright install --with-deps chromium
 ---
 
 ## 🧩 组件版本与自检
