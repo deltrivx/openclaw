@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.7
 
-# OpenClaw enhanced base — stable & fast rebuilds
+# OpenClaw enhanced base — 简化APT层，避免锁冲突与语法问题
 # - gh CLI + Chromium/ffmpeg + Tesseract/OCRmyPDF/Poppler + Node.js
-# - Playwright (interactive) + OpenClaw CLI (preinstalled)
-# - Foreground gateway; BuildKit cache mounts for faster builds
+# - Playwright + OpenClaw CLI 预装
+# - 前台网关；BuildKit 可加速（可选）
 
 FROM debian:bookworm-slim
 
@@ -15,14 +15,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     NPM_CONFIG_FUND=false \
     NPM_CONFIG_AUDIT=false
 
-# -------- System deps + gh (APT) + Chromium/OCR/PDF/Node --------
-# 仅缓存 /var/cache/apt（不要缓存 /var/lib/apt），并且不要把 "|| true" 写错成 " true "
-RUN --mount=type=cache,target=/var/cache/apt \
-    set -eux; \
-    rm -f /var/lib/apt/lists/lock || true; \
-    rm -f /var/cache/apt/archives/lock || true; \
-    rm -f /var/lib/dpkg/lock-frontend || true; \
-    dpkg --configure -a || true; \
+# -------- 最稳APT层（不做锁文件花活，避免“true”误拼接导致语法错） --------
+RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
       ca-certificates curl gnupg git openssh-client bash \
@@ -46,25 +40,23 @@ RUN git config --global url."https://github.com/".insteadOf "git@github.com:" \
  && git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" \
  && git config --global advice.detachedHead false
 
-# -------- Preinstall Playwright + OpenClaw CLI --------
-RUN --mount=type=cache,target=/root/.npm \
-    set -eux; \
+# -------- 预装 Playwright + OpenClaw CLI --------
+RUN set -eux; \
     npm i -g playwright openclaw@${OPENCLAW_VERSION}; \
     npx --yes playwright install --with-deps chromium; \
     npx --yes playwright install-deps chromium || true
 
-# -------- Basic verifications (non-fatal) --------
+# -------- 基本自检（非致命） --------
 RUN gh --version || true \
  && chromium --version || true \
  && node -e "try{require('playwright');console.log('playwright ok')}catch(e){console.log('no playwright')}" \
  && openclaw --version || true
 
-# -------- Gateway port + healthcheck --------
+# -------- 网关端口 + 健康检查 --------
 EXPOSE 18789
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
   CMD curl -fsS http://127.0.0.1:18789/ >/dev/null || exit 1
 
-# -------- Defaults --------
+# -------- 默认前台网关（容器友好） --------
 WORKDIR /app
-# 前台网关（容器友好）；如有配置文件：-e OPENCLAW_CONFIG=/root/.openclaw/config.yaml
 CMD ["bash","-lc","OPENCLAW_LOG_LEVEL=${OPENCLAW_LOG_LEVEL} openclaw gateway"]
