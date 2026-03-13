@@ -50,7 +50,8 @@ RUN npm i -g playwright@1.58.2 \
  && npx playwright install chromium \
  && node -p "require('playwright/package.json').version" \
  # Provide a stable browser executable path under /usr/bin for other tools/scripts.
- && CHROME_BIN="$(ls -1 /ms-playwright/chromium-*/chrome-linux/chrome 2>/dev/null | head -n 1)" \
+ # Find the bundled Chromium executable (path differs across Playwright builds).
+ && CHROME_BIN="$(find /ms-playwright -type f \( -path '*/chrome-linux*/chrome' -o -path '*/chrome-linux*/chrome-wrapper' -o -path '*/chrome-linux64/chrome' \) 2>/dev/null | head -n 1)" \
  && test -n "$CHROME_BIN" \
  && ln -sf "$CHROME_BIN" /usr/bin/chromium \
  && ln -sf "$CHROME_BIN" /usr/bin/google-chrome
