@@ -1,13 +1,14 @@
 # syntax=docker/dockerfile:1
 
-# OpenClaw enhanced base: gh CLI + Chromium stack + Playwright (interactive) + OpenClaw CLI (preinstalled)
-# Debian-based; suitable for buildx (amd64/arm64 depending on base availability)
+# OpenClaw enhanced: gh CLI + Chromium stack + Playwright (interactive) + OpenClaw CLI (preinstalled)
+# Starts the OpenClaw gateway in foreground by default (container-friendly; no systemd required)
 
 FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
-    CHROME_PATH=/usr/bin/chromium
+    CHROME_PATH=/usr/bin/chromium \
+    OPENCLAW_LOG_LEVEL=info
 
 # System deps + gh (official APT) + Chromium/OCR/PDF/Node
 RUN apt-get update \
@@ -51,9 +52,15 @@ RUN gh --version || true \
  && node -e "try{require('playwright');console.log('playwright ok')}catch(e){console.log('no playwright')}" \
  && openclaw --version || true
 
-# Default working dir
+# Expose OpenClaw gateway port
+EXPOSE 18789
+
+# Healthcheck: try HTTP on gateway
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=5 \
+  CMD curl -fsS http://127.0.0.1:18789/ >/dev/null || exit 1
+
+# Default working dir (mounted by users as needed)
 WORKDIR /app
 
-# Default command: keep interactive shell; run with
-#  docker run ... ghcr.io/your/image bash -lc 'openclaw gateway start'
-CMD ["bash"]
+# Default command: run OpenClaw gateway in foreground (container friendly)
+CMD ["bash", "-lc", "OPENCLAW_LOG_LEVEL=${OPENCLAW_LOG_LEVEL} openclaw gateway"]
