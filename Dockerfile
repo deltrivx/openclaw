@@ -40,11 +40,11 @@ RUN if ! node -v 2>/dev/null | grep -q '^v20\.'; then \
     fi
 
 # --- Playwright ---
-# Install Playwright and browsers; but since we install system Chromium, we can skip browser download.
-# We still install Playwright so OpenClaw browser tooling works.
-RUN npm i -g playwright@latest \
- && npx playwright install-deps \
- && true
+# Install Playwright globally (so `require('playwright')` works).
+# We rely on system Chromium, so skip Playwright browser downloads.
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+RUN npm i -g playwright@1.58.2 \
+ && node -p "require('playwright/package.json').version"
 
 # --- GitHub CLI (gh) ---
 RUN type -p gh >/dev/null 2>&1 || ( \
