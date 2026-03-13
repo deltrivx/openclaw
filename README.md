@@ -1,4 +1,4 @@
-# DeltrivX OpenClaw 容器镜像（增强版）
+# OpenClaw 容器镜像（增强版）
 
 本仓库用于构建并发布镜像：
 
@@ -31,7 +31,6 @@
 ## 🚀 快速开始（Unraid / docker‑compose）
 保存为 `docker-compose.yml`：
 ```yaml
-version: "3.9"
 
 services:
   openclaw:
