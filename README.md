@@ -3,7 +3,7 @@
 本仓库用于构建并发布镜像：
 
 - 镜像名：`deltrivx/openclaw:latest`
-- 上游基础镜像：`openclaw/openclaw:latest`
+- 上游基础镜像：`ghcr.io/openclaw/openclaw:latest`
 - 目标：**在不改变 OpenClaw 原有功能的基础上**，内置常用多媒体/浏览器/语音/OCR 工具链，开箱即用。
 
 > 说明：本仓库仅提供容器镜像的“打包与集成”。OpenClaw 本体版权与商标归 OpenClaw 项目所有；其他第三方组件版权归各自作者所有。
@@ -60,19 +60,12 @@ services:
       retries: 5
       start_period: 30s
 ```
-启动：
+
+
+### 2) 启动
+
 ```bash
 docker compose up -d
-```
-
-### 2) 运行（示例）
-
-> 具体 OpenClaw 的运行参数/挂载目录/配置方式，以 OpenClaw 官方文档为准。
-
-```bash
-docker run --rm -it \
-  --name openclaw \
-  deltrivx/openclaw:latest
 ```
 
 ---
@@ -109,7 +102,7 @@ docker run --rm -it \
 
 仓库包含 GitHub Actions：
 
-- 定时拉取上游 `openclaw/openclaw:latest` 的更新
+- 定时拉取上游 `ghcr.io/openclaw/openclaw:latest` 的更新
 - 触发镜像重新构建
 - 推送到 Docker Hub：`deltrivx/openclaw:latest`
 
