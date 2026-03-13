@@ -45,9 +45,12 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          OPENCLAW_GH_TOKEN: ${{ secrets.OPENCLAW_GH_TOKEN }}
         with:
           context: .
           push: true
           tags: deltrivx/openclaw:latest
+
           cache-from: type=gha
           cache-to: type=gha,mode=max
