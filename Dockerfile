@@ -4,7 +4,14 @@
 # Note: OpenClaw images are hosted on GitHub Container Registry (GHCR).
 FROM ghcr.io/openclaw/openclaw:latest
 
+# Upstream image may default to a non-root user; apt needs root.
+USER root
+
 ARG DEBIAN_FRONTEND=noninteractive
+
+# Some minimal bases have missing/locked apt list directories under non-root layers.
+RUN mkdir -p /var/lib/apt/lists/partial /var/cache/apt/archives/partial \
+ && chmod -R 755 /var/lib/apt/lists /var/cache/apt
 
 # --- System deps ---
 # Install: Chromium (for Playwright), ffmpeg, tesseract (chi_sim), ocrmypdf, poppler utils,
