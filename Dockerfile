@@ -75,11 +75,10 @@ ENV PATH="/opt/whisper-venv/bin:${PATH}"
 
 # --- Piper TTS + Huayan (medium) zh female voice ---
 # Piper releases binaries; voices hosted separately. We download into /opt/piper.
-# Version pins can be adjusted later.
-ARG PIPER_VERSION=1.2.0
+# Use the stable "latest" asset link to avoid breakage when tags/assets change.
 RUN mkdir -p /opt/piper \
  && cd /opt/piper \
- && curl -fL -o piper.tar.gz https://github.com/rhasspy/piper/releases/download/v${PIPER_VERSION}/piper_linux_x86_64.tar.gz \
+ && curl -fL -o piper.tar.gz https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64.tar.gz \
  && tar -xzf piper.tar.gz --strip-components=1 \
  && rm -f piper.tar.gz
 
