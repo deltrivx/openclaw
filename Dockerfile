@@ -43,8 +43,7 @@ RUN apt-get update \
 # ---- Python venv ----
 # Keep system python at /usr/bin/python3, but prefer venv via PATH.
 RUN python3 -m venv "$VENV_PATH" \
- && "$VENV_PATH/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel \
- && "$VENV_PATH/bin/pip" install --no-cache-dir edge-tts
+ && "$VENV_PATH/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel
 
 # ---- Piper (offline TTS) + voice model baked in ----
 # Piper binary (x86_64) from rhasspy/piper release.
