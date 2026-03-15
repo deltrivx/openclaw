@@ -88,10 +88,109 @@ CONFIG="/opt/piper/models/zh_CN-huayan-medium.onnx.json"
 EOF
 RUN chmod +x /usr/local/bin/piper-tts
 
+# ---- Patch QQBot extension: enable local (offline) TTS via piper when API TTS is not configured ----
+# Unraid typically bind-mounts /root/.openclaw, so we patch the mounted extension at container start.
+RUN cat > /usr/local/bin/openclaw-entrypoint <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+QQBOT_EXT_DIR="/root/.openclaw/extensions/openclaw-qqbot"
+MARKER="$QQBOT_EXT_DIR/.local-tts-patched.v1"
+
+patch_qqbot() {
+  local audio_js="$QQBOT_EXT_DIR/dist/src/utils/audio-convert.js"
+  local gateway_js="$QQBOT_EXT_DIR/dist/src/gateway.js"
+
+  [[ -f "$audio_js" ]] || return 0
+  [[ -f "$gateway_js" ]] || return 0
+
+  # 1) Add localTextToSilk() helper export (idempotent)
+  if ! grep -q "export async function localTextToSilk" "$audio_js"; then
+    cat >> "$audio_js" <<'JS'
+
+// ---- OpenClaw QQBot local/offline TTS (piper) ----
+// If channels.qqbot.tts is not configured, fall back to piper to generate a WAV,
+// then use existing ffmpeg/wasm pipeline to encode SILK for QQ upload.
+export async function localTextToSilk(text, outputDir) {
+  const outDir = outputDir || "/tmp/openclaw/qqbot-tts";
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+
+  const wavPath = path.join(outDir, `piper-${Date.now()}.wav`);
+
+  // Prefer our wrapper if present; otherwise call piper directly.
+  const wrapper = "/usr/local/bin/piper-tts";
+  try {
+    await new Promise((resolve, reject) => {
+      const child = execFile(wrapper, [wavPath], { timeout: 120000 }, (err) => (err ? reject(err) : resolve()));
+      child.stdin?.end(text);
+    });
+  } catch (e) {
+    const model = process.env.PIPER_MODEL || "/opt/piper/models/zh_CN-huayan-medium.onnx";
+    const config = process.env.PIPER_CONFIG || "/opt/piper/models/zh_CN-huayan-medium.onnx.json";
+    await new Promise((resolve, reject) => {
+      const child = execFile("/usr/local/bin/piper", ["--model", model, "--config", config, "--output_file", wavPath], { timeout: 120000 }, (err) => (err ? reject(err) : resolve()));
+      child.stdin?.end(text);
+    });
+  }
+
+  if (!fs.existsSync(wavPath)) throw new Error(`local TTS failed: wav not created: ${wavPath}`);
+  const stat = fs.statSync(wavPath);
+  if (stat.size <= 44) throw new Error(`local TTS failed: wav empty: ${wavPath}`);
+
+  const targetRate = 24000;
+  const ffmpegCmd = await checkFfmpeg();
+  if (ffmpegCmd) {
+    const pcmBuf = await ffmpegToPCM(ffmpegCmd, wavPath, targetRate);
+    if (!pcmBuf || pcmBuf.length === 0) throw new Error("local TTS: ffmpeg produced empty PCM");
+    const { silkBuffer, duration } = await pcmToSilk(pcmBuf, targetRate);
+    const silkPath = path.join(outDir, `tts-${Date.now()}.silk`);
+    fs.writeFileSync(silkPath, silkBuffer);
+    return { silkPath, silkBase64: silkBuffer.toString("base64"), duration };
+  }
+
+  const wavBuf = fs.readFileSync(wavPath);
+  const wavInfo = parseWavFallback(wavBuf);
+  if (!wavInfo) throw new Error("local TTS: WAV parse failed (no ffmpeg available)");
+  const { silkBuffer, duration } = await pcmToSilk(wavInfo, targetRate);
+  const silkPath = path.join(outDir, `tts-${Date.now()}.silk`);
+  fs.writeFileSync(silkPath, silkBuffer);
+  return { silkPath, silkBase64: silkBuffer.toString("base64"), duration };
+}
+JS
+  fi
+
+  # 2) Ensure gateway imports localTextToSilk (idempotent)
+  if grep -q "from \"\./utils/audio-convert\.js\"" "$gateway_js" && ! grep -q "localTextToSilk" "$gateway_js"; then
+    sed -i 's/{ \(.*\)textToSilk\(.*\) } from "\.\/utils\/audio-convert\.js"/{ \1textToSilk, localTextToSilk\2 } from "\.\/utils\/audio-convert\.js"/g' "$gateway_js" || true
+  fi
+
+  # 3) Replace the "TTS not configured" hard-fail with localTextToSilk fallback
+  GATEWAY_JS="$gateway_js" node - <<'NODE'
+const fs = require('fs');
+const gateway = process.env.GATEWAY_JS;
+let s = fs.readFileSync(gateway, 'utf8');
+const needle = "const ttsCfg = resolveTTSConfig(cfg);\n                            if (!ttsCfg) {\n                              log?.error(`[qqbot:${account.accountId}] TTS not configured (channels.qqbot.tts in openclaw.json)`);\n                              await sendErrorMessage(`[QQBot] TTS 未配置，请在 openclaw.json 的 channels.qqbot.tts 中配置`);\n                            } else {";
+if (s.includes(needle)) {
+  const replacement = "const ttsCfg = resolveTTSConfig(cfg);\n                            if (!ttsCfg) {\n                              log?.warn?.(`[qqbot:${account.accountId}] TTS not configured; falling back to local piper TTS`);\n                              const ttsDir = getQQBotDataDir(\"tts\");\n                              const { silkPath, silkBase64, duration } = await localTextToSilk(ttsText, ttsDir);\n                              log?.info(`[qqbot:${account.accountId}] Local TTS done: ${formatDuration(duration)}, file saved: ${silkPath}`);\n                              await sendWithTokenRetry(async (token) => {\n                                if (event.type === \"c2c\") {\n                                  await sendC2CVoiceMessage(token, event.senderId, silkBase64, event.messageId, ttsText, silkPath);\n                                } else if (event.type === \"group\" && event.groupOpenid) {\n                                  await sendGroupVoiceMessage(token, event.groupOpenid, silkBase64, event.messageId);\n                                } else if (event.channelId) {\n                                  await sendChannelMessage(token, event.channelId, `[语音消息暂不支持频道发送] ${ttsText}`, event.messageId);\n                                }\n                              });\n                              log?.info(`[qqbot:${account.accountId}] Voice message sent (local TTS)`);\n                            } else {";
+  s = s.replace(needle, replacement);
+  fs.writeFileSync(gateway, s);
+}
+NODE
+
+  date > "$MARKER"
+}
+
+if [[ -d "$QQBOT_EXT_DIR" ]] && [[ ! -f "$MARKER" ]]; then
+  patch_qqbot || true
+fi
+
+exec openclaw gateway run --allow-unconfigured
+EOF
+RUN chmod +x /usr/local/bin/openclaw-entrypoint
+
 # ---- OpenClaw Gateway in Docker: run foreground by default ----
 # (Service-based start is often unavailable in containers.)
 EXPOSE 19000
 
 # Runtime as root (requested for Unraid volume mappings using /root/.openclaw).
-# Default to foreground gateway.
-CMD ["openclaw", "gateway", "run", "--allow-unconfigured"]
+ENTRYPOINT ["/usr/local/bin/openclaw-entrypoint"]
