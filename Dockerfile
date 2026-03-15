@@ -92,8 +92,6 @@ RUN chmod +x /usr/local/bin/piper-tts
 # (Service-based start is often unavailable in containers.)
 EXPOSE 19000
 
-# Drop back to the upstream non-root user for runtime safety.
-USER node
-
+# Runtime as root (requested for Unraid volume mappings using /root/.openclaw).
 # Default to foreground gateway.
 CMD ["openclaw", "gateway", "run", "--allow-unconfigured"]
