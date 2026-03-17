@@ -61,8 +61,10 @@ RUN mkdir -p "$PIPER_MODELS_DIR" \
 # Reference: https://github.com/1186258278/OpenClawChineseTranslation/releases/tag/nightly
 # Install the translated distribution as a global CLI.
 # We intentionally do NOT patch /app/dist bundles to keep compatibility with upstream updates.
-RUN npm install -g @qingchencloud/openclaw-zh@nightly \
- && node -e "console.log('openclaw-zh version:', require('/usr/local/lib/node_modules/@qingchencloud/openclaw-zh/package.json').version)"
+# Install into an isolated prefix to avoid clobbering the upstream /usr/local/bin/openclaw
+# (upstream image already provides an openclaw binary)
+RUN npm install --omit=dev --prefix /opt/openclaw-zh @qingchencloud/openclaw-zh@nightly \
+ && node -e "console.log('openclaw-zh version:', require('/opt/openclaw-zh/node_modules/@qingchencloud/openclaw-zh/package.json').version)"
 
 # Skills default dir
 RUN mkdir -p /root/.agents/skills
@@ -79,4 +81,4 @@ EXPOSE 18789
 EXPOSE 18793
 
 # Use the Chinese translated OpenClaw CLI as the main command
-CMD ["node", "/usr/local/lib/node_modules/@qingchencloud/openclaw-zh/openclaw.mjs", "gateway", "--allow-unconfigured"]
+CMD ["node", "/opt/openclaw-zh/node_modules/@qingchencloud/openclaw-zh/openclaw.mjs", "gateway", "--allow-unconfigured"]
