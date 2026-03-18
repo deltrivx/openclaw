@@ -21,6 +21,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
       jq \
       ca-certificates \
       wget \
+      unzip \
       libespeak-ng1 \
       npm; \
     rm -rf /var/lib/apt/lists/*
@@ -48,8 +49,10 @@ RUN set -eux; \
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 
-# ClawHub CLI (repo README expectation)
-RUN npm i -g clawhub
+# ClawHub CLI + Bun runtime (repo README expectation)
+RUN npm i -g clawhub && \
+    curl -fsSL https://bun.sh/install | bash && \
+    ln -sf /root/.bun/bin/bun /usr/local/bin/bun
 
 # Copy prebuilt Control UI (built in GitHub Actions)
 # OpenClaw expects dist/control-ui/index.html
