@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 # Enhanced image based on upstream OpenClaw runtime image.
-FROM ghcr.io/openclaw/openclaw:latestFF
+FROM ghcr.io/openclaw/openclaw:latest
 
 USER root
 WORKDIR /app
