@@ -7,6 +7,11 @@ on:
       - Dockerfile
       - .dockerignore
       - .github/workflows/docker.yml
+      - scripts/patch_onboard_dist.py
+      - translations/**
+      - scripts/**
+      - patches/**
+      - upstream/**
   workflow_dispatch: {}
 
 concurrency:
