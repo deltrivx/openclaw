@@ -21,7 +21,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
       jq \
       ca-certificates \
       wget \
-      libespeak-ng1; \
+      libespeak-ng1 \
+      npm; \
     rm -rf /var/lib/apt/lists/*
 
 # Piper (offline TTS)
@@ -46,6 +47,9 @@ RUN set -eux; \
 # Playwright: use system Chromium
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
+
+# ClawHub CLI (repo README expectation)
+RUN npm i -g clawhub
 
 # Copy prebuilt Control UI (built in GitHub Actions)
 # OpenClaw expects dist/control-ui/index.html
