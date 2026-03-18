@@ -38,14 +38,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Configure pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
           cache: pnpm
           cache-dependency-path: upstream/pnpm-lock.yaml
-
-      - name: Enable corepack (pnpm)
-        run: |
-          set -euo pipefail
-          corepack enable
-          corepack prepare pnpm@latest --activate
 
       - name: Install deps (upstream)
         working-directory: upstream
