@@ -11,7 +11,6 @@ const MODELS_DIR = process.env.PIPER_MODELS_DIR ?? "/opt/piper/models";
 const DEFAULT_VOICE = process.env.PIPER_DEFAULT_VOICE ?? "zh_CN-huayan-medium";
 
 const PIPER_BIN = process.env.PIPER_BIN ?? "/usr/local/bin/piper";
-const PIPER_BIN_FALLBACK = process.env.PIPER_BIN_FALLBACK;
 const FFMPEG_BIN = process.env.FFMPEG_BIN ?? "ffmpeg";
 
 function sendJson(res, status, obj) {
@@ -104,14 +103,10 @@ async function synthesize({ input, voice, response_format }) {
     return run(bin, args, { stdinText: input, env: piperEnv });
   }
 
-  // Try with --config first, then without, then fallback binary if provided.
+  // Try with --config first, then without.
   const attempts = [];
   attempts.push([PIPER_BIN, ["--model", modelPath, "--config", configPath, "--output_file", wavPath]]);
   attempts.push([PIPER_BIN, ["--model", modelPath, "--output_file", wavPath]]);
-  if (PIPER_BIN_FALLBACK) {
-    attempts.push([PIPER_BIN_FALLBACK, ["--model", modelPath, "--config", configPath, "--output_file", wavPath]]);
-    attempts.push([PIPER_BIN_FALLBACK, ["--model", modelPath, "--output_file", wavPath]]);
-  }
 
   let lastErr;
   for (const [bin, args] of attempts) {
