@@ -1,24 +1,12 @@
-# Keep the build context predictable.
-# Ignore git + docs artifacts, but DO NOT blanket-ignore the whole repo.
-.git
-# Keep workflows in repo; ignore only internal GH metadata.
-.github/**
-!.github/workflows/**
+# Start from a strict deny-all to avoid accidental huge contexts,
+# then explicitly allow what the Dockerfile needs.
+**
 
+# Always include Docker build files
+!Dockerfile
+!.dockerignore
 
-# Editor/OS
-.DS_Store
-Thumbs.db
-
-# Node/Python caches
-node_modules
-npm-debug.log*
-.yarn
-.pnpm-store
-__pycache__
-*.pyc
-
-# Archives
-*.zip
-*.tar
-*.tar.gz
+# Include repo-local translation assets
+!translations/**
+!scripts/**
+!patches/**
