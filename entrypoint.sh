@@ -39,7 +39,13 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
   if [ -n "${TS_AUTHKEY:-}" ]; then
     log "Running tailscale up (authkey provided)"
     # best-effort: don't fail container boot if tailnet login fails
-    "${TS_ENV[@]}" tailscale up --authkey="${TS_AUTHKEY}" --hostname="${TS_HOSTNAME:-openclaw}" --accept-dns=false || true
+    accept_routes_flag=""
+    if [ "${TS_ACCEPT_ROUTES:-}" = "1" ] || [ "${TS_ACCEPT_ROUTES:-}" = "true" ]; then
+      accept_routes_flag="--accept-routes=true"
+      log "TS_ACCEPT_ROUTES enabled"
+    fi
+
+    "${TS_ENV[@]}" tailscale up --authkey="${TS_AUTHKEY}" --hostname="${TS_HOSTNAME:-openclaw}" --accept-dns=false ${accept_routes_flag} || true
 
     # Wait briefly for Tailscale to reach Running
     for i in 1 2 3 4 5; do
