@@ -1,0 +1,10 @@
+# OpenClaw workspace noise
+memory/
+openclaw-repo/
+openclaw_upstream/
+deltrivx-openclaw/
+# scripts/ is used by this repo for build-time and i18n helpers
+# scripts/
+
+# build artifacts
+dist/
