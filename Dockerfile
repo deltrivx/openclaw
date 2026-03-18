@@ -26,9 +26,14 @@ RUN --mount=type=cache,target=/var/cache/apt \
 # Piper (offline TTS)
 # We download a prebuilt piper binary and the zh_CN-huayan-medium model.
 RUN set -eux; \
-    mkdir -p /opt/piper/bin /opt/piper/models; \
-    wget -O /opt/piper/bin/piper "https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64"; \
+    mkdir -p /opt/piper/bin /opt/piper/models /tmp/piper; \
+    wget -O /tmp/piper/piper_linux_x86_64.tar.gz \
+      "https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64.tar.gz"; \
+    tar -xzf /tmp/piper/piper_linux_x86_64.tar.gz -C /tmp/piper; \
+    # Find the piper binary inside the extracted bundle
+    find /tmp/piper -type f -name piper -exec cp -f {} /opt/piper/bin/piper \; -quit; \
     chmod +x /opt/piper/bin/piper; \
+    rm -rf /tmp/piper; \
     wget -O "/opt/piper/models/zh_CN-huayan-medium.onnx" \
       "https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx"; \
     wget -O "/opt/piper/models/zh_CN-huayan-medium.onnx.json" \
