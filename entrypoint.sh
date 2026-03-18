@@ -59,12 +59,17 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
     output="$("${TS_ENV[@]}" tailscale serve --bg --yes 18789 2>&1)"
     rc=$?
     set -e
-    if [ $rc -eq 0 ]; then
+    log "tailscale serve exit code: $rc"
+    if [ -n "$output" ]; then
       printf '%s\n' "$output" | sed 's/^/[tailscale serve] /'
+    else
+      log "tailscale serve produced no output"
+    fi
+
+    if [ $rc -eq 0 ]; then
       log "tailscale serve enabled for 18789"
     else
-      printf '%s\n' "$output" | sed 's/^/[tailscale serve] /'
-      log "tailscale serve failed (rc=$rc); dumping status"
+      log "tailscale serve failed; dumping status"
       "${TS_ENV[@]}" tailscale status 2>&1 | sed 's/^/[tailscale status] /' || true
       "${TS_ENV[@]}" tailscale serve status 2>&1 | sed 's/^/[tailscale serve status] /' || true
     fi
