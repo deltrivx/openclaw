@@ -35,6 +35,27 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
     log "Running tailscale up (authkey provided)"
     # best-effort: don't fail container boot if tailnet login fails
     tailscale up --authkey="${TS_AUTHKEY}" --hostname="${TS_HOSTNAME:-openclaw}" --accept-dns=false || true
+
+    # Wait briefly for Tailscale to reach Running
+    for i in 1 2 3 4 5; do
+      state="$(tailscale status --json 2>/dev/null | node -e 'let d="";process.stdin.on("data",c=>d+=c);process.stdin.on("end",()=>{try{const j=JSON.parse(d);console.log(j.BackendState||"");}catch{console.log("");}})')" || true
+      log "tailscale backend state: ${state:-<unknown>}"
+      if [ "$state" = "Running" ]; then
+        break
+      fi
+      sleep 1
+    done
+
+    log "tailscale ip: $(tailscale ip -4 2>/dev/null | tr '\n' ' ' || true)"
+
+    # Try to enable tailscale serve for OpenClaw port (best-effort)
+    if tailscale serve --bg --yes 18789 2>&1 | sed 's/^/[tailscale serve] /'; then
+      log "tailscale serve enabled for 18789"
+    else
+      log "tailscale serve failed; dumping status"
+      tailscale status 2>&1 | sed 's/^/[tailscale status] /' || true
+      tailscale serve status 2>&1 | sed 's/^/[tailscale serve status] /' || true
+    fi
   else
     log "TS_AUTHKEY not set; tailscaled running but not logged in"
   fi
