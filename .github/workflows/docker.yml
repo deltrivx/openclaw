@@ -7,11 +7,10 @@ on:
       - Dockerfile
       - .dockerignore
       - .github/workflows/docker.yml
-      - scripts/patch_onboard_dist.py
-      - translations/**
-      - scripts/**
+      - .github/workflows/build-dist-zhcn.yml
       - patches/**
       - upstream/**
+      - translations/**
   workflow_dispatch: {}
 
 concurrency:
@@ -23,11 +22,21 @@ permissions:
   packages: write
 
 jobs:
+  build-dist:
+    uses: ./.github/workflows/build-dist-zhcn.yml
+
   build-and-push:
+    needs: build-dist
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: openclaw-dist
+          path: injected
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -52,3 +61,7 @@ jobs:
           tags: ghcr.io/deltrivx/openclaw:latest
           provenance: false
           sbom: false
+          build-args: |
+            INJECT_DIST=1
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
