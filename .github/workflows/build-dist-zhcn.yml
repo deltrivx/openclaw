@@ -1,6 +1,7 @@
 name: Build OpenClaw dist (zh-CN onboard)
 
 on:
+  workflow_call: {}
   workflow_dispatch: {}
   push:
     branches: ["main"]
