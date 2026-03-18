@@ -272,3 +272,19 @@ docker compose up -d
 - OpenClaw 自身 UI/提示词是否中文，仍取决于你使用的模型与 prompt。
 - Docker 运行环境中文化（locale / 字体 / 时区）
 - 镜像内 OCR / TTS / 浏览器依赖增强
+
+## TTS 依赖与修复总结（Piper / OpenAI-compatible）
+
+本镜像集成了一个 **Piper TTS** 服务，并以 **OpenAI-compatible** 的形式在容器内提供：
+- 默认地址：`http://127.0.0.1:18793`
+- 用途：给 OpenClaw 的 TTS 能力提供一个本地、可自托管的后端
+
+为保证容器内 TTS 稳定可用，我们在迭代中处理过这些关键依赖/坑位：
+
+- **WORKDIR/启动路径问题**：错误的 `WORKDIR` 会导致 `openclaw.mjs` 启动失败；已移除/修正为不影响 OpenClaw 启动的结构。
+- **uvicorn 导入路径问题**：需要在正确目录启动 `uvicorn`（通过在 `/opt/openclaw-enhanced/docker` 目录内子 shell 启动来规避 import path 偏差）。
+- **缺失依赖 `pathvalidate`**：Piper 相关代码路径处理依赖它，缺失会导致运行期报错；已补齐。
+- **返回音频的方式**：TTS 接口需要直接返回音频字节流；如果用 `FileResponse` 指向临时文件，临时目录清理后会出现“文件不存在/空响应”。已改为 **直接返回 bytes**，并在清理临时文件之前完成读取。
+
+参考修复动作对应的 Actions 快照：
+- `23230410970`（commit `3fbac6a160887ef6dd1011682da35253e68e0f7f`）：fix: return Piper audio bytes directly before temp cleanup
