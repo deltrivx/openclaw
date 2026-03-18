@@ -4,9 +4,9 @@
 ## 适用于任何操作系统的 AI 智能体 Gateway 网关，支持 WhatsApp、Telegram、Discord、iMessage 等。
 
 
-- 基于上游 `ghcr.io/openclaw/openclaw:最新版` 的增强镜像仓库，面向 Docker 的“开箱即用”部署。
+- 基于上游 `ghcr.io/openclaw/openclaw:latest` 的增强镜像仓库，面向 Docker 的“开箱即用”部署。
 
-- 📦 镜像：`ghcr.io/deltrivx/openclaw:最新版`
+- 📦 镜像：`ghcr.io/deltrivx/openclaw:latest`
 - 🛠️ 构建：push 到 `main` 触发 GitHub Actions 自动构建并推送到 GHCR
 
 ---
@@ -27,8 +27,8 @@
 
 ### 1) 🏗️ 镜像构建 / 同步
 
-- 基础镜像：`ghcr.io/openclaw/openclaw:最新版`
-- GitHub Actions：push 到 `main` 自动构建并推送 `ghcr.io/deltrivx/openclaw:最新版`
+- 基础镜像：`ghcr.io/openclaw/openclaw:latest`
+- GitHub Actions：push 到 `main` 自动构建并推送 `ghcr.io/deltrivx/openclaw:latest`
 
 ---
 
@@ -143,7 +143,7 @@
 
 ```bash
 # 1) 拉取镜像
-docker pull ghcr.io/deltrivx/openclaw:最新版
+docker pull ghcr.io/deltrivx/openclaw:latest
 
 # 2) 运行（按需调整挂载路径与端口）
 docker run -d --name openclaw \
@@ -151,7 +151,7 @@ docker run -d --name openclaw \
   -p 18789:18789 \
   -v $HOME/.openclaw:/root/.openclaw \
   -v $HOME/.openclaw/workspace:/root/.openclaw/workspace \
-  ghcr.io/deltrivx/openclaw:最新版
+  ghcr.io/deltrivx/openclaw:latest
 ```
 
 ### 方式 B：docker-compose
@@ -161,7 +161,7 @@ docker run -d --name openclaw \
 ```yaml
 services:
   openclaw:
-    image: ghcr.io/deltrivx/openclaw:最新版
+    image: ghcr.io/deltrivx/openclaw:latest
     container_name: openclaw
     restart: unless-stopped
     ports:
