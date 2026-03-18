@@ -22,6 +22,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
       ca-certificates \
       wget \
       unzip \
+      coreutils \
       libespeak-ng1 \
       npm; \
     rm -rf /var/lib/apt/lists/*

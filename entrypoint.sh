@@ -56,7 +56,8 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
     # Try to enable tailscale serve for OpenClaw port (best-effort)
     log "Attempting: tailscale serve --bg --yes 18789"
     set +e
-    output="$("${TS_ENV[@]}" tailscale serve --bg --yes 18789 2>&1)"
+    # tailscale serve can block briefly during startup; cap it so container boot can't hang.
+    output="$(timeout 15s "${TS_ENV[@]}" tailscale serve --bg --yes 18789 2>&1)"
     rc=$?
     set -e
     log "tailscale serve exit code: $rc"
