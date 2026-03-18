@@ -65,8 +65,10 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf out && mkdir -p out/control-ui
-          # Vite default output is ui/dist
-          cp -R upstream/ui/dist/* out/control-ui/
+
+          # ui:build writes the bundled assets to dist/control-ui
+          test -f upstream/dist/control-ui/index.html
+          cp -R upstream/dist/control-ui/* out/control-ui/
           test -f out/control-ui/index.html
 
       - name: Upload artifact
