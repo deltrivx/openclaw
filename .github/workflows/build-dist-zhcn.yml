@@ -1,0 +1,67 @@
+name: Build OpenClaw dist (zh-CN onboard)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["main"]
+    paths:
+      - patches/openclaw-onboard-zhcn.patch
+      - upstream/openclaw/src/commands/onboard.ts
+      - translations/zh-CN/onboard.json
+      - .github/workflows/build-dist-zhcn.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Checkout upstream openclaw/openclaw
+        uses: actions/checkout@v4
+        with:
+          repository: openclaw/openclaw
+          path: upstream-src
+
+      - name: Apply zh-CN onboard patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd upstream-src
+          git apply --verbose ../patches/openclaw-onboard-zhcn.patch
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10.23.0"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd upstream-src
+          pnpm install --frozen-lockfile
+
+      - name: Build dist
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd upstream-src
+          pnpm build
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openclaw-dist
+          path: |
+            upstream-src/dist/**
+            upstream-src/openclaw.mjs
+            upstream-src/package.json
