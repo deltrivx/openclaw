@@ -1,0 +1,21 @@
+# Keep the build context predictable.
+# Ignore git + docs artifacts, but DO NOT blanket-ignore the whole repo.
+.git
+.github
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+
+# Node/Python caches
+node_modules
+npm-debug.log*
+.yarn
+.pnpm-store
+__pycache__
+*.pyc
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
