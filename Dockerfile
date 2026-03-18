@@ -78,5 +78,8 @@ RUN chmod +x /app/entrypoint.sh
 # Run as root (per user request)
 USER root
 
+# Cosmetic: simplify the default interactive shell prompt (avoid showing "root@openclaw")
+ENV PS1="openclaw# "
+
 CMD ["/app/entrypoint.sh"]
 
