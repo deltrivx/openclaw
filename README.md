@@ -285,6 +285,3 @@ docker compose up -d
 - **uvicorn 导入路径问题**：需要在正确目录启动 `uvicorn`（通过在 `/opt/openclaw-enhanced/docker` 目录内子 shell 启动来规避 import path 偏差）。
 - **缺失依赖 `pathvalidate`**：Piper 相关代码路径处理依赖它，缺失会导致运行期报错；已补齐。
 - **返回音频的方式**：TTS 接口需要直接返回音频字节流；如果用 `FileResponse` 指向临时文件，临时目录清理后会出现“文件不存在/空响应”。已改为 **直接返回 bytes**，并在清理临时文件之前完成读取。
-
-参考修复动作对应的 Actions 快照：
-- `23230410970`（commit `3fbac6a160887ef6dd1011682da35253e68e0f7f`）：fix: return Piper audio bytes directly before temp cleanup
