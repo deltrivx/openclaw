@@ -30,6 +30,6 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 # OpenClaw expects dist/control-ui/index.html
 COPY control-ui/ /app/dist/control-ui/
 
-# Back to non-root (matches upstream)
-USER node
+# Run as root (per user request)
+USER root
 
