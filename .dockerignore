@@ -1,7 +1,10 @@
 # Keep the build context predictable.
 # Ignore git + docs artifacts, but DO NOT blanket-ignore the whole repo.
 .git
-.github
+# Keep workflows in repo; ignore only internal GH metadata.
+.github/**
+!.github/workflows/**
+
 
 # Editor/OS
 .DS_Store
