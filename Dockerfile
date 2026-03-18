@@ -47,5 +47,8 @@ COPY scripts/ /opt/openclaw-enhanced/scripts/
 ARG INJECT_DIST=0
 RUN /bin/bash -lc 'set -euo pipefail; if [ "$INJECT_DIST" = "1" ] && [ -d /injected/dist ]; then echo "[inject] overriding /app/dist"; rm -rf /app/dist; mkdir -p /app/dist; cp -a /injected/dist/. /app/dist/; fi'
 
-# Preserve upstream command
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
+# Entrypoint: attempt config self-heal (doctor --fix) then start gateway
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
