@@ -22,6 +22,26 @@ for bin in openclaw clawhub bun node python3 ffmpeg chromium tesseract ocrmypdf 
   fi
 done
 
+# Optional: start tailscaled so OpenClaw can use `tailscale serve`
+# Use userspace networking to avoid requiring /dev/net/tun + NET_ADMIN in most setups.
+if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
+  mkdir -p /var/run/tailscale /var/lib/tailscale
+  log "Starting tailscaled (userspace networking)"
+  tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state &
+  TS_PID=$!
+
+  # If an auth key is provided, bring the node up automatically.
+  if [ -n "${TS_AUTHKEY:-}" ]; then
+    log "Running tailscale up (authkey provided)"
+    # best-effort: don't fail container boot if tailnet login fails
+    tailscale up --authkey="${TS_AUTHKEY}" --hostname="${TS_HOSTNAME:-openclaw}" --accept-dns=false || true
+  else
+    log "TS_AUTHKEY not set; tailscaled running but not logged in"
+  fi
+else
+  TS_PID=""
+fi
+
 # Start TTS server in background
 node /app/tts-server.mjs &
 TTS_PID=$!
@@ -30,5 +50,8 @@ TTS_PID=$!
 # Keep args minimal; users can override CMD in docker run if needed.
 node /app/openclaw.mjs gateway --allow-unconfigured
 
-# If gateway exits, stop TTS
+# If gateway exits, stop background services
 kill "$TTS_PID" 2>/dev/null || true
+if [ -n "${TS_PID:-}" ]; then
+  kill "$TS_PID" 2>/dev/null || true
+fi
