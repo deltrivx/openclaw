@@ -29,7 +29,7 @@ RUN apt-get update \
  && echo $TZ > /etc/timezone \
  && python3 -m venv /opt/venv \
  && /opt/venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
- && /opt/venv/bin/pip install --no-cache-dir fastapi uvicorn openedai-speech piper-tts \
+ && /opt/venv/bin/pip install --no-cache-dir fastapi uvicorn piper-tts \
  && mkdir -p "$PIPER_MODELS_DIR" /root/.agents/skills \
  && curl -fsSL -o "$PIPER_MODELS_DIR/$PIPER_VOICE.onnx" \
       https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh_CN/huayan/medium/zh_CN-huayan-medium.onnx \
@@ -39,9 +39,10 @@ RUN apt-get update \
 
 ENV PATH=/opt/venv/bin:$PATH
 
-COPY docker/entrypoint.sh /usr/local/bin/openclaw-enhanced-entrypoint.sh
+COPY docker /opt/openclaw-enhanced/docker
 COPY docs/zh /opt/openclaw-zh-docs
-RUN chmod +x /usr/local/bin/openclaw-enhanced-entrypoint.sh
+RUN chmod +x /opt/openclaw-enhanced/docker/entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/openclaw-enhanced-entrypoint.sh"]
+WORKDIR /opt/openclaw-enhanced
+ENTRYPOINT ["/opt/openclaw-enhanced/docker/entrypoint.sh"]
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
