@@ -65,6 +65,12 @@ RUN mkdir -p "$PIPER_MODELS_DIR" \
 # (upstream image already provides an openclaw binary)
 RUN npm install --omit=dev --prefix /opt/openclaw-zh @qingchencloud/openclaw-zh@nightly \
  && node -e "console.log('openclaw-zh version:', require('/opt/openclaw-zh/node_modules/@qingchencloud/openclaw-zh/package.json').version)"
+ \
+ && (PKG=/opt/openclaw-zh/node_modules/@qingchencloud/openclaw-zh; \
+     if [ ! -e "$PKG/dist/extensions" ] && [ -d "$PKG/extensions" ]; then \
+       mkdir -p "$PKG/dist"; \
+       ln -sf ../extensions "$PKG/dist/extensions"; \
+     fi)
 
 # Skills default dir
 RUN mkdir -p /root/.agents/skills
