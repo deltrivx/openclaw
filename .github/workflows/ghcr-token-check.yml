@@ -1,0 +1,28 @@
+name: GHCR_TOKEN Scope Check
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check-read-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check read:packages via GitHub API
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://api.github.com/user/packages/container/openclaw/versions?per_page=1"
+          code=$(curl -sS -o /tmp/pkg.json -w "%{http_code}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GHCR_TOKEN }}" \
+            "$url" || true)
+          echo "status=$code"
+          if [[ "$code" == "200" ]]; then
+            echo "OK: GHCR_TOKEN can read package versions (read:packages likely present)"
+          else
+            echo "NO: GHCR_TOKEN cannot read package versions (likely missing read:packages)"
+            cat /tmp/pkg.json || true
+          fi
