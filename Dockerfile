@@ -23,7 +23,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
       wget \
       unzip \
       libespeak-ng1 \
-      npm; \
+      npm \
+      tailscale; \
     rm -rf /var/lib/apt/lists/*
 
 # Piper (offline TTS)
