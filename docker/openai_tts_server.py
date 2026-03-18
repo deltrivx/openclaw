@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import Response
 from pydantic import BaseModel
 from pathlib import Path
 import os
@@ -78,8 +78,7 @@ def speech(req: SpeechRequest):
             raise HTTPException(status_code=500, detail="piper produced empty wav (0KB)")
 
         if fmt == "wav":
-            media_type = "audio/wav"
-            return FileResponse(path=wav_path, media_type=media_type, filename="speech.wav")
+            return Response(content=wav_path.read_bytes(), media_type="audio/wav")
 
         ff = subprocess.run(
             [FFMPEG_BIN, "-y", "-i", str(wav_path), "-codec:a", "libmp3lame", "-q:a", "2", str(out_path)],
@@ -91,4 +90,4 @@ def speech(req: SpeechRequest):
         if not out_path.exists() or out_path.stat().st_size == 0:
             raise HTTPException(status_code=500, detail="ffmpeg produced empty mp3 (0KB)")
 
-        return FileResponse(path=out_path, media_type="audio/mpeg", filename="speech.mp3")
+        return Response(content=out_path.read_bytes(), media_type="audio/mpeg")
