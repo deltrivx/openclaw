@@ -75,9 +75,15 @@ async function synthesize({ input, voice, response_format }) {
   const mp3Path = path.join(dir, "out.mp3");
 
   // Piper reads text from stdin; write wav to file.
-  await run(PIPER_BIN, ["--model", modelPath, "--config", configPath, "--output_file", wavPath], {
-    stdinText: input,
-  });
+  // Some Piper builds may not require/accept --config; try with config first, then without.
+  try {
+    await run(PIPER_BIN, ["--model", modelPath, "--config", configPath, "--output_file", wavPath], {
+      stdinText: input,
+    });
+  } catch (e) {
+    console.error(`[tts] piper failed with --config; retrying without --config: ${String(e?.message || e)}`);
+    await run(PIPER_BIN, ["--model", modelPath, "--output_file", wavPath], { stdinText: input });
+  }
 
   const wavSize = await fileSize(wavPath);
   if (wavSize <= 44) {
@@ -90,7 +96,19 @@ async function synthesize({ input, voice, response_format }) {
     return { contentType: "audio/wav", bytes: buf };
   }
 
-  await run(FFMPEG_BIN, ["-y", "-hide_banner", "-loglevel", "error", "-i", wavPath, "-codec:a", "libmp3lame", "-q:a", "2", mp3Path]);
+  await run(FFMPEG_BIN, [
+    "-y",
+    "-hide_banner",
+    "-loglevel",
+    "error",
+    "-i",
+    wavPath,
+    "-codec:a",
+    "libmp3lame",
+    "-q:a",
+    "2",
+    mp3Path,
+  ]);
   const mp3Size = await fileSize(mp3Path);
   if (mp3Size <= 0) {
     throw new Error("ffmpeg produced empty mp3");
@@ -110,7 +128,9 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "POST" && req.url === "/v1/audio/speech") {
       const body = await readJson(req);
       const { input, voice, response_format } = body;
+      console.log(`[tts] request: voice=${voice || DEFAULT_VOICE} format=${response_format || "mp3"} chars=${typeof input === "string" ? input.length : 0}`);
       const out = await synthesize({ input, voice, response_format });
+      console.log(`[tts] response: ${out.contentType} bytes=${out.bytes.length}`);
       res.writeHead(200, {
         "content-type": out.contentType,
         "content-length": String(out.bytes.length),
