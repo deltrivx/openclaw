@@ -270,3 +270,5 @@ docker compose up -d
 
 > 说明：这主要影响容器内的时间显示、日志输出、以及浏览器/截图/HTML 渲染时的中文字体显示。
 > OpenClaw 自身 UI/提示词是否中文，仍取决于你使用的模型与 prompt。
+> Docker 运行环境中文化（locale / 字体 / 时区）
+> 镜像内 OCR / TTS / 浏览器依赖增强
