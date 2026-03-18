@@ -36,8 +36,9 @@ RUN apt-get update \
 COPY translations/ /opt/openclaw-enhanced/translations/
 COPY scripts/ /opt/openclaw-enhanced/scripts/
 
-# Phase 1-2 (A): patch onboard user-visible strings in the compiled base image output
-RUN python3 /opt/openclaw-enhanced/scripts/patch_onboard_dist.py
+# NOTE: We previously attempted to patch compiled JS output for zh-CN onboarding.
+# That approach caused runtime SyntaxError on some deployments (e.g., Unraid).
+# Keep the image stable: do not patch compiled output at build time.
 
 # Preserve upstream command
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
