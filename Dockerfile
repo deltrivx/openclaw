@@ -20,7 +20,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
       poppler-utils \
       jq \
       ca-certificates \
-      wget; \
+      wget \
+      libespeak-ng1; \
     rm -rf /var/lib/apt/lists/*
 
 # Piper (offline TTS)

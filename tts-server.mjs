@@ -41,9 +41,18 @@ function run(cmd, args, { stdinText } = {}) {
       reject(new Error(`${cmd} exited with code ${code}: ${stderr}`));
     });
     if (stdinText !== undefined) {
-      child.stdin.write(stdinText);
+      // Avoid crashing on EPIPE when child exits early.
+      try {
+        child.stdin.write(stdinText);
+      } catch {
+        // ignore
+      }
     }
-    child.stdin.end();
+    try {
+      child.stdin.end();
+    } catch {
+      // ignore
+    }
   });
 }
 
