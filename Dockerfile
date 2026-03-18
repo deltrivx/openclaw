@@ -27,14 +27,14 @@ RUN --mount=type=cache,target=/var/cache/apt \
 # Piper (offline TTS)
 # We download a prebuilt piper binary and the zh_CN-huayan-medium model.
 RUN set -eux; \
-    mkdir -p /opt/piper/bin /opt/piper/models /tmp/piper; \
+    mkdir -p /opt/piper /opt/piper/models /tmp/piper; \
     wget -O /tmp/piper/piper_linux_x86_64.tar.gz \
       "https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64.tar.gz"; \
-    tar -xzf /tmp/piper/piper_linux_x86_64.tar.gz -C /tmp/piper; \
-    # Find the piper binary inside the extracted bundle
-    find /tmp/piper -type f -name piper -exec cp -f {} /opt/piper/bin/piper \; -quit; \
-    chmod +x /opt/piper/bin/piper; \
+    tar -xzf /tmp/piper/piper_linux_x86_64.tar.gz -C /opt/piper; \
     rm -rf /tmp/piper; \
+    # Ensure binary is executable (path differs by release packaging)
+    if [ -f /opt/piper/piper ]; then chmod +x /opt/piper/piper; fi; \
+    if [ -f /opt/piper/bin/piper ]; then chmod +x /opt/piper/bin/piper; fi; \
     wget -O "/opt/piper/models/zh_CN-huayan-medium.onnx" \
       "https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx"; \
     wget -O "/opt/piper/models/zh_CN-huayan-medium.onnx.json" \
@@ -50,7 +50,9 @@ COPY control-ui/ /app/dist/control-ui/
 
 # TTS server (OpenAI-compatible): http://127.0.0.1:18793/v1/audio/speech
 COPY tts-server.mjs /app/tts-server.mjs
-ENV PIPER_BIN=/opt/piper/bin/piper \
+# Piper binary location varies by release packaging; prefer /opt/piper/piper, fallback to /opt/piper/bin/piper
+ENV PIPER_BIN=/opt/piper/piper \
+    PIPER_BIN_FALLBACK=/opt/piper/bin/piper \
     PIPER_MODELS_DIR=/opt/piper/models \
     PIPER_DEFAULT_VOICE=zh_CN-huayan-medium \
     TTS_BIND=127.0.0.1 \

@@ -11,6 +11,7 @@ const MODELS_DIR = process.env.PIPER_MODELS_DIR ?? "/opt/piper/models";
 const DEFAULT_VOICE = process.env.PIPER_DEFAULT_VOICE ?? "zh_CN-huayan-medium";
 
 const PIPER_BIN = process.env.PIPER_BIN ?? "/usr/local/bin/piper";
+const PIPER_BIN_FALLBACK = process.env.PIPER_BIN_FALLBACK;
 const FFMPEG_BIN = process.env.FFMPEG_BIN ?? "ffmpeg";
 
 function sendJson(res, status, obj) {
@@ -30,9 +31,9 @@ async function readJson(req) {
   return JSON.parse(raw);
 }
 
-function run(cmd, args, { stdinText } = {}) {
+function run(cmd, args, { stdinText, env } = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, { stdio: ["pipe", "pipe", "pipe"] });
+    const child = spawn(cmd, args, { stdio: ["pipe", "pipe", "pipe"], env: env ?? process.env });
     let stderr = "";
     child.stderr.on("data", (d) => (stderr += d.toString("utf-8")));
     child.on("error", reject);
@@ -40,8 +41,11 @@ function run(cmd, args, { stdinText } = {}) {
       if (code === 0) return resolve({ stderr });
       reject(new Error(`${cmd} exited with code ${code}: ${stderr}`));
     });
+    // Avoid crashing on EPIPE when child exits early.
+    child.stdin.on("error", () => {
+      // ignore EPIPE
+    });
     if (stdinText !== undefined) {
-      // Avoid crashing on EPIPE when child exits early.
       try {
         child.stdin.write(stdinText);
       } catch {
@@ -84,14 +88,44 @@ async function synthesize({ input, voice, response_format }) {
   const mp3Path = path.join(dir, "out.mp3");
 
   // Piper reads text from stdin; write wav to file.
-  // Some Piper builds may not require/accept --config; try with config first, then without.
+  // Some Piper bundles have different CLI behavior and/or ship extra shared libs alongside.
+  const piperEnv = { ...process.env };
+  // Prefer LD_LIBRARY_PATH so bundled .so next to the binary can be resolved.
   try {
-    await run(PIPER_BIN, ["--model", modelPath, "--config", configPath, "--output_file", wavPath], {
-      stdinText: input,
-    });
-  } catch (e) {
-    console.error(`[tts] piper failed with --config; retrying without --config: ${String(e?.message || e)}`);
-    await run(PIPER_BIN, ["--model", modelPath, "--output_file", wavPath], { stdinText: input });
+    const binDir = path.dirname(PIPER_BIN);
+    piperEnv.LD_LIBRARY_PATH = piperEnv.LD_LIBRARY_PATH
+      ? `${binDir}:${piperEnv.LD_LIBRARY_PATH}`
+      : binDir;
+  } catch {
+    // ignore
+  }
+
+  async function runPiper(bin, args) {
+    return run(bin, args, { stdinText: input, env: piperEnv });
+  }
+
+  // Try with --config first, then without, then fallback binary if provided.
+  const attempts = [];
+  attempts.push([PIPER_BIN, ["--model", modelPath, "--config", configPath, "--output_file", wavPath]]);
+  attempts.push([PIPER_BIN, ["--model", modelPath, "--output_file", wavPath]]);
+  if (PIPER_BIN_FALLBACK) {
+    attempts.push([PIPER_BIN_FALLBACK, ["--model", modelPath, "--config", configPath, "--output_file", wavPath]]);
+    attempts.push([PIPER_BIN_FALLBACK, ["--model", modelPath, "--output_file", wavPath]]);
+  }
+
+  let lastErr;
+  for (const [bin, args] of attempts) {
+    try {
+      await runPiper(bin, args);
+      lastErr = null;
+      break;
+    } catch (e) {
+      lastErr = e;
+      console.error(`[tts] piper attempt failed: bin=${bin} args=${args.join(" ")} err=${String(e?.message || e)}`);
+    }
+  }
+  if (lastErr) {
+    throw lastErr;
   }
 
   const wavSize = await fileSize(wavPath);
