@@ -60,14 +60,17 @@
 
 #### 🗣️ TTS：本地离线 Piper（OpenAI 兼容）
 
-- 通过镜像内置的 **OpenAI 兼容** TTS 适配层（FastAPI + Piper）提供给 OpenClaw
+- 通过镜像内置的 **OpenAI 兼容** TTS 服务（Node.js + Piper + FFmpeg）提供给 OpenClaw
 - TTS API（容器内）：`http://127.0.0.1:18793/v1/audio/speech`
 
-> 说明：该接口为 OpenAI `POST /v1/audio/speech` 兼容实现，底层调用 `piper` 生成 wav，再用 `ffmpeg` 转为 mp3。
-> 支持 `response_format（返回格式）`: `mp3`/`wav`，`voice` 对应 `$PIPER_MODELS_DIR/<voice>.onnx`。
-  - 默认端口使用 **18793**（避免与 OpenClaw 浏览器/relay 组件端口冲突）
-- 默认音色（voice）：`zh_CN-huayan-medium`（更偏日常、更自然）
-- 输出：`mp3`
+> 说明：该接口为 OpenAI `POST /v1/audio/speech` 兼容实现：
+> - Piper 生成 `wav`
+> - FFmpeg 转码为 `mp3`（或直接返回 `wav`）
+> - `voice` 对应 `$PIPER_MODELS_DIR/<voice>.onnx`
+
+- 默认端口：**18793**（避免与 OpenClaw 浏览器/relay 组件端口冲突）
+- 默认音色（voice）：`zh_CN-huayan-medium`
+- 默认输出：`mp3`
 
 #### 接口兼容性说明
 
@@ -230,6 +233,26 @@ docker compose up -d
 
 ---
 
+## 🧯 TTS（Piper）0KB 语音排障（已修复）
+
+> 你之前遇到的 0KB 语音问题，已在镜像构建中通过“补依赖 + 保留完整 Piper bundle + 防 EPIPE + 统一二进制路径”解决。
+
+- 关键依赖：`libespeak-ng1`
+- 关键动态库：`libpiper_phonemize.so.1`（随 Piper bundle 提供）
+- 关键修复：避免 `EPIPE` 造成 TTS 服务崩溃
+- 路径规范：构建时统一 `piper` 到 `/opt/piper/bin/piper`
+
+更详细说明见本段下方“快速检查点”。
+
+### 快速检查点
+
+- 容器日志出现：`[tts] listening on http://127.0.0.1:18793`
+- 触发一次语音后出现：
+  - `[tts] request: ...`
+  - `[tts] response: audio/mpeg bytes=...`
+
+---
+
 ## 🔎 重要说明（避免踩坑）
 
 ### GitHub Actions 构建触发条件
@@ -243,17 +266,17 @@ docker compose up -d
 
 ### TTS 端口是否可被容器外访问
 
-镜像内置的 OpenAI 兼容 TTS 服务默认绑定在 本机回环：
+镜像内置的 OpenAI 兼容 TTS 服务默认绑定在本机回环：
 
-- `PIPER_HOST=127.0.0.1`
-- `PIPER_PORT=18793`
+- `TTS_BIND=127.0.0.1`
+- `TTS_PORT=18793`
 
-这意味着：即便你在 `docker run` 里做了 `-p 18793:18793`，如果不改 `PIPER_HOST`，宿主机/局域网也访问不到该端口。
+这意味着：即便你在 `docker run` 里做了 `-p 18793:18793`，如果不改 `TTS_BIND`，宿主机/局域网也访问不到该端口。
 
 如需对外提供（⚠️ 注意安全风险），请显式设置：
 
 ```bash
--e PIPER_HOST=0.0.0.0
+-e TTS_BIND=0.0.0.0
 ```
 
 
