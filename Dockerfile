@@ -4,9 +4,7 @@
 
 FROM ghcr.io/openclaw/openclaw:latest
 
-# Path used by CI to inject built dist (directory may be empty for non-CI builds)
-# We create it and only copy when present.
-RUN mkdir -p /injected
+# Path used by CI to inject built dist
 COPY injected/ /injected/
 
 USER root
