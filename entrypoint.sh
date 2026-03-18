@@ -54,6 +54,7 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
     log "tailscale ip: $("${TS_ENV[@]}" tailscale ip -4 2>/dev/null | tr '\n' ' ' || true)"
 
     # Try to enable tailscale serve for OpenClaw port (best-effort)
+    log "Attempting: tailscale serve --bg --yes 18789"
     set +e
     output="$("${TS_ENV[@]}" tailscale serve --bg --yes 18789 2>&1)"
     rc=$?
