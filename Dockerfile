@@ -81,6 +81,8 @@ USER root
 
 # Cosmetic: simplify the default interactive shell prompt (avoid showing "root@openclaw")
 ENV PS1="openclaw# "
+# Make bash respect it (bashrc can override ENV PS1)
+RUN printf '\n# cosmetic prompt\nexport PS1="openclaw# "\n' >> /root/.bashrc
 
 CMD ["/app/entrypoint.sh"]
 
