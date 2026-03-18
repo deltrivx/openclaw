@@ -29,7 +29,7 @@ RUN apt-get update \
  && echo $TZ > /etc/timezone \
  && python3 -m venv /opt/venv \
  && /opt/venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
- && /opt/venv/bin/pip install --no-cache-dir fastapi uvicorn piper-tts \
+ && /opt/venv/bin/pip install --no-cache-dir fastapi uvicorn piper-tts pathvalidate \
  && mkdir -p "$PIPER_MODELS_DIR" /root/.agents/skills \
  && curl -fsSL -o "$PIPER_MODELS_DIR/$PIPER_VOICE.onnx" \
       https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh_CN/huayan/medium/zh_CN-huayan-medium.onnx \
