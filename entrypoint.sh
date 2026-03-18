@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Ensure pipeline failures propagate (needed for tailscale serve diagnostics)
+set -o pipefail
+
 log() {
   printf '%s %s\n' "[entrypoint]" "$*"
 }
@@ -49,10 +52,16 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
     log "tailscale ip: $(tailscale ip -4 2>/dev/null | tr '\n' ' ' || true)"
 
     # Try to enable tailscale serve for OpenClaw port (best-effort)
-    if tailscale serve --bg --yes 18789 2>&1 | sed 's/^/[tailscale serve] /'; then
+    set +e
+    output="$(tailscale serve --bg --yes 18789 2>&1)"
+    rc=$?
+    set -e
+    if [ $rc -eq 0 ]; then
+      printf '%s\n' "$output" | sed 's/^/[tailscale serve] /'
       log "tailscale serve enabled for 18789"
     else
-      log "tailscale serve failed; dumping status"
+      printf '%s\n' "$output" | sed 's/^/[tailscale serve] /'
+      log "tailscale serve failed (rc=$rc); dumping status"
       tailscale status 2>&1 | sed 's/^/[tailscale status] /' || true
       tailscale serve status 2>&1 | sed 's/^/[tailscale serve status] /' || true
     fi
