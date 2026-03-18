@@ -30,18 +30,20 @@ done
 if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
   mkdir -p /var/run/tailscale /var/lib/tailscale
   log "Starting tailscaled (userspace networking)"
-  tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state &
+  # Avoid proxy interference with Tailscale control-plane connections.
+  TS_ENV=(env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u NO_PROXY)
+  "${TS_ENV[@]}" tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state &
   TS_PID=$!
 
   # If an auth key is provided, bring the node up automatically.
   if [ -n "${TS_AUTHKEY:-}" ]; then
     log "Running tailscale up (authkey provided)"
     # best-effort: don't fail container boot if tailnet login fails
-    tailscale up --authkey="${TS_AUTHKEY}" --hostname="${TS_HOSTNAME:-openclaw}" --accept-dns=false || true
+    "${TS_ENV[@]}" tailscale up --authkey="${TS_AUTHKEY}" --hostname="${TS_HOSTNAME:-openclaw}" --accept-dns=false || true
 
     # Wait briefly for Tailscale to reach Running
     for i in 1 2 3 4 5; do
-      state="$(tailscale status --json 2>/dev/null | node -e 'let d="";process.stdin.on("data",c=>d+=c);process.stdin.on("end",()=>{try{const j=JSON.parse(d);console.log(j.BackendState||"");}catch{console.log("");}})')" || true
+      state="$("${TS_ENV[@]}" tailscale status --json 2>/dev/null | node -e 'let d="";process.stdin.on("data",c=>d+=c);process.stdin.on("end",()=>{try{const j=JSON.parse(d);console.log(j.BackendState||"");}catch{console.log("");}})')" || true
       log "tailscale backend state: ${state:-<unknown>}"
       if [ "$state" = "Running" ]; then
         break
@@ -49,11 +51,11 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
       sleep 1
     done
 
-    log "tailscale ip: $(tailscale ip -4 2>/dev/null | tr '\n' ' ' || true)"
+    log "tailscale ip: $("${TS_ENV[@]}" tailscale ip -4 2>/dev/null | tr '\n' ' ' || true)"
 
     # Try to enable tailscale serve for OpenClaw port (best-effort)
     set +e
-    output="$(tailscale serve --bg --yes 18789 2>&1)"
+    output="$("${TS_ENV[@]}" tailscale serve --bg --yes 18789 2>&1)"
     rc=$?
     set -e
     if [ $rc -eq 0 ]; then
@@ -62,8 +64,8 @@ if [ "${OPENCLAW_ENABLE_TAILSCALE:-}" = "1" ]; then
     else
       printf '%s\n' "$output" | sed 's/^/[tailscale serve] /'
       log "tailscale serve failed (rc=$rc); dumping status"
-      tailscale status 2>&1 | sed 's/^/[tailscale status] /' || true
-      tailscale serve status 2>&1 | sed 's/^/[tailscale serve status] /' || true
+      "${TS_ENV[@]}" tailscale status 2>&1 | sed 's/^/[tailscale status] /' || true
+      "${TS_ENV[@]}" tailscale serve status 2>&1 | sed 's/^/[tailscale serve status] /' || true
     fi
   else
     log "TS_AUTHKEY not set; tailscaled running but not logged in"
