@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # OpenClaw Enhanced Image (minimal buildable baseline)
-# This phase intentionally avoids COPY of non-existent paths; we will add onboard/webui/cli and translations in later phases.
+# Phase 1 (onboard zh-CN groundwork): add repo-local translations/ + scripts/i18n for later patching.
 
 FROM ghcr.io/openclaw/openclaw:latest
 
@@ -31,6 +31,10 @@ RUN apt-get update \
  && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
  && echo $TZ > /etc/timezone \
  && rm -rf /var/lib/apt/lists/*
+
+# Repo-local translation assets (used by later phases to patch onboard/webui/cli)
+COPY translations/ /opt/openclaw-enhanced/translations/
+COPY scripts/ /opt/openclaw-enhanced/scripts/
 
 # Preserve upstream command
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
