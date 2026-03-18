@@ -9,9 +9,6 @@ import { DEFAULT_WORKSPACE, handleReset } from "./onboard-helpers.js";
 import { runInteractiveSetup } from "./onboard-interactive.js";
 import { runNonInteractiveSetup } from "./onboard-non-interactive.js";
 import type { OnboardOptions, ResetScope } from "./onboard-types.js";
-import { loadTranslator } from "../i18n/translate.js";
-
-const t = loadTranslator("zh-CN", "onboard");
 
 const VALID_RESET_SCOPES = new Set<ResetScope>(["config", "config+creds+sessions", "full"]);
 
@@ -24,12 +21,14 @@ export async function setupWizardCommand(
   const normalizedAuthChoice = normalizeLegacyOnboardAuthChoice(originalAuthChoice);
   if (opts.nonInteractive && isDeprecatedAuthChoice(originalAuthChoice)) {
     runtime.error(
-      t("auth_choice_deprecated", { choice: String(originalAuthChoice) }),
+      [
+        `认证方式 "${String(originalAuthChoice)}" 已弃用。`,
+        '请使用 "--auth-choice token"（Anthropic setup-token）或 "--auth-choice openai-codex"。',
+      ].join("\n"),
     );
     runtime.exit(1);
     return;
   }
-  // zh-CN i18n: keep these logs in English for now (low user impact).
   if (originalAuthChoice === "claude-cli") {
     runtime.log('Auth choice "claude-cli" is deprecated; using setup-token flow instead.');
   }
@@ -46,13 +45,13 @@ export async function setupWizardCommand(
     normalizedOpts.secretInputMode !== "plaintext" && // pragma: allowlist secret
     normalizedOpts.secretInputMode !== "ref" // pragma: allowlist secret
   ) {
-    runtime.error(t("secret_input_mode_invalid"));
+    runtime.error('无效的 --secret-input-mode。请使用 "plaintext" 或 "ref"。');
     runtime.exit(1);
     return;
   }
 
   if (normalizedOpts.resetScope && !VALID_RESET_SCOPES.has(normalizedOpts.resetScope)) {
-    runtime.error(t("reset_scope_invalid"));
+    runtime.error('无效的 --reset-scope。请使用 "config"、"config+creds+sessions" 或 "full"。');
     runtime.exit(1);
     return;
   }
@@ -60,11 +59,9 @@ export async function setupWizardCommand(
   if (normalizedOpts.nonInteractive && normalizedOpts.acceptRisk !== true) {
     runtime.error(
       [
-        t("non_interactive_requires_risk_1"),
-        t("non_interactive_requires_risk_2", { url: "https://docs.openclaw.ai/security" }),
-        t("non_interactive_requires_risk_3", {
-          cmd: formatCliCommand("openclaw onboard --non-interactive --accept-risk ..."),
-        }),
+        "非交互式安装需要显式确认风险。",
+        "请阅读：https://docs.openclaw.ai/security",
+        `请使用以下命令重新运行：${formatCliCommand("openclaw onboard --non-interactive --accept-risk ...")}`,
       ].join("\n"),
     );
     runtime.exit(1);
@@ -83,10 +80,10 @@ export async function setupWizardCommand(
   if (process.platform === "win32") {
     runtime.log(
       [
-        t("windows_detected_1"),
-        t("windows_detected_2"),
-        t("windows_detected_3"),
-        t("windows_detected_4", { url: "https://docs.openclaw.ai/windows" }),
+        "检测到 Windows —— OpenClaw 在 WSL2 上运行体验更好！",
+        "原生 Windows 环境可能更棘手。",
+        "快速安装：wsl --install（1 条命令 + 1 次重启）",
+        "指南：https://docs.openclaw.ai/windows",
       ].join("\n"),
     );
   }
