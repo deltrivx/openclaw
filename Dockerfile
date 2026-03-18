@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 # Enhanced image based on upstream OpenClaw runtime image.
-FROM ghcr.io/openclaw/openclaw:latest
+FROM ghcr.io/openclaw/openclaw:latestFF
 
 USER root
 WORKDIR /app
@@ -80,9 +80,9 @@ RUN chmod +x /app/entrypoint.sh
 USER root
 
 # Cosmetic: simplify the default interactive shell prompt (avoid showing "root@openclaw")
-ENV PS1="openclaw# "
+ENV PS1="# "
 # Make bash respect it (bashrc can override ENV PS1)
-RUN printf '\n# cosmetic prompt\nexport PS1="openclaw# "\n' >> /root/.bashrc
+RUN printf '\n# cosmetic prompt\nexport PS1="# "\n' >> /root/.bashrc
 
 CMD ["/app/entrypoint.sh"]
 
