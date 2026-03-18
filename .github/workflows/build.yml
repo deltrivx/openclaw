@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/openclaw
+  IMAGE_NAME: ghcr.io/deltrivx/openclaw
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -99,7 +99,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: deltrivx
           password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Docker metadata
