@@ -32,9 +32,12 @@ RUN apt-get update \
  && echo $TZ > /etc/timezone \
  && rm -rf /var/lib/apt/lists/*
 
-# Repo-local translation assets (used by later phases to patch onboard/webui/cli)
+# Repo-local translation assets / patch scripts
 COPY translations/ /opt/openclaw-enhanced/translations/
 COPY scripts/ /opt/openclaw-enhanced/scripts/
+
+# Phase 1-2 (A): patch onboard user-visible strings in the compiled base image output
+RUN python3 /opt/openclaw-enhanced/scripts/patch_onboard_dist.py
 
 # Preserve upstream command
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
