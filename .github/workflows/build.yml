@@ -42,7 +42,10 @@ jobs:
           cache-dependency-path: upstream/pnpm-lock.yaml
 
       - name: Enable corepack (pnpm)
-        run: corepack enable
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Install deps (upstream)
         working-directory: upstream
