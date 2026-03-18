@@ -19,8 +19,20 @@ RUN --mount=type=cache,target=/var/cache/apt \
       ocrmypdf \
       poppler-utils \
       jq \
-      ca-certificates; \
+      ca-certificates \
+      wget; \
     rm -rf /var/lib/apt/lists/*
+
+# Piper (offline TTS)
+# We download a prebuilt piper binary and the zh_CN-huayan-medium model.
+RUN set -eux; \
+    mkdir -p /opt/piper/bin /opt/piper/models; \
+    wget -O /opt/piper/bin/piper "https://github.com/rhasspy/piper/releases/latest/download/piper_linux_x86_64"; \
+    chmod +x /opt/piper/bin/piper; \
+    wget -O "/opt/piper/models/zh_CN-huayan-medium.onnx" \
+      "https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx"; \
+    wget -O "/opt/piper/models/zh_CN-huayan-medium.onnx.json" \
+      "https://huggingface.co/csukuangfj/vits-piper-zh_CN-huayan-medium/resolve/main/zh_CN-huayan-medium.onnx.json";
 
 # Playwright: use system Chromium
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
@@ -30,6 +42,20 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 # OpenClaw expects dist/control-ui/index.html
 COPY control-ui/ /app/dist/control-ui/
 
+# TTS server (OpenAI-compatible): http://127.0.0.1:18793/v1/audio/speech
+COPY tts-server.mjs /app/tts-server.mjs
+ENV PIPER_BIN=/opt/piper/bin/piper \
+    PIPER_MODELS_DIR=/opt/piper/models \
+    PIPER_DEFAULT_VOICE=zh_CN-huayan-medium \
+    TTS_BIND=127.0.0.1 \
+    TTS_PORT=18793
+
+# Supervisor: run TTS server + OpenClaw gateway
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Run as root (per user request)
 USER root
+
+CMD ["/app/entrypoint.sh"]
 
