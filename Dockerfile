@@ -57,21 +57,12 @@ RUN mkdir -p "$PIPER_MODELS_DIR" \
  && curl -fsSL -o "$PIPER_MODELS_DIR/$PIPER_VOICE.onnx.json" \
     https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh_CN/huayan/medium/zh_CN-huayan-medium.onnx.json
 
-# --- Chinese translation (nightly) ---
-# Reference: https://github.com/1186258278/OpenClawChineseTranslation/releases/tag/nightly
-# Install the translated distribution as a global CLI.
-# We intentionally do NOT patch /app/dist bundles to keep compatibility with upstream updates.
-# Install into an isolated prefix to avoid clobbering the upstream /usr/local/bin/openclaw
-# (upstream image already provides an openclaw binary)
-RUN set -eux; \
-  npm install --omit=dev --prefix /opt/openclaw-zh @qingchencloud/openclaw-zh@nightly; \
-  node -e "console.log('openclaw-zh version:', require('/opt/openclaw-zh/node_modules/@qingchencloud/openclaw-zh/package.json').version)"; \
-  PKG=/opt/openclaw-zh/node_modules/@qingchencloud/openclaw-zh; \
-  if [ ! -e "$PKG/dist/extensions" ] && [ -d "$PKG/extensions" ]; then \
-    mkdir -p "$PKG/dist"; \
-    ln -sf ../extensions "$PKG/dist/extensions"; \
-  fi
+# --- Chinese translations (vendored) ---
+# We vendor translation rule files into this repo under ./translations
+# to avoid depending on external translation artifacts (npm/GitHub releases).
+COPY translations/ /opt/openclaw-zh/translations/
 
+# Skills default dir
 # Skills default dir
 RUN mkdir -p /root/.agents/skills
 
@@ -87,4 +78,4 @@ EXPOSE 18789
 EXPOSE 18793
 
 # Use the Chinese translated OpenClaw CLI as the main command
-CMD ["node", "/opt/openclaw-zh/node_modules/@qingchencloud/openclaw-zh/openclaw.mjs", "gateway", "--allow-unconfigured"]
+CMD ["openclaw", "gateway", "--allow-unconfigured"]
