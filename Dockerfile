@@ -23,8 +23,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
       wget \
       unzip \
       libespeak-ng1 \
-      npm \
-      tailscale; \
+      npm; \
     rm -rf /var/lib/apt/lists/*
 
 # Piper (offline TTS)
@@ -54,6 +53,10 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 RUN npm i -g clawhub && \
     curl -fsSL https://bun.sh/install | bash && \
     ln -sf /root/.bun/bin/bun /usr/local/bin/bun
+
+# Tailscale (optional; eliminates "spawn tailscale ENOENT" when enabled)
+COPY install-tailscale.sh /tmp/install-tailscale.sh
+RUN bash /tmp/install-tailscale.sh && rm -f /tmp/install-tailscale.sh
 
 # Copy prebuilt Control UI (built in GitHub Actions)
 # OpenClaw expects dist/control-ui/index.html
