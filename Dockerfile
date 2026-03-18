@@ -43,6 +43,5 @@ COPY docker /opt/openclaw-enhanced/docker
 COPY docs/zh /opt/openclaw-zh-docs
 RUN chmod +x /opt/openclaw-enhanced/docker/entrypoint.sh
 
-WORKDIR /opt/openclaw-enhanced
 ENTRYPOINT ["/opt/openclaw-enhanced/docker/entrypoint.sh"]
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
