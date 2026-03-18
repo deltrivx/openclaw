@@ -24,6 +24,8 @@ permissions:
 jobs:
   build-dist:
     uses: ./.github/workflows/build-dist-zhcn.yml
+    permissions:
+      contents: read
 
   build-and-push:
     needs: build-dist
