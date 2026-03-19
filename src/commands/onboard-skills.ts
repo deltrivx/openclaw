@@ -122,7 +122,7 @@ export async function setupSkills(
         "推荐使用 Homebrew",
       );
       const showBrewInstall = await prompter.confirm({
-        message: "Show Homebrew install command?",
+        message: "要显示 Homebrew 安装命令吗？",
         initialValue: true,
       });
       if (showBrewInstall) {

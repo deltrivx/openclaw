@@ -79,7 +79,7 @@ export async function runCollectedChannelOnboardingPostWriteHooks(params: {
 }
 
 function formatAccountLabel(accountId: string): string {
-  return accountId === DEFAULT_ACCOUNT_ID ? "default (primary)" : accountId;
+  return accountId === DEFAULT_ACCOUNT_ID ? "default（主账号）" : accountId;
 }
 
 async function promptConfiguredAction(params: {

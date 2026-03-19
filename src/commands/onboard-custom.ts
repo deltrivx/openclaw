@@ -407,7 +407,7 @@ async function promptBaseUrlAndKey(params: {
     config: params.config,
     provider: providerHint,
     envLabel: "CUSTOM_API_KEY",
-    promptMessage: "API Key (leave blank if not required)",
+    promptMessage: "API Key（如果不需要可留空）",
     normalize: normalizeSecretInput,
     validate: () => undefined,
     prompter: params.prompter,

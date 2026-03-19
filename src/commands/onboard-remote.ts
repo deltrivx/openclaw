@@ -39,7 +39,7 @@ function ensureWsUrl(value: string): string {
 function validateGatewayWebSocketUrl(value: string): string | undefined {
   const trimmed = value.trim();
   if (!trimmed.startsWith("ws://") && !trimmed.startsWith("wss://")) {
-    return "URL must start with ws:// or wss://";
+    return "URL 必须以 ws:// 或 wss:// 开头";
   }
   if (
     !isSecureWebSocketUrl(trimmed, {
@@ -47,8 +47,8 @@ function validateGatewayWebSocketUrl(value: string): string | undefined {
     })
   ) {
     return (
-      "Use wss:// for remote hosts, or ws://127.0.0.1/localhost via SSH tunnel. " +
-      "Break-glass: OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1 for trusted private networks."
+      "远程主机请使用 wss://；若通过 SSH 隧道连接本机回环地址，则使用 ws://127.0.0.1/localhost。" +
+      " 如需在受信任私有网络中强制放宽限制，可设置 OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1。"
     );
   }
   return undefined;

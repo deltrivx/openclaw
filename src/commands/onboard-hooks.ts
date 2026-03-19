@@ -29,8 +29,8 @@ export async function setupInternalHooks(
 
   if (eligibleHooks.length === 0) {
     await prompter.note(
-      "No eligible hooks found. You can configure hooks later in your config.",
-      "No Hooks Available",
+      "没有找到可启用的 hooks。你可以稍后在配置文件里手动配置。",
+      "暂无可用 Hooks",
     );
     return cfg;
   }
