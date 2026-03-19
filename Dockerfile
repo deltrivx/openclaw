@@ -4,8 +4,8 @@
 
 FROM ghcr.io/openclaw/openclaw:latest
 
-# NOTE: We no longer inject a separately-built dist into the base image.
-# Mixing dist artifacts from a different commit can break the plugin SDK/runtime ABI.
+# NOTE: We inject a CI-built dist artifact to get maximum zh-CN coverage (incl. control-ui).
+# This artifact is produced in GitHub Actions and should match upstream build outputs.
 
 USER root
 
@@ -46,9 +46,13 @@ RUN apt-get update \
 COPY translations/ /opt/openclaw-enhanced/translations/
 COPY scripts/ /opt/openclaw-enhanced/scripts/
 
-# NOTE: We previously attempted to patch compiled JS output for zh-CN onboarding.
-# That approach caused runtime SyntaxError on some deployments (e.g., Unraid).
-# Keep the image stable: do not patch compiled output at build time.
+# ------------------------------------------------------------
+# Inject CI-built upstream dist (includes control-ui) for best zh-CN coverage.
+# Generated during GitHub Actions in `.github/workflows/docker.yml` and staged under `ci-dist/`.
+# ------------------------------------------------------------
+COPY ci-dist/dist/ /app/dist/
+COPY ci-dist/openclaw.mjs /app/openclaw.mjs
+COPY ci-dist/package.json /app/package.json
 
 # Entrypoint: attempt config self-heal (doctor --fix) then start gateway
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

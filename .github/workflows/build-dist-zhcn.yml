@@ -63,9 +63,9 @@ jobs:
         run: |
           set -euo pipefail
           cd upstream-src
-          # We only need core CLI/gateway dist outputs for zh-CN onboarding.
-          # Keep the base image's bundled extensions + control-ui to avoid breaking plugin safety checks.
-          rm -rf dist/extensions dist/control-ui || true
+          # We need the base dist plus control-ui for zh-CN coverage.
+          # Avoid overriding bundled extensions to reduce ABI / plugin break risk.
+          rm -rf dist/extensions || true
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
