@@ -4,6 +4,7 @@
 
 - 📦 镜像：`ghcr.io/deltrivx/openclaw:latest`
 - 🛠️ 构建：push 到 `main` 触发 GitHub Actions 自动构建并推送到 GHCR
+- 🔒 说明：仓库已显式提交 `pnpm-lock.yaml`，用于保证 Docker / GHCR 云端构建可复现
 
 ---
 
