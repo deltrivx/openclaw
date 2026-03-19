@@ -266,11 +266,11 @@ export async function setupSearch(
 
   await prompter.note(
     [
-      "No API key stored — web_search won't work until a key is available.",
-      `Get your key at: ${entry.signupUrl}`,
-      "Docs: https://docs.openclaw.ai/tools/web",
+      "当前未保存 API Key——在提供可用密钥前，web_search 无法正常工作。",
+      `获取密钥：${entry.signupUrl}`,
+      "文档: https://docs.openclaw.ai/tools/web",
     ].join("\n"),
-    "Web search",
+    "网页搜索",
   );
 
   const search: SearchConfig = {

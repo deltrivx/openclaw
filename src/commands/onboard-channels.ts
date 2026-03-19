@@ -874,8 +874,8 @@ export async function setupChannels(
           ...buildSelectionOptions(entries),
           {
             value: doneValue,
-            label: "Finished",
-            hint: selection.length > 0 ? "Done" : "Skip for now",
+            label: "完成",
+            hint: selection.length > 0 ? "已完成选择" : "暂时跳过",
           },
         ],
         initialValue,
