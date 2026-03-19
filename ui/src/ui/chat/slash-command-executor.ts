@@ -181,12 +181,12 @@ async function executeThink(
       const { session, models } = await loadThinkingCommandState(client, sessionKey);
       return {
         content: formatDirectiveOptions(
-          `Current thinking level: ${resolveCurrentThinkingLevel(session, models)}.`,
+          `当前思考等级：${resolveCurrentThinkingLevel(session, models)}。`,
           formatThinkingLevels(session?.modelProvider, session?.model),
         ),
       };
     } catch (err) {
-      return { content: `Failed to get thinking level: ${String(err)}` };
+      return { content: `获取思考等级失败：${String(err)}` };
     }
   }
 
@@ -195,21 +195,21 @@ async function executeThink(
     try {
       const session = await loadCurrentSession(client, sessionKey);
       return {
-        content: `Unrecognized thinking level "${rawLevel}". Valid levels: ${formatThinkingLevels(session?.modelProvider, session?.model)}.`,
+        content: `无法识别的思考等级“${rawLevel}”。可用等级：${formatThinkingLevels(session?.modelProvider, session?.model)}。`,
       };
     } catch (err) {
-      return { content: `Failed to validate thinking level: ${String(err)}` };
+      return { content: `校验思考等级失败：${String(err)}` };
     }
   }
 
   try {
     await client.request("sessions.patch", { key: sessionKey, thinkingLevel: level });
     return {
-      content: `Thinking level set to **${level}**.`,
+      content: `思考等级已设置为 **${level}**。`,
       action: "refresh",
     };
   } catch (err) {
-    return { content: `Failed to set thinking level: ${String(err)}` };
+    return { content: `设置思考等级失败：${String(err)}` };
   }
 }
 
