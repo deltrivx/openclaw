@@ -201,11 +201,11 @@ async function collectChannelStatus(params: {
         params.cfg.plugins?.entries?.[entry.pluginId ?? entry.id]?.enabled !== false;
       const statusLabel = configured
         ? pluginEnabled
-          ? "configured"
-          : "configured (plugin disabled)"
+          ? "已配置"
+          : "已配置（插件已禁用）"
         : pluginEnabled
-          ? "installed"
-          : "installed (plugin disabled)";
+          ? "已安装"
+          : "已安装（插件已禁用）";
       return {
         channel: entry.id as ChannelChoice,
         configured,
@@ -563,7 +563,7 @@ export async function setupChannels(
     } else if (typeof (account as { enabled?: boolean })?.enabled === "boolean") {
       enabled = (account as { enabled?: boolean }).enabled;
     }
-    return enabled === false ? "disabled" : undefined;
+    return enabled === false ? "已禁用" : undefined;
   };
 
   const buildSelectionOptions = (
@@ -913,3 +913,7 @@ export async function setupChannels(
 
   return next;
 }
+
+
+}
+

@@ -141,7 +141,7 @@ export async function setupSkills(
     );
     if (needsNodeManagerPrompt) {
       const nodeManager = (await prompter.select({
-        message: "Preferred node manager for skill installs",
+        message: "技能安装时优先使用哪个 Node 包管理器？",
         options: resolveNodeManagerOptions(),
       })) as "npm" | "pnpm" | "bun";
       next = {
@@ -165,7 +165,7 @@ export async function setupSkills(
       if (!installId) {
         continue;
       }
-      const spin = prompter.progress(`Installing ${name}…`);
+      const spin = prompter.progress(`正在安装 ${name}…`);
       const result = await installSkill({
         workspaceDir,
         skillName: target.name,
@@ -174,7 +174,7 @@ export async function setupSkills(
       });
       const warnings = result.warnings ?? [];
       if (result.ok) {
-        spin.stop(warnings.length > 0 ? `Installed ${name} (with warnings)` : `Installed ${name}`);
+        spin.stop(warnings.length > 0 ? `已安装 ${name}（有警告）` : `已安装 ${name}`);
         for (const warning of warnings) {
           runtime.log(warning);
         }
@@ -182,7 +182,7 @@ export async function setupSkills(
       }
       const code = result.code == null ? "" : ` (exit ${result.code})`;
       const detail = summarizeInstallFailure(result.message);
-      spin.stop(`Install failed: ${name}${code}${detail ? ` — ${detail}` : ""}`);
+      spin.stop(`安装失败：${name}${code}${detail ? ` — ${detail}` : ""}`);
       for (const warning of warnings) {
         runtime.log(warning);
       }
@@ -192,9 +192,9 @@ export async function setupSkills(
         runtime.log(result.stdout.trim());
       }
       runtime.log(
-        `Tip: run \`${formatCliCommand("openclaw doctor")}\` to review skills + requirements.`,
+        `提示：可以运行 \`${formatCliCommand("openclaw doctor")}\` 检查技能与依赖要求。`,
       );
-      runtime.log("Docs: https://docs.openclaw.ai/skills");
+      runtime.log("文档: https://docs.openclaw.ai/skills");
     }
   }
 
@@ -203,7 +203,7 @@ export async function setupSkills(
       continue;
     }
     const wantsKey = await prompter.confirm({
-      message: `Set ${skill.primaryEnv} for ${skill.name}?`,
+      message: `要为 ${skill.name} 设置 ${skill.primaryEnv} 吗？`,
       initialValue: false,
     });
     if (!wantsKey) {
@@ -211,7 +211,7 @@ export async function setupSkills(
     }
     const apiKey = String(
       await prompter.text({
-        message: `Enter ${skill.primaryEnv}`,
+        message: `请输入 ${skill.primaryEnv}`,
         validate: (value) => (value?.trim() ? undefined : "必填"),
       }),
     );
@@ -219,9 +219,4 @@ export async function setupSkills(
   }
 
   return next;
-}
-eturn next;
-}
-
-eturn next;
 }
