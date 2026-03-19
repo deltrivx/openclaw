@@ -247,7 +247,7 @@ export async function setupSearch(
       : envAvailable
         ? `${entry.label} API key (leave blank to use env var)`
         : `${entry.label} API key`,
-    placeholder: keyConfigured ? "Leave blank to keep current" : entry.placeholder,
+    placeholder: keyConfigured ? "留空则保留当前值" : entry.placeholder,
   });
 
   const key = keyInput?.trim() ?? "";
@@ -289,5 +289,7 @@ export async function setupSearch(
   };
 }
   },
+  };
+}
   };
 }

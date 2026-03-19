@@ -331,14 +331,14 @@ async function maybeConfigureDmPolicies(params: {
     };
     await prompter.note(
       [
-        "Default: pairing (unknown DMs get a pairing code).",
-        `Approve: ${formatCliCommand(`openclaw pairing approve ${policy.channel} <code>`)}`,
-        `Allowlist DMs: ${policyKey}="allowlist" + ${allowFromKey} entries.`,
-        `Public DMs: ${policyKey}="open" + ${allowFromKey} includes "*".`,
-        "Multi-user DMs: run: " +
+        "默认：pairing（陌生私信会收到配对码）。",
+        `批准：${formatCliCommand(`openclaw pairing approve ${policy.channel} <code>`)}`,
+        `Allowlist 私信：${policyKey}="allowlist" + ${allowFromKey} 条目。`,
+        `公开私信：${policyKey}="open" + ${allowFromKey} 包含 "*"。`,
+        "多用户私信场景：请运行 " +
           formatCliCommand('openclaw config set session.dmScope "per-channel-peer"') +
-          ' (or "per-account-channel-peer" for multi-account channels) to isolate sessions.',
-        `Docs: ${formatDocsLink("/channels/pairing", "channels/pairing")}`,
+          '（多账号频道可用 "per-account-channel-peer"）以隔离会话。',
+        `文档：${formatDocsLink("/channels/pairing", "channels/pairing")}`,
       ].join("\n"),
       `${policy.label} DM access`,
     );
@@ -898,7 +898,7 @@ export async function setupChannels(
     .map((channel) => selectionNotes.get(channel))
     .filter((line): line is string => Boolean(line));
   if (selectedLines.length > 0) {
-    await prompter.note(selectedLines.join("\n"), "Selected channels");
+    await prompter.note(selectedLines.join("\n"), "已选择的频道");
   }
 
   if (!options?.skipDmPolicyPrompt) {
