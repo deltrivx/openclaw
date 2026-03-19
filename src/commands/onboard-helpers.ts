@@ -487,6 +487,3 @@ export function resolveControlUiLinks(params: {
   };
 }
 
-  };
-}
-

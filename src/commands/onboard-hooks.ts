@@ -83,6 +83,3 @@ export async function setupInternalHooks(
 
   return next;
 }
-rn next;
-}
-}
