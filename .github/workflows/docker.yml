@@ -22,23 +22,11 @@ permissions:
   packages: write
 
 jobs:
-  build-dist:
-    uses: ./.github/workflows/build-dist-zhcn.yml
-    permissions:
-      contents: read
-
   build-and-push:
-    needs: build-dist
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Download dist artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: openclaw-dist
-          path: injected
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -63,7 +51,5 @@ jobs:
           tags: ghcr.io/deltrivx/openclaw:latest
           provenance: false
           sbom: false
-          build-args: |
-            INJECT_DIST=1
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
