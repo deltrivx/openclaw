@@ -184,8 +184,8 @@ function renderPairedDevice(device: PairedDevice, props: NodesProps) {
 }
 
 function renderTokenRow(deviceId: string, token: DeviceTokenSummary, props: NodesProps) {
-  const status = token.revokedAtMs ? "revoked" : "active";
-  const scopes = `scopes: ${formatList(token.scopes)}`;
+  const status = token.revokedAtMs ? "已撤销" : "生效中";
+  const scopes = `作用域：${formatList(token.scopes)}`;
   const when = formatRelativeTimestamp(
     token.rotatedAtMs ?? token.createdAtMs ?? token.lastUsedAtMs ?? null,
   );
@@ -197,7 +197,7 @@ function renderTokenRow(deviceId: string, token: DeviceTokenSummary, props: Node
           class="btn btn--sm"
           @click=${() => props.onDeviceRotate(deviceId, token.role, token.scopes)}
         >
-          Rotate
+          轮换
         </button>
         ${
           token.revokedAtMs
@@ -207,7 +207,7 @@ function renderTokenRow(deviceId: string, token: DeviceTokenSummary, props: Node
                 class="btn btn--sm danger"
                 @click=${() => props.onDeviceRevoke(deviceId, token.role)}
               >
-                Revoke
+                撤销
               </button>
             `
         }
@@ -272,9 +272,9 @@ function renderBindings(state: BindingState) {
     <section class="card">
       <div class="row" style="justify-content: space-between; align-items: center;">
         <div>
-          <div class="card-title">Exec node binding</div>
+          <div class="card-title">执行节点绑定</div>
           <div class="card-sub">
-            Pin agents to a specific node when using <span class="mono">exec host=node</span>.
+            使用 <span class="mono">exec host=node</span> 时，将代理固定到特定节点。
           </div>
         </div>
         <button
@@ -282,7 +282,7 @@ function renderBindings(state: BindingState) {
           ?disabled=${state.disabled || !state.configDirty}
           @click=${state.onSave}
         >
-          ${state.configSaving ? "Saving…" : "Save"}
+          ${state.configSaving ? "保存中…" : "保存"}
         </button>
       </div>
 
@@ -290,7 +290,7 @@ function renderBindings(state: BindingState) {
         state.formMode === "raw"
           ? html`
               <div class="callout warn" style="margin-top: 12px">
-                Switch the Config tab to <strong>Form</strong> mode to edit bindings here.
+                请将 Config 标签页切换到 <strong>Form</strong> 模式后再在此编辑绑定。
               </div>
             `
           : nothing
@@ -299,9 +299,9 @@ function renderBindings(state: BindingState) {
       ${
         !state.ready
           ? html`<div class="row" style="margin-top: 12px; gap: 12px;">
-            <div class="muted">Load config to edit bindings.</div>
+            <div class="muted">请先加载配置后再编辑绑定。</div>
             <button class="btn" ?disabled=${state.configLoading} @click=${state.onLoadConfig}>
-              ${state.configLoading ? "Loading…" : "Load config"}
+              ${state.configLoading ? "加载中…" : "加载配置"}
             </button>
           </div>`
           : html`
