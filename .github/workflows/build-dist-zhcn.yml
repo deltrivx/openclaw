@@ -44,6 +44,15 @@ jobs:
         with:
           version: "10.23.0"
 
+      - name: Force git@github.com -> https://github.com (avoid SSH auth in CI)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          # Some deps may use git://; force https
+          git config --global url."https://github.com/".insteadOf "git://github.com/"
+
       - name: Install dependencies
         shell: bash
         run: |
