@@ -123,7 +123,7 @@ export async function runSetupWizard(
         `Review: ${formatCliCommand("openclaw doctor")}`,
         `Inspect: ${formatCliCommand("openclaw plugins inspect --all")}`,
       ].join("\n"),
-      "Plugin compatibility",
+      "插件兼容性",
     );
   }
 
@@ -275,7 +275,7 @@ export async function runSetupWizard(
     };
     const formatTailscale = (value: "off" | "serve" | "funnel") => {
       if (value === "off") {
-        return "Off";
+        return "关闭";
       }
       if (value === "serve") {
         return "Serve";
@@ -288,11 +288,11 @@ export async function runSetupWizard(
           `Gateway port: ${quickstartGateway.port}`,
           `Gateway bind: ${formatBind(quickstartGateway.bind)}`,
           ...(quickstartGateway.bind === "custom" && quickstartGateway.customBindHost
-            ? [`Gateway custom IP: ${quickstartGateway.customBindHost}`]
+            ? [`网关自定义 IP：${quickstartGateway.customBindHost}`]
             : []),
-          `Gateway auth: ${formatAuth(quickstartGateway.authMode)}`,
-          `Tailscale exposure: ${formatTailscale(quickstartGateway.tailscaleMode)}`,
-          "Direct to chat channels.",
+          `网关认证：${formatAuth(quickstartGateway.authMode)}`,
+          `Tailscale 暴露：${formatTailscale(quickstartGateway.tailscaleMode)}`,
+          "直接连接到聊天频道。",
         ]
       : [
           `Gateway port: ${DEFAULT_GATEWAY_PORT}`,
@@ -397,7 +397,7 @@ export async function runSetupWizard(
             },
             {
               value: "remote",
-              label: "Remote gateway (info-only)",
+              label: "远程网关（仅填写连接信息）",
               hint: !remoteUrl
                 ? "No remote URL configured yet"
                 : remoteProbe?.ok
@@ -593,4 +593,22 @@ export async function runSetupWizard(
 }
 n;
   }
+}
+
+  }
+}
+
+  }
+}
+n;
+  }
+}
+  }
+}
+n;
+  }
+}
+
+}
+
 }
