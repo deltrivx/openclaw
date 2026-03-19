@@ -225,30 +225,30 @@ async function executeVerbose(
       const session = await loadCurrentSession(client, sessionKey);
       return {
         content: formatDirectiveOptions(
-          `Current verbose level: ${normalizeVerboseLevel(session?.verboseLevel) ?? "off"}.`,
+          `当前详细等级：${normalizeVerboseLevel(session?.verboseLevel) ?? "off"}。`,
           "on, full, off",
         ),
       };
     } catch (err) {
-      return { content: `Failed to get verbose level: ${String(err)}` };
+      return { content: `获取详细等级失败：${String(err)}` };
     }
   }
 
   const level = normalizeVerboseLevel(rawLevel);
   if (!level) {
     return {
-      content: `Unrecognized verbose level "${rawLevel}". Valid levels: off, on, full.`,
+      content: `无法识别的详细等级“${rawLevel}”。可用等级：off、on、full。`,
     };
   }
 
   try {
     await client.request("sessions.patch", { key: sessionKey, verboseLevel: level });
     return {
-      content: `Verbose mode set to **${level}**.`,
+      content: `详细模式已设置为 **${level}**。`,
       action: "refresh",
     };
   } catch (err) {
-    return { content: `Failed to set verbose mode: ${String(err)}` };
+    return { content: `设置详细模式失败：${String(err)}` };
   }
 }
 
