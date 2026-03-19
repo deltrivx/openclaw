@@ -22,10 +22,10 @@ export function buildChatMarkdown(messages: unknown[], assistantName: string): s
   if (history.length === 0) {
     return null;
   }
-  const lines: string[] = [`# Chat with ${assistantName}`, ""];
+  const lines: string[] = [`# 与 ${assistantName} 的聊天记录`, ""];
   for (const msg of history) {
     const m = msg as Record<string, unknown>;
-    const role = m.role === "user" ? "You" : m.role === "assistant" ? assistantName : "Tool";
+    const role = m.role === "user" ? "你" : m.role === "assistant" ? assistantName : "工具";
     const content = extractTextCached(msg) ?? "";
     const ts = typeof m.timestamp === "number" ? new Date(m.timestamp).toISOString() : "";
     lines.push(`## ${role}${ts ? ` (${ts})` : ""}`, "", content, "");
