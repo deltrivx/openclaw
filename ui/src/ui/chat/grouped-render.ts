@@ -537,7 +537,7 @@ function renderMessageImages(images: ImageBlock[]) {
         (img) => html`
           <img
             src=${img.url}
-            alt=${img.alt ?? "Attached image"}
+            alt=${img.alt ?? "附加图片"}
             class="chat-message-image"
             @click=${() => openImage(img.url)}
           />

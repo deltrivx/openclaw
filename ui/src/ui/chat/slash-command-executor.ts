@@ -56,15 +56,15 @@ export async function executeSlashCommand(
     case "help":
       return executeHelp();
     case "new":
-      return { content: "Starting new session...", action: "new-session" };
+      return { content: "正在开始新会话...", action: "new-session" };
     case "reset":
-      return { content: "Resetting session...", action: "reset" };
+      return { content: "正在重置会话...", action: "reset" };
     case "stop":
-      return { content: "Stopping current run...", action: "stop" };
+      return { content: "正在停止当前运行...", action: "stop" };
     case "clear":
-      return { content: "Chat history cleared.", action: "clear" };
+      return { content: "聊天记录已清空。", action: "clear" };
     case "focus":
-      return { content: "Toggled focus mode.", action: "toggle-focus" };
+      return { content: "已切换专注模式。", action: "toggle-focus" };
     case "compact":
       return await executeCompact(client, sessionKey);
     case "model":
@@ -76,7 +76,7 @@ export async function executeSlashCommand(
     case "verbose":
       return await executeVerbose(client, sessionKey, args);
     case "export":
-      return { content: "Exporting session...", action: "export" };
+      return { content: "正在导出会话...", action: "export" };
     case "usage":
       return await executeUsage(client, sessionKey);
     case "agents":
@@ -84,28 +84,28 @@ export async function executeSlashCommand(
     case "kill":
       return await executeKill(client, sessionKey, args);
     default:
-      return { content: `Unknown command: \`/${commandName}\`` };
+      return { content: `未知命令：\`/${commandName}\`` };
   }
 }
 
 // ── Command Implementations ──
 
 function executeHelp(): SlashCommandResult {
-  const lines = ["**Available Commands**\n"];
+  const lines = ["**可用命令**\n"];
   let currentCategory = "";
 
   for (const cmd of SLASH_COMMANDS) {
     const cat = cmd.category ?? "session";
     if (cat !== currentCategory) {
       currentCategory = cat;
-      lines.push(`**${cat.charAt(0).toUpperCase() + cat.slice(1)}**`);
+      lines.push(`**${cat === "session" ? "会话" : cat === "model" ? "模型" : cat === "tools" ? "工具" : cat === "agents" ? "代理" : cat}**`);
     }
     const argStr = cmd.args ? ` ${cmd.args}` : "";
     const local = cmd.executeLocal ? "" : " *(agent)*";
     lines.push(`\`/${cmd.name}${argStr}\` — ${cmd.description}${local}`);
   }
 
-  lines.push("\nType `/` to open the command menu.");
+  lines.push("\n输入 `/` 可打开命令菜单。");
   return { content: lines.join("\n") };
 }
 
@@ -115,9 +115,9 @@ async function executeCompact(
 ): Promise<SlashCommandResult> {
   try {
     await client.request("sessions.compact", { key: sessionKey });
-    return { content: "Context compacted successfully.", action: "refresh" };
+    return { content: "上下文压缩成功。", action: "refresh" };
   } catch (err) {
-    return { content: `Compaction failed: ${String(err)}` };
+    return { content: `压缩失败：${String(err)}` };
   }
 }
 
@@ -135,10 +135,10 @@ async function executeModel(
       const session = resolveCurrentSession(sessions, sessionKey);
       const model = session?.model || sessions?.defaults?.model || "default";
       const available = models?.models?.map((m: ModelCatalogEntry) => m.id) ?? [];
-      const lines = [`**Current model:** \`${model}\``];
+      const lines = [`**当前模型：** \`${model}\``];
       if (available.length > 0) {
         lines.push(
-          `**Available:** ${available
+          `**可用：** ${available
             .slice(0, 10)
             .map((m: string) => `\`${m}\``)
             .join(", ")}${available.length > 10 ? ` +${available.length - 10} more` : ""}`,
