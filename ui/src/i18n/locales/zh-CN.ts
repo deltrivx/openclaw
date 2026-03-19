@@ -160,6 +160,7 @@ export const zh_CN: TranslationMap = {
     disconnected: "已断开与网关的连接。",
     refreshTitle: "刷新聊天数据",
     thinkingToggle: "切换助手思考/工作输出",
+    toolCallsToggle: "切换工具调用和工具结果显示",
     focusToggle: "切换专注模式 (隐藏侧边栏 + 页面页眉)",
     hideCronSessions: "隐藏定时任务会话",
     showCronSessions: "显示定时任务会话",
@@ -191,6 +192,7 @@ export const zh_CN: TranslationMap = {
       searchJobs: "搜索任务",
       searchPlaceholder: "名称、描述或代理",
       enabled: "启用状态",
+      lastRun: "上次运行",
       all: "全部",
       sort: "排序",
       nextRun: "下次运行",
@@ -199,6 +201,7 @@ export const zh_CN: TranslationMap = {
       direction: "方向",
       ascending: "升序",
       descending: "降序",
+      reset: "重置",
       noMatching: "没有匹配的任务。",
       loading: "加载中...",
       loadMore: "加载更多任务",
@@ -377,13 +380,6 @@ export const zh_CN: TranslationMap = {
       systemEventTextRequired: "系统事件文本为必填。",
       agentMessageRequiredShort: "代理消息为必填。",
       nameRequiredShort: "名称为必填。",
-    },
-  },
-};
-,
-  },
-};
-称为必填。",
     },
   },
 };
