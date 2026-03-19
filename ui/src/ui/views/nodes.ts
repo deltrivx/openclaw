@@ -337,7 +337,7 @@ function renderBindings(state: BindingState) {
                   ${
                     !supportsBinding
                       ? html`
-                          <div class="muted">没有可用 `system.run` 的节点。</div>
+                          <div class="muted">没有可用 <span class="mono">system.run</span> 的节点。</div>
                         `
                       : nothing
                   }
