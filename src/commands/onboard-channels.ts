@@ -269,9 +269,9 @@ async function noteChannelPrimer(
   );
   await prompter.note(
     [
-      "DM security: default is pairing; unknown DMs get a pairing code.",
-      `Approve with: ${formatCliCommand("openclaw pairing approve <channel> <code>")}`,
-      'Public DMs require dmPolicy="open" + allowFrom=["*"].',
+      "私信安全默认采用 pairing；陌生私信会先收到配对码。",
+      `批准方式：${formatCliCommand("openclaw pairing approve <channel> <code>")}`,
+      '公开私信需要设置 dmPolicy="open" 且 allowFrom 包含 ["*"]。',
       "Multi-user DMs: run: " +
         formatCliCommand('openclaw config set session.dmScope "per-channel-peer"') +
         ' (or "per-account-channel-peer" for multi-account channels) to isolate sessions.',
@@ -315,7 +315,7 @@ async function maybeConfigureDmPolicies(params: {
   }
 
   const wants = await prompter.confirm({
-    message: "Configure DM access policies now? (default: pairing)",
+    message: "现在配置私信访问策略吗？（默认：pairing）",
     initialValue: false,
   });
   if (!wants) {

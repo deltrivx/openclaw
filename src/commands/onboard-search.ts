@@ -195,13 +195,13 @@ export async function setupSearch(
   })();
 
   const choice = await prompter.select({
-    message: "Search provider",
+    message: "搜索提供方",
     options: [
       ...options,
       {
         value: "__skip__" as const,
-        label: "Skip for now",
-        hint: "Configure later with openclaw configure --section web",
+        label: "暂时跳过",
+        hint: "后续可通过 openclaw configure --section web 再配置",
       },
     ],
     initialValue: defaultProvider,
@@ -231,12 +231,12 @@ export async function setupSearch(
     const ref = buildSearchEnvRef(choice);
     await prompter.note(
       [
-        "Secret references enabled — OpenClaw will store a reference instead of the API key.",
-        `Env var: ${ref.id}${envAvailable ? " (detected)" : ""}.`,
-        ...(envAvailable ? [] : [`Set ${ref.id} in the Gateway environment.`]),
-        "Docs: https://docs.openclaw.ai/tools/web",
+        "已启用 Secret 引用模式——OpenClaw 会保存引用而不是直接保存 API Key。",
+        `环境变量: ${ref.id}${envAvailable ? "（已检测到）" : ""}.`,
+        ...(envAvailable ? [] : [`请先在 Gateway 环境中设置 ${ref.id}。`]),
+        "文档: https://docs.openclaw.ai/tools/web",
       ].join("\n"),
-      "Web search",
+      "网页搜索",
     );
     return applySearchKey(config, choice, ref);
   }
@@ -286,5 +286,8 @@ export async function setupSearch(
         search,
       },
     },
+  };
+}
+  },
   };
 }

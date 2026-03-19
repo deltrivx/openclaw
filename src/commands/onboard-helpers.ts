@@ -93,7 +93,7 @@ export function validateGatewayPasswordInput(value: unknown): string | undefined
     return "Required";
   }
   if (trimmed === "undefined" || trimmed === "null") {
-    return 'Cannot be the literal string "undefined" or "null"';
+    return '不能直接填写字面量字符串 "undefined" 或 "null"';
   }
   return undefined;
 }
@@ -215,12 +215,12 @@ export function formatControlUiSshHint(params: {
     : undefined;
   const sshTarget = resolveSshTargetHint();
   return [
-    "No GUI detected. Open from your computer:",
+    "未检测到图形界面。请在你的电脑上执行：",
     `ssh -N -L ${params.port}:127.0.0.1:${params.port} ${sshTarget}`,
-    "Then open:",
+    "然后打开：",
     localUrl,
     authedUrl,
-    "Docs:",
+    "文档：",
     "https://docs.openclaw.ai/gateway/remote",
     "https://docs.openclaw.ai/web/control-ui",
   ]

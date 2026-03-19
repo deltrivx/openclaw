@@ -87,12 +87,12 @@ export async function setupSkills(
   let next: OpenClawConfig = cfg;
   if (installable.length > 0) {
     const toInstall = await prompter.multiselect({
-      message: "Install missing skill dependencies",
+      message: "安装缺失的技能依赖",
       options: [
         {
           value: "__skip__",
-          label: "Skip for now",
-          hint: "Continue without installing dependencies",
+          label: "暂时跳过",
+          hint: "先继续，不安装这些依赖",
         },
         ...installable.map((skill) => ({
           value: skill.name,
@@ -116,10 +116,10 @@ export async function setupSkills(
     if (needsBrewPrompt) {
       await prompter.note(
         [
-          "Many skill dependencies are shipped via Homebrew.",
-          "Without brew, you'll need to build from source or download releases manually.",
+          "很多技能依赖都通过 Homebrew 提供。",
+          "如果没有 brew，你通常需要自行从源码编译，或手动下载发布包。",
         ].join("\n"),
-        "Homebrew recommended",
+        "推荐使用 Homebrew",
       );
       const showBrewInstall = await prompter.confirm({
         message: "Show Homebrew install command?",
@@ -219,4 +219,6 @@ export async function setupSkills(
   }
 
   return next;
+}
+eturn next;
 }
