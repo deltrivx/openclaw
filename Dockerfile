@@ -29,11 +29,11 @@ RUN apt-get update \
     ocrmypdf \
     poppler-utils \
     jq \
- && install -d -m 0755 /etc/apt/keyrings \
+ && install -d -m 0755 /usr/share/keyrings \
  && curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg \
-      -o /etc/apt/keyrings/tailscale-archive-keyring.gpg \
- && curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list \
-      -o /etc/apt/sources.list.d/tailscale.list \
+      -o /usr/share/keyrings/tailscale-archive-keyring.gpg \
+ && printf '%s\n' 'deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/debian bookworm main' \
+      > /etc/apt/sources.list.d/tailscale.list \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tailscale \
  && sed -i 's/^# *zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen \
