@@ -348,9 +348,9 @@ export function renderAgentSkills(params: {
     <section class="card">
       <div class="row" style="justify-content: space-between;">
         <div>
-          <div class="card-title">Skills</div>
+          <div class="card-title">技能</div>
           <div class="card-sub">
-            Per-agent skill allowlist and workspace skills.
+            按代理设置技能白名单，并查看工作区技能。
             ${
               totalCount > 0
                 ? html`<span class="mono">${enabledCount}/${totalCount}</span>`
@@ -361,14 +361,14 @@ export function renderAgentSkills(params: {
         <div class="row" style="gap: 8px; flex-wrap: wrap;">
           <div class="row" style="gap: 4px; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2px;">
             <button class="btn btn--sm" ?disabled=${!editable} @click=${() => params.onClear(params.agentId)}>
-              Enable All
+              全部启用
             </button>
             <button
               class="btn btn--sm"
               ?disabled=${!editable}
               @click=${() => params.onDisableAll(params.agentId)}
             >
-              Disable All
+              全部禁用
             </button>
             <button
               class="btn btn--sm"
@@ -399,7 +399,7 @@ export function renderAgentSkills(params: {
         !params.configForm
           ? html`
               <div class="callout info" style="margin-top: 12px">
-                Load the gateway config to set per-agent skills.
+                请先加载网关配置后再设置代理级技能。
               </div>
             `
           : nothing
@@ -407,11 +407,11 @@ export function renderAgentSkills(params: {
       ${
         usingAllowlist
           ? html`
-              <div class="callout info" style="margin-top: 12px">This agent uses a custom skill allowlist.</div>
+              <div class="callout info" style="margin-top: 12px">该代理正在使用自定义技能白名单。</div>
             `
           : html`
               <div class="callout info" style="margin-top: 12px">
-                All skills are enabled. Disabling any skill will create a per-agent allowlist.
+                当前已启用全部技能。禁用任意技能后，将为该代理创建单独白名单。
               </div>
             `
       }
@@ -419,7 +419,7 @@ export function renderAgentSkills(params: {
         !reportReady && !params.loading
           ? html`
               <div class="callout info" style="margin-top: 12px">
-                Load skills for this agent to view workspace-specific entries.
+                请先为该代理加载技能列表，以查看工作区特有条目。
               </div>
             `
           : nothing
@@ -432,7 +432,7 @@ export function renderAgentSkills(params: {
 
       <div class="filters" style="margin-top: 14px;">
         <label class="field" style="flex: 1;">
-          <span>Filter</span>
+          <span>筛选</span>
           <input
             .value=${params.filter}
             @input=${(e: Event) => params.onFilterChange((e.target as HTMLInputElement).value)}
@@ -441,13 +441,13 @@ export function renderAgentSkills(params: {
             name="agent-skills-filter"
           />
         </label>
-        <div class="muted">${filtered.length} shown</div>
+        <div class="muted">已显示 ${filtered.length} 项</div>
       </div>
 
       ${
         filtered.length === 0
           ? html`
-              <div class="muted" style="margin-top: 16px">No skills found.</div>
+              <div class="muted" style="margin-top: 16px">未找到技能。</div>
             `
           : html`
               <div class="agent-skills-groups" style="margin-top: 16px;">
@@ -520,12 +520,12 @@ function renderAgentSkillRow(
         ${renderSkillStatusChips({ skill })}
         ${
           missing.length > 0
-            ? html`<div class="muted" style="margin-top: 6px;">Missing: ${missing.join(", ")}</div>`
+            ? html`<div class="muted" style="margin-top: 6px;">缺失：${missing.join(", ")}</div>`
             : nothing
         }
         ${
           reasons.length > 0
-            ? html`<div class="muted" style="margin-top: 6px;">Reason: ${reasons.join(", ")}</div>`
+            ? html`<div class="muted" style="margin-top: 6px;">原因：${reasons.join(", ")}</div>`
             : nothing
         }
       </div>
