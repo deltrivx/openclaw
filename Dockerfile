@@ -50,9 +50,10 @@ COPY scripts/ /opt/openclaw-enhanced/scripts/
 # Inject CI-built upstream dist (includes control-ui) for best zh-CN coverage.
 # Generated during GitHub Actions in `.github/workflows/docker.yml` and staged under `ci-dist/`.
 # ------------------------------------------------------------
-COPY ci-dist/dist/ /app/dist/
-COPY ci-dist/openclaw.mjs /app/openclaw.mjs
-COPY ci-dist/package.json /app/package.json
+# The artifact keeps its original paths (uploaded from upstream-src/*), so it lands under ci-dist/upstream-src/.
+COPY ci-dist/upstream-src/dist/ /app/dist/
+COPY ci-dist/upstream-src/openclaw.mjs /app/openclaw.mjs
+COPY ci-dist/upstream-src/package.json /app/package.json
 
 # Entrypoint: attempt config self-heal (doctor --fix) then start gateway
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
