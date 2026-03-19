@@ -62,5 +62,9 @@ if [[ -f "$CONFIG_FILE" ]] && [[ ! -f "$STAMP_FILE" ]]; then
   disable_problem_plugins || true
 fi
 
+# Prefer user-managed extensions over image-bundled ones.
+# This forces bundled plugin discovery to use the mounted config dir.
+export OPENCLAW_BUNDLED_PLUGINS_DIR="/root/.openclaw/extensions"
+
 # Start gateway (preserve upstream behavior)
 exec node openclaw.mjs gateway --allow-unconfigured
