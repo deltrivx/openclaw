@@ -2,7 +2,7 @@ name: Docker GHCR Build
 
 # note: this workflow builds a zh-CN dist artifact first, then bakes it into the image.
 
-on:
+"on":
   push:
     branches: ["main"]
     paths:
@@ -55,7 +55,7 @@ jobs:
           name: openclaw-dist
           path: ci-dist
 
-      - name: Debug: list ci-dist contents
+      - name: "Debug: list ci-dist contents"
         shell: bash
         run: |
           set -euo pipefail
