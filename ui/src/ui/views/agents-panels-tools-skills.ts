@@ -148,26 +148,26 @@ export function renderAgentTools(params: {
         <div>
           <div class="card-title">Tool Access</div>
           <div class="card-sub">
-            Profile + per-tool overrides for this agent.
-            <span class="mono">${enabledCount}/${toolIds.length}</span> enabled.
+            此代理的配置档案与逐工具覆盖。
+            <span class="mono">${enabledCount}/${toolIds.length}</span> 已启用。
           </div>
         </div>
         <div class="row" style="gap: 8px;">
           <button class="btn btn--sm" ?disabled=${!editable} @click=${() => updateAll(true)}>
-            Enable All
+            全部启用
           </button>
           <button class="btn btn--sm" ?disabled=${!editable} @click=${() => updateAll(false)}>
-            Disable All
+            全部禁用
           </button>
           <button class="btn btn--sm" ?disabled=${params.configLoading} @click=${params.onConfigReload}>
-            Reload Config
+            重新加载配置
           </button>
           <button
             class="btn btn--sm primary"
             ?disabled=${params.configSaving || !params.configDirty}
             @click=${params.onConfigSave}
           >
-            ${params.configSaving ? "Saving…" : "Save"}
+            ${params.configSaving ? "保存中…" : "保存"}
           </button>
         </div>
       </div>
@@ -176,7 +176,7 @@ export function renderAgentTools(params: {
         !params.configForm
           ? html`
               <div class="callout info" style="margin-top: 12px">
-                Load the gateway config to adjust tool profiles.
+                请先加载网关配置后再调整工具配置档案。
               </div>
             `
           : nothing
@@ -185,7 +185,7 @@ export function renderAgentTools(params: {
         hasAgentAllow
           ? html`
               <div class="callout info" style="margin-top: 12px">
-                This agent is using an explicit allowlist in config. Tool overrides are managed in the Config tab.
+                该代理正在使用配置中的显式白名单。工具覆盖项请在 Config 标签页中管理。
               </div>
             `
           : nothing
@@ -194,7 +194,7 @@ export function renderAgentTools(params: {
         hasGlobalAllow
           ? html`
               <div class="callout info" style="margin-top: 12px">
-                Global tools.allow is set. Agent overrides cannot enable tools that are globally blocked.
+                已设置全局 tools.allow。代理覆盖项无法启用被全局屏蔽的工具。
               </div>
             `
           : nothing
@@ -202,7 +202,7 @@ export function renderAgentTools(params: {
       ${
         params.toolsCatalogLoading && !params.toolsCatalogResult && !params.toolsCatalogError
           ? html`
-              <div class="callout info" style="margin-top: 12px">Loading runtime tool catalog…</div>
+              <div class="callout info" style="margin-top: 12px">正在加载运行时工具目录…</div>
             `
           : nothing
       }
@@ -210,7 +210,7 @@ export function renderAgentTools(params: {
         params.toolsCatalogError
           ? html`
               <div class="callout info" style="margin-top: 12px">
-                Could not load runtime tool catalog. Showing built-in fallback list instead.
+                无法加载运行时工具目录，现改为显示内置回退列表。
               </div>
             `
           : nothing
@@ -218,19 +218,19 @@ export function renderAgentTools(params: {
 
       <div class="agent-tools-meta" style="margin-top: 16px;">
         <div class="agent-kv">
-          <div class="label">Profile</div>
+          <div class="label">配置档案</div>
           <div class="mono">${profile}</div>
         </div>
         <div class="agent-kv">
-          <div class="label">Source</div>
+          <div class="label">来源</div>
           <div>${profileSource}</div>
         </div>
         ${
           params.configDirty
             ? html`
                 <div class="agent-kv">
-                  <div class="label">Status</div>
-                  <div class="mono">unsaved</div>
+                  <div class="label">状态</div>
+                  <div class="mono">未保存</div>
                 </div>
               `
             : nothing
@@ -238,7 +238,7 @@ export function renderAgentTools(params: {
       </div>
 
       <div class="agent-tools-presets" style="margin-top: 16px;">
-        <div class="label">Quick Presets</div>
+        <div class="label">快捷预设</div>
         <div class="agent-tools-buttons">
           ${profileOptions.map(
             (option) => html`
@@ -256,7 +256,7 @@ export function renderAgentTools(params: {
             ?disabled=${!editable}
             @click=${() => params.onProfileChange(params.agentId, null, false)}
           >
-            Inherit
+            继承
           </button>
         </div>
       </div>
