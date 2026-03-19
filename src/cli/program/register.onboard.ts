@@ -63,27 +63,27 @@ function pickOnboardProviderAuthOptionValues(
 export function registerOnboardCommand(program: Command) {
   const command = program
     .command("onboard")
-    .description("Interactive onboarding for the gateway, workspace, and skills")
+    .description("交互式初始化网关、工作区与技能")
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/onboard", "docs.openclaw.ai/cli/onboard")}\n`,
+        `\n${theme.muted("文档:")} ${formatDocsLink("/cli/onboard", "docs.openclaw.ai/cli/onboard")}\n`,
     )
-    .option("--workspace <dir>", "Agent workspace directory (default: ~/.openclaw/workspace)")
+    .option("--workspace <dir>", "代理工作区目录（默认：~/.openclaw/workspace）")
     .option(
       "--reset",
-      "Reset config + credentials + sessions before running onboard (workspace only with --reset-scope full)",
+      "运行 onboard 前重置配置 + 凭据 + 会话（仅当 --reset-scope 为 full 时才清理工作区）",
     )
-    .option("--reset-scope <scope>", "Reset scope: config|config+creds+sessions|full")
-    .option("--non-interactive", "Run without prompts", false)
+    .option("--reset-scope <scope>", "重置范围：config|config+creds+sessions|full")
+    .option("--non-interactive", "无提示运行", false)
     .option(
       "--accept-risk",
-      "Acknowledge that agents are powerful and full system access is risky (required for --non-interactive)",
+      "确认已了解代理能力较强，授予完整系统访问存在风险（--non-interactive 必需）",
       false,
     )
-    .option("--flow <flow>", "Onboard flow: quickstart|advanced|manual")
-    .option("--mode <mode>", "Onboard mode: local|remote")
-    .option("--auth-choice <choice>", `Auth: ${AUTH_CHOICE_HELP}`)
+    .option("--flow <flow>", "初始化流程：quickstart|advanced|manual")
+    .option("--mode <mode>", "初始化模式：local|remote")
+    .option("--auth-choice <choice>", `认证方式：${AUTH_CHOICE_HELP}`)
     .option(
       "--token-provider <id>",
       "Token provider id (non-interactive; used with --auth-choice token)",
@@ -106,18 +106,18 @@ export function registerOnboardCommand(program: Command) {
   }
 
   command
-    .option("--custom-base-url <url>", "Custom provider base URL")
-    .option("--custom-api-key <key>", "Custom provider API key (optional)")
-    .option("--custom-model-id <id>", "Custom provider model ID")
-    .option("--custom-provider-id <id>", "Custom provider ID (optional; auto-derived by default)")
+    .option("--custom-base-url <url>", "自定义提供方 Base URL")
+    .option("--custom-api-key <key>", "自定义提供方 API Key（可选）")
+    .option("--custom-model-id <id>", "自定义提供方模型 ID")
+    .option("--custom-provider-id <id>", "自定义提供方 ID（可选；默认自动推导）")
     .option(
       "--custom-compatibility <mode>",
-      "Custom provider API compatibility: openai|anthropic (default: openai)",
+      "自定义提供方 API 兼容模式：openai|anthropic（默认：openai）",
     )
-    .option("--gateway-port <port>", "Gateway port")
-    .option("--gateway-bind <mode>", "Gateway bind: loopback|tailnet|lan|auto|custom")
-    .option("--gateway-auth <mode>", "Gateway auth: token|password")
-    .option("--gateway-token <token>", "Gateway token (token auth)")
+    .option("--gateway-port <port>", "网关端口")
+    .option("--gateway-bind <mode>", "网关监听：loopback|tailnet|lan|auto|custom")
+    .option("--gateway-auth <mode>", "网关认证：token|password")
+    .option("--gateway-token <token>", "网关 Token（token 认证）")
     .option(
       "--gateway-token-ref-env <name>",
       "Gateway token SecretRef env var name (token auth; e.g. OPENCLAW_GATEWAY_TOKEN)",
@@ -199,4 +199,6 @@ export function registerOnboardCommand(program: Command) {
       );
     });
   });
+}
+ });
 }

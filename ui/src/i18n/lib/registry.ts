@@ -8,7 +8,7 @@ type LazyLocaleRegistration = {
   loader: () => Promise<LocaleModule>;
 };
 
-export const DEFAULT_LOCALE: Locale = "en";
+export const DEFAULT_LOCALE: Locale = "zh-CN";
 
 const LAZY_LOCALES: readonly LazyLocale[] = ["zh-CN", "zh-TW", "pt-BR", "de", "es"];
 

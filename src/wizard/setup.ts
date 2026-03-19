@@ -81,7 +81,7 @@ export async function runSetupWizard(
 ) {
   const onboardHelpers = await import("../commands/onboard-helpers.js");
   onboardHelpers.printWizardHeader(runtime);
-  await prompter.intro("OpenClaw setup");
+  await prompter.intro("OpenClaw 初始化设置");
   await requireRiskAcknowledgement({ opts, prompter });
 
   const snapshot = await readConfigFileSnapshot();
@@ -170,11 +170,11 @@ export async function runSetupWizard(
     );
 
     const action = await prompter.select({
-      message: "Config handling",
+      message: "配置处理方式",
       options: [
-        { value: "keep", label: "Use existing values" },
-        { value: "modify", label: "Update values" },
-        { value: "reset", label: "Reset" },
+        { value: "keep", label: "使用现有值" },
+        { value: "modify", label: "更新配置值" },
+        { value: "reset", label: "重置" },
       ],
     });
 
@@ -589,5 +589,8 @@ export async function runSetupWizard(
   });
   if (launchedTui) {
     return;
+  }
+}
+n;
   }
 }
