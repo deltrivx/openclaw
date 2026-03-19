@@ -13,6 +13,7 @@ export const zh_CN: TranslationMap = {
     na: "不适用",
     version: "版本",
     docs: "文档",
+    theme: "主题",
     resources: "资源",
     search: "搜索",
   },
@@ -376,6 +377,13 @@ export const zh_CN: TranslationMap = {
       systemEventTextRequired: "系统事件文本为必填。",
       agentMessageRequiredShort: "代理消息为必填。",
       nameRequiredShort: "名称为必填。",
+    },
+  },
+};
+,
+  },
+};
+称为必填。",
     },
   },
 };
