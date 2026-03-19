@@ -334,8 +334,8 @@ function renderDeleteButton(onDelete: () => void, side: DeleteConfirmSide) {
     <span class="chat-delete-wrap">
       <button
         class="chat-group-delete"
-        title="Delete"
-        aria-label="Delete message"
+        title="删除"
+        aria-label="删除消息"
         @click=${(e: Event) => {
           if (shouldSkipDeleteConfirm()) {
             onDelete();
@@ -351,14 +351,14 @@ function renderDeleteButton(onDelete: () => void, side: DeleteConfirmSide) {
           const popover = document.createElement("div");
           popover.className = `chat-delete-confirm chat-delete-confirm--${side}`;
           popover.innerHTML = `
-            <p class="chat-delete-confirm__text">Delete this message?</p>
+            <p class="chat-delete-confirm__text">要删除这条消息吗？</p>
             <label class="chat-delete-confirm__remember">
               <input type="checkbox" class="chat-delete-confirm__check" />
-              <span>Don't ask again</span>
+              <span>不再询问</span>
             </label>
             <div class="chat-delete-confirm__actions">
-              <button class="chat-delete-confirm__cancel" type="button">Cancel</button>
-              <button class="chat-delete-confirm__yes" type="button">Delete</button>
+              <button class="chat-delete-confirm__cancel" type="button">取消</button>
+              <button class="chat-delete-confirm__yes" type="button">删除</button>
             </div>
           `;
           wrap.appendChild(popover);
@@ -397,14 +397,14 @@ function renderTtsButton(group: MessageGroup) {
     <button
       class="chat-tts-btn"
       type="button"
-      title=${isTtsSpeaking() ? "Stop speaking" : "Read aloud"}
-      aria-label=${isTtsSpeaking() ? "Stop speaking" : "Read aloud"}
+      title=${isTtsSpeaking() ? "停止朗读" : "朗读"}
+      aria-label=${isTtsSpeaking() ? "停止朗读" : "朗读"}
       @click=${(e: Event) => {
         const btn = e.currentTarget as HTMLButtonElement;
         if (isTtsSpeaking()) {
           stopTts();
           btn.classList.remove("chat-tts-btn--active");
-          btn.title = "Read aloud";
+          btn.title = "朗读";
           return;
         }
         const text = extractGroupText(group);
@@ -412,18 +412,18 @@ function renderTtsButton(group: MessageGroup) {
           return;
         }
         btn.classList.add("chat-tts-btn--active");
-        btn.title = "Stop speaking";
+        btn.title = "停止朗读";
         speakText(text, {
           onEnd: () => {
             if (btn.isConnected) {
               btn.classList.remove("chat-tts-btn--active");
-              btn.title = "Read aloud";
+              btn.title = "朗读";
             }
           },
           onError: () => {
             if (btn.isConnected) {
               btn.classList.remove("chat-tts-btn--active");
-              btn.title = "Read aloud";
+              btn.title = "朗读";
             }
           },
         });
