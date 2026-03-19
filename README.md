@@ -1,10 +1,6 @@
 <h1 align="center">🦞 OpenClaw增强版 🦞</h1>
 
-
-## 适用于任何操作系统的 AI 智能体 Gateway 网关，支持 WhatsApp、Telegram、Discord、iMessage 等。
-
-
-- 基于上游 `ghcr.io/openclaw/openclaw:latest` 的增强镜像仓库，面向 Docker 的“开箱即用”部署。
+> 🧩 基于上游 `ghcr.io/openclaw/openclaw:latest` 的增强镜像仓库，面向 Docker 的“开箱即用”部署。
 
 - 📦 镜像：`ghcr.io/deltrivx/openclaw:latest`
 - 🛠️ 构建：push 到 `main` 触发 GitHub Actions 自动构建并推送到 GHCR
@@ -36,7 +32,7 @@
 
 - ✅ 安装系统 Chromium
 - ✅ 路径固定为：`/usr/bin/chromium`
-- ✅ Playwright 默认使用系统 Chromium（不在运行时下载浏览器，并补全依赖，确保可以正常使用）
+- ✅ Playwright 默认使用系统 Chromium（不在运行时下载浏览器）
   - `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`
   - `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`
 
@@ -58,54 +54,27 @@
 
 ### 5) 🔊 语音链路（当前构建环境）
 
-#### 🗣️ TTS：本地离线 Piper（OpenAI 兼容）
+#### 🗣️ TTS：本地离线 Piper（OpenAI-compatible）
 
-- 通过镜像内置的 **OpenAI 兼容** TTS 服务（Node.js + Piper + FFmpeg）提供给 OpenClaw
-- TTS API（容器内）：`http://127.0.0.1:18793/v1/audio/speech`
-
-> 说明：该接口为 OpenAI `POST /v1/audio/speech` 兼容实现：
-> - Piper 生成 `wav`
-> - FFmpeg 转码为 `mp3`（或直接返回 `wav`）
-> - `voice` 对应 `$PIPER_MODELS_DIR/<voice>.onnx`
-
-- 默认端口：**18793**（避免与 OpenClaw 浏览器/relay 组件端口冲突）
-- 默认音色（voice）：`zh_CN-huayan-medium`
-- 默认输出：`mp3`
-
-#### 接口兼容性说明
-
-该接口为 OpenAI `POST /v1/audio/speech` 的兼容实现，当前支持：
-
-- `input`（必填）
-- `voice`（可选；对应 `$PIPER_MODELS_DIR/<voice>.onnx`）
-- `response_format（返回格式）`：`mp3` / `wav`
-
-暂不支持/不完全支持：
-
-- `speed`（会被忽略）
-- 其它未列出的 OpenAI 扩展字段
+- Piper 通过 **OpenAI-compatible** 接口提供给 OpenClaw
+- Piper TTS API（容器内）：`http://127.0.0.1:18793/v1/audio/speech`
+  - 默认端口使用 **18793**（避免与 OpenClaw 浏览器/relay 组件端口冲突）
+- 默认音色（voice）：`zh-xiao_ya-medium`（更偏日常、更自然）
+- 输出：`mp3`
   - 由 Piper API 服务端负责转码
   - 依赖镜像内置 `ffmpeg`
-  - 构建镜像时补齐Piper相关依赖，避免0kb的bug
-#### 🤖 QQBot 语音回复（需要额外配置）
+
+#### 🤖 QQBot 语音回复
 
 链路：OpenClaw 触发 TTS → qqbot 插件发送语音消息
-
-> 说明：本镜像只提供 TTS 接口与 OpenClaw 运行环境，并不内置/自动登录 QQBot。
-> 你需要先在 OpenClaw 中配置 QQBot 通道（账号/Token/WebSocket 等）并启用对应插件，才能让“语音回复”真正发送到 QQ。
-
-最小建议：
-- 先确认 OpenClaw 能收到 QQ 的入站消息
-- 再开启 `messages.tts.auto`（inbound）并指向本镜像的 `baseUrl=http://127.0.0.1:18793/v1`
-
 
 ---
 
 ### 6) 🧰 工具链与排障
 
-- ✅ ClawHub CLI：`clawhub`（已内置）
+- ✅ ClawHub CLI：`clawhub`
 - ✅ `jq`：JSON 解析/过滤（排障、脚本处理 API 返回值时很常用）
-- ✅ `bun`：内置 Bun 运行时（默认安装最新版，便于快速使用；如需固定版本可自行修改 Dockerfile）
+- ✅ `bun`：内置 Bun runtime（固定版本，便于复现构建）
 
 ---
 
@@ -129,7 +98,7 @@
         "baseUrl": "http://127.0.0.1:18793/v1",
         "apiKey": "none",
         "model": "tts-1",
-        "voice": "zh_CN-huayan-medium"
+        "voice": "zh-xiao_ya-medium"
       }
     }
   }
@@ -141,6 +110,52 @@
 ## 🐳 安装与运行
 
 ---
+
+## 🈶 汉化与中文指引（可选）
+
+> 本增强镜像仓库主要做 **Docker 运行时增强**（依赖、TTS、OCR、浏览器等）。
+> 
+> - **OpenClaw CLI / onboard 交互界面本身的“完整汉化”**需要上游 OpenClaw 提供 i18n/locale 支持（目前 `openclaw onboard --help` 未提供 `--lang` 这类参数）。
+> - 本仓库在不破坏英文命令/兼容性的前提下，提供**中文使用指引**（下方速查表），并建议通过环境变量统一设置中文环境。
+
+> 结论先说：
+> - **OpenClaw 本体目前没有官方完整 i18n**，所以这里做的是“中文指引/对照翻译/中文 wrapper”，而不是改写上游源码。
+> - 如果你想要“onboard 逐题逐项中文解释”，请看 `docs/zh/onboard.md`。
+> - 如果你想要“命令带中文说明”，请用 `openclaw-zh`（本仓库提供，行为等价于 openclaw，只额外打印中文提示）。
+
+### 0) 中文 wrapper：openclaw-zh（可选）
+
+```bash
+openclaw-zh help
+openclaw-zh onboard
+```
+
+### 1) 建议的中文环境变量
+
+在 Docker 环境变量中加入（对 CLI 交互/字体渲染更友好；不改变命令语义）：
+
+```bash
+TZ=Asia/Shanghai
+LANG=zh_CN.UTF-8
+LC_ALL=zh_CN.UTF-8
+```
+
+### 2) 常用命令中文速查（不改变命令）
+
+- `openclaw onboard`：初始化向导（配置网关、工作区、技能）
+- `openclaw configure`：交互式配置向导（凭据/渠道/网关）
+- `openclaw gateway run`：前台启动网关
+- `openclaw gateway probe`：探测网关连通性/健康
+- `openclaw browser start`：启动内置浏览器
+- `openclaw browser status`：查看内置浏览器状态
+
+> 如果你是在聊天渠道里使用“/start”等命令，建议把中文说明收敛到 `/help` 输出中（例如：`/start：开始新会话`），避免每次执行命令都额外刷屏。
+
+
+> 路径/挂载约定参考官方 Docker 文档：https://docs.openclaw.ai/install/docker
+
+下面给出两种常见方式：`docker run`（Docker CLI）与 `docker-compose`。示例以 **GHCR 镜像**为准：`ghcr.io/deltrivx/openclaw:latest`。
+
 
 ### 方式 A：Docker CLI（docker run）
 
@@ -177,6 +192,22 @@ services:
     #   HTTP_PROXY: http://192.168.1.2:7890
     #   HTTPS_PROXY: http://192.168.1.2:7890
     #   NO_PROXY: localhost,127.0.0.1,::1,0.0.0.0,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12
+
+    # ⚠️ Tailscale 重要说明（Unraid/局域网代理常见坑）
+    #
+    # OpenClaw 镜像内会启动 tailscaled 用于 `tailscale serve`（让 Dashboard/WS 走 Tailnet 认证）。
+    # 但在某些环境里（尤其 Unraid + HTTP 代理/透明代理），如果容器继承了 HTTP_PROXY/HTTPS_PROXY/ALL_PROXY，
+    # tailscaled 可能会出现：unexpected EOF / controlplane 连接失败 / hostname mismatch 等问题，导致 serve 不稳定。
+    #
+    # ✅ 本仓库的修复策略：仅对 tailscaled 进程禁用代理环境变量（其他进程仍可使用代理）。
+    #    入口脚本里会使用类似 `env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u NO_PROXY tailscaled ...` 的方式启动。
+    #
+    # 如果你仍遇到 Tailscale 不稳定：
+    # 1) 确认容器已更新到最新镜像（拉取 latest 后重启）
+    # 2) 不要给 tailscaled 配代理；如必须全局代理，请务必在 NO_PROXY 中加入：
+    #    - controlplane.tailscale.com, log.tailscale.com, derp*.tailscale.com
+    #    - localhost,127.0.0.1,::1
+    #    - 100.64.0.0/10（Tailscale 网段）
 
 # 可选：使用 compose v2
 # docker compose up -d
@@ -231,80 +262,7 @@ docker compose up -d
 - OCRmyPDF：https://github.com/ocrmypdf/OCRmyPDF
 - Poppler：https://poppler.freedesktop.org/
 
----
+## 🈶 汉化与中文指引（可选）
 
-## 🧯 TTS（Piper）0KB 语音排障（已修复）
-
-> 你之前遇到的 0KB 语音问题，已在镜像构建中通过“补依赖 + 保留完整 Piper bundle + 防 EPIPE + 统一二进制路径”解决。
-
-- 关键依赖：`libespeak-ng1`
-- 关键动态库：`libpiper_phonemize.so.1`（随 Piper bundle 提供）
-- 关键修复：避免 `EPIPE` 造成 TTS 服务崩溃
-- 路径规范：构建时统一 `piper` 到 `/opt/piper/bin/piper`
-
-更详细说明见本段下方“快速检查点”。
-
-### 快速检查点
-
-- 容器日志出现：`[tts] listening on http://127.0.0.1:18793`
-- 触发一次语音后出现：
-  - `[tts] request: ...`
-  - `[tts] response: audio/mpeg bytes=...`
-
----
-
-## 🔎 重要说明（避免踩坑）
-
-### GitHub Actions 构建触发条件
-
-当前仓库的 GitHub Actions **只在 push 到 `main` 且变更命中以下文件时**才会触发构建并推送 GHCR：
-
-- `Dockerfile`
-- `.github/workflows/build.yml`
-
-> 仅修改 `README.md` / `piper-entrypoint.sh` / `openai_tts_server.py` 等文件**不会**触发构建（除非同时改到上述文件）。
-
-### TTS 端口是否可被容器外访问
-
-镜像内置的 OpenAI 兼容 TTS 服务默认绑定在本机回环：
-
-- `TTS_BIND=127.0.0.1`
-- `TTS_PORT=18793`
-
-这意味着：即便你在 `docker run` 里做了 `-p 18793:18793`，如果不改 `TTS_BIND`，宿主机/局域网也访问不到该端口。
-
-如需对外提供（⚠️ 注意安全风险），请显式设置：
-
-```bash
--e TTS_BIND=0.0.0.0
-```
-
-
-
----
-
-## 🌏 汉化/本地化（中文环境）
-
-本镜像已默认启用中文本地化环境：
-
-- `TZ=Asia/Shanghai`
-- `LANG=zh_CN.UTF-8` / `LC_ALL=zh_CN.UTF-8`
-- 内置中文字体：`fonts-noto-cjk`
-
-- 说明：这主要影响容器内的时间显示、日志输出、以及浏览器/截图/HTML 渲染时的中文字体显示。
-- OpenClaw 自身 UI/提示词是否中文，仍取决于你使用的模型与 prompt。
-- Docker 运行环境中文化（locale / 字体 / 时区）
-- 镜像内 OCR / TTS / 浏览器依赖增强
-
-## TTS 依赖与修复总结（Piper / OpenAI-compatible）
-
-本镜像集成了一个 **Piper TTS** 服务，并以 **OpenAI-compatible** 的形式在容器内提供：
-- 默认地址：`http://127.0.0.1:18793`
-- 用途：给 OpenClaw 的 TTS 能力提供一个本地、可自托管的后端
-
-为保证容器内 TTS 稳定可用，我们在迭代中处理过这些关键依赖/坑位：
-
-- **WORKDIR/启动路径问题**：错误的 `WORKDIR` 会导致 `openclaw.mjs` 启动失败；已移除/修正为不影响 OpenClaw 启动的结构。
-- **uvicorn 导入路径问题**：需要在正确目录启动 `uvicorn`（通过在 `/opt/openclaw-enhanced/docker` 目录内子 shell 启动来规避 import path 偏差）。
-- **缺失依赖 `pathvalidate`**：Piper 相关代码路径处理依赖它，缺失会导致运行期报错；已补齐。
-- **返回音频的方式**：TTS 接口需要直接返回音频字节流；如果用 `FileResponse` 指向临时文件，临时目录清理后会出现“文件不存在/空响应”。已改为 **直接返回 bytes**，并在清理临时文件之前完成读取。
+- 本仓库采用“构建期补丁”方式，为 onboard/安全页等提供中文界面。详见  与 。
+- OpenClaw 本体暂未提供完整 i18n，因此这是不修改上游源码的最小侵入式方案。
