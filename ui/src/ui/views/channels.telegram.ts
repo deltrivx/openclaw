@@ -118,5 +118,3 @@ export function renderTelegramCard(params: {
     </div>
   `;
 }
-
-}

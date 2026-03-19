@@ -63,5 +63,3 @@ export function renderDiscordCard(params: {
     </div>
   `;
 }
-
-}
