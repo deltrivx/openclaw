@@ -14,7 +14,7 @@ export async function runNonInteractiveSetup(
   const snapshot = await readConfigFileSnapshot();
   if (snapshot.exists && !snapshot.valid) {
     runtime.error(
-      `Config invalid. Run \`${formatCliCommand("openclaw doctor")}\` to repair it, then re-run setup.`,
+      `配置无效。请运行 \`${formatCliCommand("openclaw doctor")}\` 修复后，再重新执行初始化。`,
     );
     runtime.exit(1);
     return;

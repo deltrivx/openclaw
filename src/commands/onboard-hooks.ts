@@ -12,10 +12,10 @@ export async function setupInternalHooks(
 ): Promise<OpenClawConfig> {
   await prompter.note(
     [
-      "Hooks let you automate actions when agent commands are issued.",
-      "Example: Save session context to memory when you issue /new or /reset.",
+      "Hooks 可以在代理命令触发时自动执行动作。",
+      "例如：当你输入 /new 或 /reset 时，把会话上下文自动保存到记忆中。",
       "",
-      "Learn more: https://docs.openclaw.ai/automation/hooks",
+      "了解更多：https://docs.openclaw.ai/automation/hooks",
     ].join("\n"),
     "Hooks",
   );
@@ -71,14 +71,14 @@ export async function setupInternalHooks(
 
   await prompter.note(
     [
-      `Enabled ${selected.length} hook${selected.length > 1 ? "s" : ""}: ${selected.join(", ")}`,
+      `已启用 ${selected.length} 个 hook${selected.length > 1 ? "s" : ""}：${selected.join(", ")}`,
       "",
-      "You can manage hooks later with:",
+      "后续你也可以用这些命令管理 hooks：",
       `  ${formatCliCommand("openclaw hooks list")}`,
       `  ${formatCliCommand("openclaw hooks enable <name>")}`,
       `  ${formatCliCommand("openclaw hooks disable <name>")}`,
     ].join("\n"),
-    "Hooks Configured",
+    "Hooks 已配置",
   );
 
   return next;

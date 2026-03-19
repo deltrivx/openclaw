@@ -96,7 +96,7 @@ export async function promptRemoteGatewayConfig(
             value: String(index),
             label: buildLabel(beacon),
           })),
-          { value: "manual", label: "Enter URL manually" },
+          { value: "manual", label: "手动输入 URL" },
         ],
       });
       if (selection !== "manual") {
@@ -181,7 +181,7 @@ export async function promptRemoteGatewayConfig(
         prompter,
         preferredEnvVar: "OPENCLAW_GATEWAY_TOKEN",
         copy: {
-          sourceMessage: "Where is this gateway token stored?",
+          sourceMessage: "这个网关 Token 存在哪里？",
           envVarPlaceholder: "OPENCLAW_GATEWAY_TOKEN",
         },
       });
@@ -221,9 +221,9 @@ export async function promptRemoteGatewayConfig(
     } else {
       password = String(
         await prompter.text({
-          message: "Gateway password",
+          message: "网关密码",
           initialValue: typeof password === "string" ? password : undefined,
-          validate: (value) => (value?.trim() ? undefined : "Required"),
+          validate: (value) => (value?.trim() ? undefined : "必填"),
         }),
       ).trim();
     }
@@ -244,5 +244,20 @@ export async function promptRemoteGatewayConfig(
         ...(password !== undefined ? { password } : {}),
       },
     },
+  };
+}
+
+}
+ };
+}
+ !== undefined ? { password } : {}),
+      },
+    },
+  };
+}
+
+  };
+}
+},
   };
 }
