@@ -47,13 +47,24 @@ COPY translations/ /opt/openclaw-enhanced/translations/
 COPY scripts/ /opt/openclaw-enhanced/scripts/
 
 # ------------------------------------------------------------
-# Inject CI-built control-ui only (for zh-CN UI coverage).
+# Inject CI-built control-ui related chunks (for zh-CN UI coverage).
 # IMPORTANT: do NOT overwrite the whole /app/dist, otherwise the plugin SDK/runtime
 # can get out of sync with the base image extensions (e.g. memory-core root-alias).
 #
 # The `openclaw-dist` artifact is staged under `ci-dist/` by `.github/workflows/docker.yml`.
+# The artifact does not necessarily include a dist/control-ui/ directory; in some builds it ships
+# hashed JS chunks like dist/control-ui-*.js. We copy only *control-ui* files.
 # ------------------------------------------------------------
-COPY ci-dist/dist/control-ui/ /app/dist/control-ui/
+COPY ci-dist/dist/ /opt/openclaw-enhanced/ci-dist/dist/
+RUN set -euo pipefail; \
+    shopt -s nullglob; \
+    files=(/opt/openclaw-enhanced/ci-dist/dist/*control-ui*); \
+    if [ ${#files[@]} -eq 0 ]; then \
+      echo "[image] no control-ui chunks found in artifact; skipping"; \
+    else \
+      echo "[image] updating control-ui chunks: ${#files[@]} files"; \
+      cp -f /opt/openclaw-enhanced/ci-dist/dist/*control-ui* /app/dist/; \
+    fi
 
 # Entrypoint: attempt config self-heal (doctor --fix) then start gateway
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
