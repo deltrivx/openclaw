@@ -120,24 +120,24 @@ export function registerOnboardCommand(program: Command) {
     .option("--gateway-token <token>", "网关 Token（token 认证）")
     .option(
       "--gateway-token-ref-env <name>",
-      "Gateway token SecretRef env var name (token auth; e.g. OPENCLAW_GATEWAY_TOKEN)",
+      "网关 Token 的 SecretRef 环境变量名（token 认证；例如 OPENCLAW_GATEWAY_TOKEN）",
     )
-    .option("--gateway-password <password>", "Gateway password (password auth)")
-    .option("--remote-url <url>", "Remote Gateway WebSocket URL")
-    .option("--remote-token <token>", "Remote Gateway token (optional)")
-    .option("--tailscale <mode>", "Tailscale: off|serve|funnel")
-    .option("--tailscale-reset-on-exit", "Reset tailscale serve/funnel on exit")
-    .option("--install-daemon", "Install gateway service")
-    .option("--no-install-daemon", "Skip gateway service install")
-    .option("--skip-daemon", "Skip gateway service install")
-    .option("--daemon-runtime <runtime>", "Daemon runtime: node|bun")
-    .option("--skip-channels", "Skip channel setup")
-    .option("--skip-skills", "Skip skills setup")
-    .option("--skip-search", "Skip search provider setup")
-    .option("--skip-health", "Skip health check")
-    .option("--skip-ui", "Skip Control UI/TUI prompts")
-    .option("--node-manager <name>", "Node manager for skills: npm|pnpm|bun")
-    .option("--json", "Output JSON summary", false);
+    .option("--gateway-password <password>", "网关密码（password 认证）")
+    .option("--remote-url <url>", "远程 Gateway WebSocket URL")
+    .option("--remote-token <token>", "远程 Gateway Token（可选）")
+    .option("--tailscale <mode>", "Tailscale：off|serve|funnel")
+    .option("--tailscale-reset-on-exit", "退出时重置 tailscale serve/funnel")
+    .option("--install-daemon", "安装网关服务")
+    .option("--no-install-daemon", "跳过安装网关服务")
+    .option("--skip-daemon", "跳过安装网关服务")
+    .option("--daemon-runtime <runtime>", "守护进程运行时：node|bun")
+    .option("--skip-channels", "跳过频道设置")
+    .option("--skip-skills", "跳过技能设置")
+    .option("--skip-search", "跳过搜索提供方设置")
+    .option("--skip-health", "跳过健康检查")
+    .option("--skip-ui", "跳过 Control UI/TUI 提示")
+    .option("--node-manager <name>", "技能使用的 Node 包管理器：npm|pnpm|bun")
+    .option("--json", "输出 JSON 摘要", false);
 
   command.action(async (opts, commandRuntime) => {
     await runCommandWithRuntime(defaultRuntime, async () => {

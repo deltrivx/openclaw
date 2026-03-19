@@ -86,11 +86,11 @@ export function normalizeGatewayTokenInput(value: unknown): string {
 
 export function validateGatewayPasswordInput(value: unknown): string | undefined {
   if (typeof value !== "string") {
-    return "Required";
+    return "必填";
   }
   const trimmed = value.trim();
   if (!trimmed) {
-    return "Required";
+    return "必填";
   }
   if (trimmed === "undefined" || trimmed === "null") {
     return '不能直接填写字面量字符串 "undefined" 或 "null"';
@@ -486,3 +486,7 @@ export function resolveControlUiLinks(params: {
     wsUrl: `ws://${host}:${port}${wsPath}`,
   };
 }
+
+  };
+}
+

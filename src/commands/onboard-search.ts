@@ -166,11 +166,11 @@ export async function setupSearch(
 ): Promise<OpenClawConfig> {
   await prompter.note(
     [
-      "Web search lets your agent look things up online.",
-      "Choose a provider and paste your API key.",
-      "Docs: https://docs.openclaw.ai/tools/web",
+      "Web search 可以让代理联网检索信息。",
+      "请选择一个提供方，并填入对应的 API Key。",
+      "文档: https://docs.openclaw.ai/tools/web",
     ].join("\n"),
-    "Web search",
+    "网页搜索",
   );
 
   const existingProvider = config.tools?.web?.search?.provider;

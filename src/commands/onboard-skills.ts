@@ -128,10 +128,10 @@ export async function setupSkills(
       if (showBrewInstall) {
         await prompter.note(
           [
-            "Run:",
+            "执行：",
             '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"',
           ].join("\n"),
-          "Homebrew install",
+          "Homebrew 安装命令",
         );
       }
     }

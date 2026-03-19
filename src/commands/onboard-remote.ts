@@ -117,7 +117,7 @@ export async function promptRemoteGatewayConfig(
             value: "direct",
             label: `Direct gateway WS (${host}:${port})`,
           },
-          { value: "ssh", label: "SSH tunnel (loopback)" },
+          { value: "ssh", label: "SSH 隧道（回环地址）" },
         ],
       });
       if (mode === "direct") {
@@ -213,7 +213,7 @@ export async function promptRemoteGatewayConfig(
         prompter,
         preferredEnvVar: "OPENCLAW_GATEWAY_PASSWORD",
         copy: {
-          sourceMessage: "Where is this gateway password stored?",
+          sourceMessage: "这个网关密码存在哪里？",
           envVarPlaceholder: "OPENCLAW_GATEWAY_PASSWORD",
         },
       });
@@ -246,3 +246,13 @@ export async function promptRemoteGatewayConfig(
     },
   };
 }
+},
+  };
+}
+ined ? { password } : {}),
+      },
+    },
+  };
+}
+}
+

@@ -36,9 +36,9 @@ export async function setupInternalHooks(
   }
 
   const toEnable = await prompter.multiselect({
-    message: "Enable hooks?",
+    message: "要启用 hooks 吗？",
     options: [
-      { value: "__skip__", label: "Skip for now" },
+      { value: "__skip__", label: "暂时跳过" },
       ...eligibleHooks.map((hook) => ({
         value: hook.name,
         label: `${hook.emoji ?? "🔗"} ${hook.name}`,
@@ -82,4 +82,7 @@ export async function setupInternalHooks(
   );
 
   return next;
+}
+rn next;
+}
 }
