@@ -1,5 +1,0 @@
-This repository contains a minimal, repo-local i18n patch for the onboard CLI strings.
-
-We keep a small dictionary in translations/zh-CN/onboard.json and a tiny translator helper.
-
-Next step: patch upstream openclaw command sources to use t("key") for user-visible strings.
