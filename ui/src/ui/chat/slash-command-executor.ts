@@ -264,29 +264,29 @@ async function executeFast(
       const session = await loadCurrentSession(client, sessionKey);
       return {
         content: formatDirectiveOptions(
-          `Current fast mode: ${resolveCurrentFastMode(session)}.`,
+          `当前快速模式：${resolveCurrentFastMode(session)}。`,
           "status, on, off",
         ),
       };
     } catch (err) {
-      return { content: `Failed to get fast mode: ${String(err)}` };
+      return { content: `获取快速模式失败：${String(err)}` };
     }
   }
 
   if (rawMode !== "on" && rawMode !== "off") {
     return {
-      content: `Unrecognized fast mode "${args.trim()}". Valid levels: status, on, off.`,
+      content: `无法识别的快速模式“${args.trim()}”。可用等级：status、on、off。`,
     };
   }
 
   try {
     await client.request("sessions.patch", { key: sessionKey, fastMode: rawMode === "on" });
     return {
-      content: `Fast mode ${rawMode === "on" ? "enabled" : "disabled"}.`,
+      content: `快速模式已${rawMode === "on" ? "开启" : "关闭"}。`,
       action: "refresh",
     };
   } catch (err) {
-    return { content: `Failed to set fast mode: ${String(err)}` };
+    return { content: `设置快速模式失败：${String(err)}` };
   }
 }
 
