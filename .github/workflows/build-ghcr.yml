@@ -25,13 +25,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Preflight syntax check (onboarding files)
+      - name: Preflight syntax check (all onboarding files)
         run: |
           node -c src/cli/program/register.onboard.ts
-          node -c src/commands/onboard-search.ts
-          node -c src/commands/onboard-channels.ts
-          node -c src/commands/onboard-skills.ts
-          node -c src/wizard/setup.ts
+          find src/commands -maxdepth 1 -name 'onboard-*.ts' -print0 | xargs -0 -n1 node -c
+          find src/wizard -maxdepth 1 -name '*.ts' -print0 | xargs -0 -n1 node -c
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
