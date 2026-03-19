@@ -288,8 +288,3 @@ export async function setupSearch(
     },
   };
 }
-  },
-  };
-}
-  };
-}

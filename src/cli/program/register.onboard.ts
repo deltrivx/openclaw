@@ -198,7 +198,4 @@ export function registerOnboardCommand(program: Command) {
         defaultRuntime,
       );
     });
-  });
-}
- });
 }
