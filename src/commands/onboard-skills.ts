@@ -70,11 +70,11 @@ export async function setupSkills(
       `Unsupported on this OS: ${unsupportedOs.length}`,
       `Blocked by allowlist: ${blocked.length}`,
     ].join("\n"),
-    "Skills status",
+    "技能状态",
   );
 
   const shouldConfigure = await prompter.confirm({
-    message: "Configure skills now? (recommended)",
+    message: "现在配置技能吗？（推荐）",
     initialValue: true,
   });
   if (!shouldConfigure) {

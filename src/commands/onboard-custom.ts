@@ -427,11 +427,11 @@ type CustomApiRetryChoice = "baseUrl" | "model" | "both";
 
 async function promptCustomApiRetryChoice(prompter: WizardPrompter): Promise<CustomApiRetryChoice> {
   return await prompter.select({
-    message: "What would you like to change?",
+    message: "你想修改什么？",
     options: [
-      { value: "baseUrl", label: "Change base URL" },
-      { value: "model", label: "Change model" },
-      { value: "both", label: "Change base URL and model" },
+      { value: "baseUrl", label: "修改 Base URL" },
+      { value: "model", label: "修改模型" },
+      { value: "both", label: "同时修改 Base URL 和模型" },
     ],
   });
 }
@@ -563,7 +563,7 @@ export function applyCustomApiConfig(params: ApplyCustomApiConfigParams): Custom
   if (params.compatibility !== "openai" && params.compatibility !== "anthropic") {
     throw new CustomApiError(
       "invalid_compatibility",
-      'Custom provider compatibility must be "openai" or "anthropic".',
+      '自定义 provider 兼容模式必须为 "openai" 或 "anthropic"。',
     );
   }
 
@@ -822,4 +822,9 @@ export async function promptCustomApiConfig(params: {
 
   runtime.log(`Configured custom provider: ${result.providerId}/${result.modelId}`);
   return result;
+}
+Id}`);
+  return result;
+}
+rn result;
 }
