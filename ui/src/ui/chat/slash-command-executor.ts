@@ -146,7 +146,7 @@ async function executeModel(
       }
       return { content: lines.join("\n") };
     } catch (err) {
-      return { content: `Failed to get model info: ${String(err)}` };
+      return { content: `获取模型信息失败：${String(err)}` };
     }
   }
 
@@ -160,12 +160,12 @@ async function executeModel(
       patched.resolved?.modelProvider,
     );
     return {
-      content: `Model set to \`${args.trim()}\`.`,
+      content: `模型已设置为 \`${args.trim()}\`。`,
       action: "refresh",
       sessionPatch: { modelOverride: createChatModelOverride(resolvedValue) },
     };
   } catch (err) {
-    return { content: `Failed to set model: ${String(err)}` };
+    return { content: `设置模型失败：${String(err)}` };
   }
 }
 
