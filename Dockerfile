@@ -45,7 +45,7 @@ COPY scripts/ /opt/openclaw-enhanced/scripts/
 
 # Optional: inject rebuilt upstream dist from CI artifact (mounted into build context as ./injected)
 ARG INJECT_DIST=0
-RUN /bin/bash -lc 'set -euo pipefail; if [ "$INJECT_DIST" = "1" ] && [ -d /injected/dist ]; then echo "[inject] overriding /app/dist"; rm -rf /app/dist; mkdir -p /app/dist; cp -a /injected/dist/. /app/dist/; fi'
+RUN /bin/bash -lc 'set -euo pipefail; if [ "$INJECT_DIST" = "1" ] && [ -d /injected/dist ]; then echo "[inject] overlaying /app/dist (keep base assets)"; mkdir -p /app/dist; cp -a /injected/dist/. /app/dist/; fi'
 
 # Entrypoint: attempt config self-heal (doctor --fix) then start gateway
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
