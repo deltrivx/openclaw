@@ -58,6 +58,15 @@ jobs:
           cd upstream-src
           pnpm build
 
+      - name: Prune bundled assets we do NOT want to override in the base image
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd upstream-src
+          # We only need core CLI/gateway dist outputs for zh-CN onboarding.
+          # Keep the base image's bundled extensions + control-ui to avoid breaking plugin safety checks.
+          rm -rf dist/extensions dist/control-ui || true
+
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
