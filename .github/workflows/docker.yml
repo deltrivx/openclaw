@@ -21,7 +21,11 @@ permissions:
   packages: write
 
 jobs:
+  build-dist:
+    uses: ./.github/workflows/build-dist-zhcn.yml
+
   build-and-push:
+    needs: build-dist
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
