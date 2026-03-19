@@ -569,7 +569,7 @@ export function applyCustomApiConfig(params: ApplyCustomApiConfigParams): Custom
 
   const modelId = params.modelId.trim();
   if (!modelId) {
-    throw new CustomApiError("invalid_model_id", "Custom provider model ID is required.");
+    throw new CustomApiError("invalid_model_id", "自定义 provider 的模型 ID 为必填项。");
   }
 
   // Transform Azure URLs to include the deployment path for API calls
@@ -710,7 +710,7 @@ export async function promptCustomApiConfig(params: {
         modelId,
       });
       if (openaiProbe.ok) {
-        probeSpinner.stop("Detected OpenAI-compatible endpoint.");
+        probeSpinner.stop("已检测到 OpenAI 兼容端点。");
         compatibility = "openai";
         verifiedFromProbe = true;
       } else {
@@ -822,4 +822,8 @@ export async function promptCustomApiConfig(params: {
 
   runtime.log(`Configured custom provider: ${result.providerId}/${result.modelId}`);
   return result;
+}
+}
+ult;
+}
 }

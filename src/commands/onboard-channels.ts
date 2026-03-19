@@ -347,10 +347,10 @@ async function maybeConfigureDmPolicies(params: {
       nextPolicy: (await prompter.select({
         message: `${policy.label} DM policy`,
         options: [
-          { value: "pairing", label: "Pairing (recommended)" },
-          { value: "allowlist", label: "Allowlist (specific users only)" },
-          { value: "open", label: "Open (public inbound DMs)" },
-          { value: "disabled", label: "Disabled (ignore DMs)" },
+          { value: "pairing", label: "Pairing（推荐）" },
+          { value: "allowlist", label: "Allowlist（仅指定用户）" },
+          { value: "open", label: "Open（公开接收私信）" },
+          { value: "disabled", label: "禁用（忽略私信）" },
         ],
       })) as DmPolicy,
     };
@@ -806,7 +806,7 @@ export async function setupChannels(
     } else if (installedCatalogEntry) {
       const plugin = await loadScopedChannelPlugin(channel, installedCatalogEntry.pluginId);
       if (!plugin) {
-        await prompter.note(`${channel} plugin not available.`, "Channel setup");
+        await prompter.note(`${channel} 插件不可用。`, "频道设置");
         return;
       }
       await refreshStatus(channel);
@@ -854,8 +854,8 @@ export async function setupChannels(
         ...buildSelectionOptions(entries),
         {
           value: "__skip__",
-          label: "Skip for now",
-          hint: `You can add channels later via \`${formatCliCommand("openclaw channels add")}\``,
+          label: "暂时跳过",
+          hint: `后续可通过 \`${formatCliCommand("openclaw channels add")}\` 添加频道`,
         },
       ],
       initialValue: quickstartDefault,
@@ -912,5 +912,11 @@ export async function setupChannels(
   }
 
   return next;
+}
+
+;
+}
+
+;
 }
 
