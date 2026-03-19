@@ -1,5 +1,7 @@
 name: Docker GHCR Build
 
+# note: this workflow builds a zh-CN dist artifact first, then bakes it into the image.
+
 on:
   push:
     branches: ["main"]
@@ -19,6 +21,9 @@ concurrency:
 permissions:
   contents: read
   packages: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   build-dist:
