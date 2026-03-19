@@ -403,7 +403,7 @@ async function executeKill(
           : `Aborted ${successCount} of ${matched.length} matching sub-agent sessions for \`${target}\`.`,
     };
   } catch (err) {
-    return { content: `Failed to abort: ${String(err)}` };
+    return { content: `终止失败：${String(err)}` };
   }
 }
 
@@ -584,4 +584,8 @@ function fmtTokens(n: number): string {
     return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}k`;
   }
   return String(n);
+}
+);
+}
+String(n);
 }
