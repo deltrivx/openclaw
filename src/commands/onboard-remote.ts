@@ -246,17 +246,6 @@ export async function promptRemoteGatewayConfig(
     },
   };
 }
-
-}
- };
-}
- !== undefined ? { password } : {}),
-      },
-    },
-  };
-}
-
-  };
 }
 },
   };

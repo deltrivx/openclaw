@@ -914,9 +914,3 @@ export async function setupChannels(
   return next;
 }
 
-;
-}
-
-;
-}
-
