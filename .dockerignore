@@ -12,3 +12,6 @@
 !patches/**
 !injected/**
 !docker-entrypoint.sh
+
+# Include CI-downloaded dist artifact (staged by .github/workflows/docker.yml)
+!ci-dist/**
