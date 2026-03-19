@@ -50,6 +50,14 @@ jobs:
           name: openclaw-dist
           path: ci-dist
 
+      - name: Debug: list ci-dist contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "== ci-dist tree =="
+          ls -la
+          find ci-dist -maxdepth 3 -print || true
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
