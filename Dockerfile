@@ -4,8 +4,8 @@
 
 FROM ghcr.io/openclaw/openclaw:latest
 
-# Path used by CI to inject built dist
-COPY injected/ /injected/
+# NOTE: We no longer inject a separately-built dist into the base image.
+# Mixing dist artifacts from a different commit can break the plugin SDK/runtime ABI.
 
 USER root
 
@@ -49,10 +49,6 @@ COPY scripts/ /opt/openclaw-enhanced/scripts/
 # NOTE: We previously attempted to patch compiled JS output for zh-CN onboarding.
 # That approach caused runtime SyntaxError on some deployments (e.g., Unraid).
 # Keep the image stable: do not patch compiled output at build time.
-
-# Optional: inject rebuilt upstream dist from CI artifact (mounted into build context as ./injected)
-ARG INJECT_DIST=0
-RUN /bin/bash -lc 'set -euo pipefail; if [ "$INJECT_DIST" = "1" ] && [ -d /injected/dist ]; then echo "[inject] overlaying /app/dist (keep base assets)"; mkdir -p /app/dist; cp -a /injected/dist/. /app/dist/; fi'
 
 # Entrypoint: attempt config self-heal (doctor --fix) then start gateway
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
