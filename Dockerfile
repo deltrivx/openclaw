@@ -56,14 +56,19 @@ COPY scripts/ /opt/openclaw-enhanced/scripts/
 # hashed JS chunks like dist/control-ui-*.js. We copy only *control-ui* files.
 # ------------------------------------------------------------
 COPY ci-dist/dist/ /opt/openclaw-enhanced/ci-dist/dist/
-RUN set -euo pipefail; \
-    shopt -s nullglob; \
-    files=(/opt/openclaw-enhanced/ci-dist/dist/*control-ui*); \
-    if [ ${#files[@]} -eq 0 ]; then \
+# Use POSIX sh (dash) compatible syntax; GitHub Actions buildx uses /bin/sh -c by default.
+RUN set -eu; \
+    found=0; \
+    for f in /opt/openclaw-enhanced/ci-dist/dist/*control-ui*; do \
+      if [ -f "$f" ]; then \
+        found=1; \
+        cp -f "$f" /app/dist/; \
+      fi; \
+    done; \
+    if [ "$found" -eq 0 ]; then \
       echo "[image] no control-ui chunks found in artifact; skipping"; \
     else \
-      echo "[image] updating control-ui chunks: ${#files[@]} files"; \
-      cp -f /opt/openclaw-enhanced/ci-dist/dist/*control-ui* /app/dist/; \
+      echo "[image] control-ui chunks copied"; \
     fi
 
 # Entrypoint: attempt config self-heal (doctor --fix) then start gateway
