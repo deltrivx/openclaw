@@ -44,14 +44,35 @@ jobs:
         with:
           version: "10.23.0"
 
-      - name: Force git@github.com -> https://github.com (avoid SSH auth in CI)
+      - name: Force GitHub git URLs to HTTPS (avoid SSH auth in CI)
         shell: bash
         run: |
           set -euo pipefail
+          # Rewrite scp-style + ssh URLs.
           git config --global url."https://github.com/".insteadOf "git@github.com:"
           git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          git config --global url."https://github.com/".insteadOf "git+ssh://git@github.com/"
+          # Some lockfiles contain the odd form https://git@github.com:org/repo.git
+          git config --global url."https://github.com/".insteadOf "https://git@github.com:"
+          git config --global url."https://github.com/".insteadOf "git+https://git@github.com:"
           # Some deps may use git://; force https
           git config --global url."https://github.com/".insteadOf "git://github.com/"
+
+      - name: Patch upstream lockfile git URLs (last-resort safety net)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd upstream-src
+          if [[ -f pnpm-lock.yaml ]]; then
+            # Replace any remaining SSH-style URLs that pnpm might try to clone.
+            sed -i \
+              -e 's#git@github.com:#https://github.com/#g' \
+              -e 's#ssh://git@github.com/#https://github.com/#g' \
+              -e 's#git+ssh://git@github.com/#git+https://github.com/#g' \
+              -e 's#https://git@github.com:#https://github.com/#g' \
+              -e 's#git+https://git@github.com:#git+https://github.com/#g' \
+              pnpm-lock.yaml
+          fi
 
       - name: Install dependencies
         shell: bash
