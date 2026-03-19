@@ -40,8 +40,8 @@ export function renderSkills(props: SkillsProps) {
     <section class="card">
       <div class="row" style="justify-content: space-between;">
         <div>
-          <div class="card-title">Skills</div>
-          <div class="card-sub">Installed skills and their status.</div>
+          <div class="card-title">技能</div>
+          <div class="card-sub">已安装技能及其状态。</div>
         </div>
         <button class="btn" ?disabled=${props.loading || !props.connected} @click=${props.onRefresh}>
           ${props.loading ? "Loading…" : "Refresh"}
@@ -60,12 +60,12 @@ export function renderSkills(props: SkillsProps) {
           <input
             .value=${props.filter}
             @input=${(e: Event) => props.onFilterChange((e.target as HTMLInputElement).value)}
-            placeholder="Search skills"
+            placeholder="搜索技能"
             autocomplete="off"
             name="skills-filter"
           />
         </label>
-        <div class="muted">${filtered.length} shown</div>
+        <div class="muted">已显示 ${filtered.length} 项</div>
       </div>
 
       ${
@@ -137,7 +137,7 @@ function renderSkill(skill: SkillStatusEntry, props: SkillsProps) {
           reasons.length > 0
             ? html`
               <div class="muted" style="margin-top: 6px;">
-                Reason: ${reasons.join(", ")}
+                原因：${reasons.join(", ")}
               </div>
             `
             : nothing
@@ -196,7 +196,7 @@ function renderSkill(skill: SkillStatusEntry, props: SkillsProps) {
                 ?disabled=${busy}
                 @click=${() => props.onSaveKey(skill.skillKey)}
               >
-                Save key
+                保存密钥
               </button>
             `
             : nothing
@@ -204,4 +204,6 @@ function renderSkill(skill: SkillStatusEntry, props: SkillsProps) {
       </div>
     </div>
   `;
+}
+}
 }

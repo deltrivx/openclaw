@@ -57,8 +57,8 @@ export function renderLogs(props: LogsProps) {
     <section class="card">
       <div class="row" style="justify-content: space-between;">
         <div>
-          <div class="card-title">Logs</div>
-          <div class="card-sub">Gateway file logs (JSONL).</div>
+          <div class="card-title">日志</div>
+          <div class="card-sub">网关文件日志（JSONL）。</div>
         </div>
         <div class="row" style="gap: 8px;">
           <button class="btn" ?disabled=${props.loading} @click=${props.onRefresh}>
@@ -80,7 +80,7 @@ export function renderLogs(props: LogsProps) {
 
       <div class="filters" style="margin-top: 14px;">
         <label class="field" style="min-width: 220px;">
-          <span>Filter</span>
+          <span>筛选</span>
           <input
             .value=${props.filterText}
             @input=${(e: Event) => props.onFilterTextChange((e.target as HTMLInputElement).value)}
@@ -122,7 +122,7 @@ export function renderLogs(props: LogsProps) {
       ${
         props.truncated
           ? html`
-              <div class="callout" style="margin-top: 10px">Log output truncated; showing latest chunk.</div>
+              <div class="callout" style="margin-top: 10px">日志输出已截断；当前显示最新一段。</div>
             `
           : nothing
       }
@@ -153,3 +153,4 @@ export function renderLogs(props: LogsProps) {
     </section>
   `;
 }
+

@@ -84,8 +84,8 @@ export function renderLoginGate(state: AppViewState) {
               <button
                 type="button"
                 class="btn btn--icon ${state.loginShowGatewayPassword ? "active" : ""}"
-                title=${state.loginShowGatewayPassword ? "Hide password" : "Show password"}
-                aria-label="Toggle password visibility"
+                title=${state.loginShowGatewayPassword ? "隐藏密码" : "显示密码"}
+                aria-label="切换密码可见性"
                 aria-pressed=${state.loginShowGatewayPassword}
                 @click=${() => {
                   state.loginShowGatewayPassword = !state.loginShowGatewayPassword;

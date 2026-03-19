@@ -14,13 +14,13 @@ export function renderDiscordCard(params: {
   return html`
     <div class="card">
       <div class="card-title">Discord</div>
-      <div class="card-sub">Bot status and channel configuration.</div>
+      <div class="card-sub">机器人状态与频道配置。</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
-          <span>${discord?.configured ? "Yes" : "No"}</span>
+          <span class="label">已配置</span>
+          <span>${discord?.configured ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">Running</span>
@@ -47,7 +47,7 @@ export function renderDiscordCard(params: {
       ${
         discord?.probe
           ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${discord.probe.ok ? "ok" : "failed"} ·
+            探测 ${discord.probe.ok ? "成功" : "失败"} ·
             ${discord.probe.status ?? ""} ${discord.probe.error ?? ""}
           </div>`
           : nothing
@@ -62,4 +62,6 @@ export function renderDiscordCard(params: {
       </div>
     </div>
   `;
+}
+
 }

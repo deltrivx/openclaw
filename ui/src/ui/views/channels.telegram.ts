@@ -55,7 +55,7 @@ export function renderTelegramCard(params: {
   return html`
     <div class="card">
       <div class="card-title">Telegram</div>
-      <div class="card-sub">Bot status and channel configuration.</div>
+      <div class="card-sub">机器人状态与频道配置。</div>
       ${accountCountLabel}
 
       ${
@@ -72,8 +72,8 @@ export function renderTelegramCard(params: {
                 <span>${telegram?.configured ? "Yes" : "No"}</span>
               </div>
               <div>
-                <span class="label">Running</span>
-                <span>${telegram?.running ? "Yes" : "No"}</span>
+                <span class="label">运行中</span>
+                <span>${telegram?.running ? "是" : "否"}</span>
               </div>
               <div>
                 <span class="label">Mode</span>
@@ -112,9 +112,11 @@ export function renderTelegramCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          探测
         </button>
       </div>
     </div>
   `;
+}
+
 }

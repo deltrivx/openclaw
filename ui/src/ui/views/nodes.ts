@@ -60,7 +60,7 @@ export function renderNodes(props: NodesProps) {
           <div class="card-sub">已配对设备与在线连接。</div>
         </div>
         <button class="btn" ?disabled=${props.loading} @click=${props.onRefresh}>
-          ${props.loading ? "Loading…" : "Refresh"}
+          ${props.loading ? "加载中…" : "刷新"}
         </button>
       </div>
       <div class="list" style="margin-top: 16px;">
