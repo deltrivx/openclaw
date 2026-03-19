@@ -18,8 +18,17 @@ run_fix() {
 }
 
 disable_problem_plugins() {
-  # Remove incompatible plugins that can crash during load.
-  # This is a stability measure; we can re-enable after updating extensions.
+  # These are currently incompatible with the installed OpenClaw runtime.
+  # They are loaded from /app/extensions (built-in), not only from config.
+  # Rename directories so the loader won't see them.
+  for d in /app/extensions/copilot-proxy /app/extensions/qwen-portal-auth; do
+    if [[ -d "$d" ]] && [[ ! -d "${d}.disabled" ]]; then
+      echo "[entrypoint] disabling built-in extension: $d"
+      mv "$d" "${d}.disabled" || true
+    fi
+  done
+
+  # Also remove from config entries if present (best-effort).
   python3 - "$CONFIG_FILE" <<'PY'
 import json, sys
 p=sys.argv[1]
