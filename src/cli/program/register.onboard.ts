@@ -86,19 +86,19 @@ export function registerOnboardCommand(program: Command) {
     .option("--auth-choice <choice>", `认证方式：${AUTH_CHOICE_HELP}`)
     .option(
       "--token-provider <id>",
-      "Token provider id (non-interactive; used with --auth-choice token)",
+      "Token 提供方 ID（非交互模式；与 --auth-choice token 搭配使用）",
     )
-    .option("--token <token>", "Token value (non-interactive; used with --auth-choice token)")
+    .option("--token <token>", "Token 值（非交互模式；与 --auth-choice token 搭配使用）")
     .option(
       "--token-profile-id <id>",
-      "Auth profile id (non-interactive; default: <provider>:manual)",
+      "认证配置档 ID（非交互模式；默认：<provider>:manual）",
     )
-    .option("--token-expires-in <duration>", "Optional token expiry duration (e.g. 365d, 12h)")
+    .option("--token-expires-in <duration>", "可选 Token 有效期（例如 365d、12h）")
     .option(
       "--secret-input-mode <mode>",
-      "API key persistence mode: plaintext|ref (default: plaintext)",
+      "API Key 持久化方式：plaintext|ref（默认：plaintext）",
     )
-    .option("--cloudflare-ai-gateway-account-id <id>", "Cloudflare Account ID")
+    .option("--cloudflare-ai-gateway-account-id <id>", "Cloudflare 账户 ID")
     .option("--cloudflare-ai-gateway-gateway-id <id>", "Cloudflare AI Gateway ID");
 
   for (const providerFlag of ONBOARD_AUTH_FLAGS) {
