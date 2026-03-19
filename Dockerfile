@@ -20,7 +20,7 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    ca-certificates curl \
+    ca-certificates curl gnupg \
     locales tzdata \
     fonts-noto-cjk fonts-noto-color-emoji \
     chromium \
@@ -29,6 +29,13 @@ RUN apt-get update \
     ocrmypdf \
     poppler-utils \
     jq \
+ && install -d -m 0755 /etc/apt/keyrings \
+ && curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg \
+      -o /etc/apt/keyrings/tailscale-archive-keyring.gpg \
+ && curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list \
+      -o /etc/apt/sources.list.d/tailscale.list \
+ && apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tailscale \
  && sed -i 's/^# *zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen \
  && locale-gen zh_CN.UTF-8 \
  && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
