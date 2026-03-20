@@ -89,7 +89,7 @@ type UsageMosaicStats = {
   weekdayTotals: Array<{ label: string; tokens: number }>;
 };
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
 function getZonedHour(date: Date, zone: "local" | "utc"): number {
   return zone === "utc" ? date.getUTCHours() : date.getHours();

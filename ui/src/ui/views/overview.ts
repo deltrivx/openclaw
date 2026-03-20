@@ -182,8 +182,8 @@ export function renderOverview(props: OverviewProps) {
             href="https://docs.openclaw.ai/web/control-ui#insecure-http"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
-            title="Insecure HTTP docs (opens in new tab)"
-            >Docs: Insecure HTTP</a
+            title="不安全 HTTP 文档（在新标签页打开）"
+            >文档：不安全 HTTP</a
           >
         </div>
       </div>

@@ -264,9 +264,9 @@ function deriveRunningStatus(account: ChannelAccountSnapshot): "是" | "否" | "
   }
   // If we have recent inbound activity, the channel is effectively running
   if (hasRecentActivity(account)) {
-    return "Active";
+    return "活跃";
   }
-  return "No";
+  return "否";
 }
 
 function deriveConnectedStatus(account: ChannelAccountSnapshot): "Yes" | "No" | "Active" | "n/a" {
@@ -322,4 +322,5 @@ function renderGenericAccount(account: ChannelAccountSnapshot) {
       </div>
     </div>
   `;
+}
 }
