@@ -40,12 +40,12 @@ const PALETTE_ITEMS: PaletteItem[] = [
   },
   {
     id: "nav-cron",
-    label: "Scheduled",
+    label: "计划任务",
     icon: "scrollText",
     category: "navigation",
     action: "nav:cron",
   },
-  { id: "nav-skills", label: "Skills", icon: "zap", category: "navigation", action: "nav:skills" },
+  { id: "nav-skills", label: "技能", icon: "zap", category: "navigation", action: "nav:skills" },
   {
     id: "nav-config",
     label: "设置",
@@ -55,14 +55,14 @@ const PALETTE_ITEMS: PaletteItem[] = [
   },
   {
     id: "nav-agents",
-    label: "Agents",
+    label: "代理",
     icon: "folder",
     category: "navigation",
     action: "nav:agents",
   },
   {
     id: "skill-shell",
-    label: "Shell Command",
+    label: "Shell 命令",
     icon: "monitor",
     category: "skills",
     action: "/skill shell",
@@ -74,7 +74,7 @@ const PALETTE_ITEMS: PaletteItem[] = [
     icon: "bug",
     category: "skills",
     action: "/verbose full",
-    description: "Toggle debug",
+    description: "切换调试",
   },
 ];
 

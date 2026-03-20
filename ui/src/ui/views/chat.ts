@@ -404,7 +404,7 @@ function renderAttachmentPreview(props: ChatProps): TemplateResult | typeof noth
       ${attachments.map(
         (att) => html`
           <div class="chat-attachment-thumb">
-            <img src=${att.dataUrl} alt="Attachment preview" />
+            <img src=${att.dataUrl} alt="附件预览" />
             <button
               class="chat-attachment-remove"
               type="button"
@@ -559,14 +559,14 @@ function exportMarkdown(props: ChatProps): void {
 }
 
 const WELCOME_SUGGESTIONS = [
-  "What can you do?",
-  "Summarize my recent sessions",
-  "Help me configure a channel",
-  "Check system health",
+  "你能做什么？",
+  "总结我最近的会话",
+  "帮我配置一个通道",
+  "检查系统健康状态",
 ];
 
 function renderWelcomeState(props: ChatProps): TemplateResult {
-  const name = props.assistantName || "Assistant";
+  const name = props.assistantName || "助手";
   const avatar = resolveAgentAvatarUrl({
     identity: {
       avatar: props.assistantAvatar ?? undefined,
@@ -676,7 +676,7 @@ function renderPinnedSection(
                   <button class="btn-ghost" @click=${() => {
                     pinned.unpin(index);
                     requestUpdate();
-                  }} title="Unpin">
+                  }} title="取消置顶">
                     ${icons.x}
                   </button>
                 </div>
@@ -824,9 +824,9 @@ export function renderChat(props: ChatProps) {
 
   const placeholder = props.connected
     ? hasAttachments
-      ? "Add a message or paste more images..."
+      ? "输入消息或粘贴更多图片……"
       : `Message ${props.assistantName || "agent"} (Enter to send)`
-    : "Connect to the gateway to start chatting...";
+    : "连接到网关后开始聊天……";
 
   const requestUpdate = props.onRequestUpdate ?? (() => {});
   const getDraft = props.getDraft ?? (() => props.draft);
@@ -1086,8 +1086,8 @@ export function renderChat(props: ChatProps) {
               class="chat-focus-exit"
               type="button"
               @click=${props.onToggleFocusMode}
-              aria-label="Exit focus mode"
-              title="Exit focus mode"
+              aria-label="退出专注模式"
+              title="退出专注模式"
             >
               ${icons.x}
             </button>
@@ -1204,7 +1204,7 @@ export function renderChat(props: ChatProps) {
           @keydown=${handleKeyDown}
           @input=${handleInput}
           @paste=${(e: ClipboardEvent) => handlePaste(e, props)}
-          placeholder=${vs.sttRecording ? "Listening..." : placeholder}
+          placeholder=${vs.sttRecording ? "正在聆听…" : placeholder}
           rows="1"
         ></textarea>
 
