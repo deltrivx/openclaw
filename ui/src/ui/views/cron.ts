@@ -284,8 +284,8 @@ function fieldLabelForKey(
     payloadThinking: t("cron.form.thinking"),
     timeoutSeconds: t("cron.form.timeoutSeconds"),
     deliveryTo: t("cron.form.to"),
-    failureAlertAfter: "Failure alert after",
-    failureAlertCooldownSeconds: "Failure alert cooldown",
+    failureAlertAfter: "失败告警触发阈值",
+    failureAlertCooldownSeconds: "失败告警冷却时间",
   };
   return labels[key];
 }
@@ -1183,7 +1183,7 @@ export function renderCron(props: CronProps) {
                 isAgentTurn
                   ? html`
                       <label class="field cron-span-2">
-                        ${renderFieldLabel("Failure alerts")}
+                        ${renderFieldLabel("失败告警")}
                         <select
                           .value=${props.form.failureAlertMode}
                           @change=${(e: Event) =>
@@ -1192,19 +1192,19 @@ export function renderCron(props: CronProps) {
                                 .value as CronFormState["failureAlertMode"],
                             })}
                         >
-                          <option value="inherit">Inherit global setting</option>
-                          <option value="disabled">Disable for this job</option>
-                          <option value="custom">Custom per-job settings</option>
+                          <option value="inherit">继承全局设置</option>
+                          <option value="disabled">仅此任务禁用</option>
+                          <option value="custom">自定义任务级设置</option>
                         </select>
                         <div class="cron-help">
-                          Control when this job sends repeated-failure alerts.
+                          控制此任务在连续失败时何时发送告警。
                         </div>
                       </label>
                       ${
                         props.form.failureAlertMode === "custom"
                           ? html`
                               <label class="field">
-                                ${renderFieldLabel("Alert after")}
+                                ${renderFieldLabel("告警阈值")}
                                 <input
                                   id="cron-failure-alert-after"
                                   .value=${props.form.failureAlertAfter}
@@ -1220,14 +1220,14 @@ export function renderCron(props: CronProps) {
                                     })}
                                   placeholder="2"
                                 />
-                                <div class="cron-help">Consecutive errors before alerting.</div>
+                                <div class="cron-help">连续出错多少次后触发告警。</div>
                                 ${renderFieldError(
                                   props.fieldErrors.failureAlertAfter,
                                   errorIdForField("failureAlertAfter"),
                                 )}
                               </label>
                               <label class="field">
-                                ${renderFieldLabel("Cooldown (seconds)")}
+                                ${renderFieldLabel("冷却时间（秒）")}
                                 <input
                                   id="cron-failure-alert-cooldown-seconds"
                                   .value=${props.form.failureAlertCooldownSeconds}
@@ -1244,7 +1244,7 @@ export function renderCron(props: CronProps) {
                                     })}
                                   placeholder="3600"
                                 />
-                                <div class="cron-help">Minimum seconds between alerts.</div>
+                                <div class="cron-help">两次告警之间的最小间隔秒数。</div>
                                 ${renderFieldError(
                                   props.fieldErrors.failureAlertCooldownSeconds,
                                   errorIdForField("failureAlertCooldownSeconds"),
@@ -1268,7 +1268,7 @@ export function renderCron(props: CronProps) {
                                 </select>
                               </label>
                               <label class="field">
-                                ${renderFieldLabel("Alert to")}
+                                ${renderFieldLabel("告警接收方")}
                                 <input
                                   .value=${props.form.failureAlertTo}
                                   list="cron-delivery-to-suggestions"
@@ -1276,14 +1276,14 @@ export function renderCron(props: CronProps) {
                                     props.onFormChange({
                                       failureAlertTo: (e.target as HTMLInputElement).value,
                                     })}
-                                  placeholder="+1555... or chat id"
+                                  placeholder="+1555... 或聊天 ID"
                                 />
                                 <div class="cron-help">
-                                  Optional recipient override for failure alerts.
+                                  可选：为失败告警单独指定接收方。
                                 </div>
                               </label>
                               <label class="field">
-                                ${renderFieldLabel("Alert mode")}
+                                ${renderFieldLabel("告警模式")}
                                 <select
                                   .value=${props.form.failureAlertDeliveryMode || "announce"}
                                   @change=${(e: Event) =>
@@ -1292,19 +1292,19 @@ export function renderCron(props: CronProps) {
                                         .value as CronFormState["failureAlertDeliveryMode"],
                                     })}
                                 >
-                                  <option value="announce">Announce (via channel)</option>
+                                  <option value="announce">通道通知</option>
                                   <option value="webhook">Webhook（HTTP POST）</option>
                                 </select>
                               </label>
                               <label class="field">
-                                ${renderFieldLabel("Alert account ID")}
+                                ${renderFieldLabel("告警账号 ID")}
                                 <input
                                   .value=${props.form.failureAlertAccountId}
                                   @input=${(e: Event) =>
                                     props.onFormChange({
                                       failureAlertAccountId: (e.target as HTMLInputElement).value,
                                     })}
-                                  placeholder="Account ID for multi-account setups"
+                                  placeholder="多账号场景下使用的账号 ID"
                                 />
                               </label>
                             `
