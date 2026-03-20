@@ -31,7 +31,7 @@ export function renderGatewayUrlConfirmation(state: AppViewState) {
             class="btn"
             @click=${() => state.handleGatewayUrlCancel()}
           >
-            Cancel
+            取消
           </button>
         </div>
       </div>

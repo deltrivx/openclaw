@@ -47,13 +47,13 @@ export function renderExecApprovalPrompt(state: AppViewState) {
         </div>
         <div class="exec-approval-command mono">${request.command}</div>
         <div class="exec-approval-meta">
-          ${renderMetaRow("Host", request.host)}
-          ${renderMetaRow("Agent", request.agentId)}
-          ${renderMetaRow("Session", request.sessionKey)}
-          ${renderMetaRow("CWD", request.cwd)}
-          ${renderMetaRow("Resolved", request.resolvedPath)}
-          ${renderMetaRow("Security", request.security)}
-          ${renderMetaRow("Ask", request.ask)}
+          ${renderMetaRow("主机", request.host)}
+          ${renderMetaRow("代理", request.agentId)}
+          ${renderMetaRow("会话", request.sessionKey)}
+          ${renderMetaRow("工作目录", request.cwd)}
+          ${renderMetaRow("解析路径", request.resolvedPath)}
+          ${renderMetaRow("安全", request.security)}
+          ${renderMetaRow("询问", request.ask)}
         </div>
         ${
           state.execApprovalError
@@ -73,7 +73,7 @@ export function renderExecApprovalPrompt(state: AppViewState) {
             ?disabled=${state.execApprovalBusy}
             @click=${() => state.handleExecApprovalDecision("allow-always")}
           >
-            Always allow
+            始终允许
           </button>
           <button
             class="btn danger"
@@ -86,4 +86,5 @@ export function renderExecApprovalPrompt(state: AppViewState) {
       </div>
     </div>
   `;
+}
 }

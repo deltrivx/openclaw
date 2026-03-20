@@ -26,7 +26,7 @@ const PALETTE_ITEMS: PaletteItem[] = [
   ...SLASH_PALETTE_ITEMS,
   {
     id: "nav-overview",
-    label: "Overview",
+    label: "概览",
     icon: "barChart",
     category: "navigation",
     action: "nav:overview",
@@ -48,7 +48,7 @@ const PALETTE_ITEMS: PaletteItem[] = [
   { id: "nav-skills", label: "Skills", icon: "zap", category: "navigation", action: "nav:skills" },
   {
     id: "nav-config",
-    label: "Settings",
+    label: "设置",
     icon: "settings",
     category: "navigation",
     action: "nav:config",
@@ -66,7 +66,7 @@ const PALETTE_ITEMS: PaletteItem[] = [
     icon: "monitor",
     category: "skills",
     action: "/skill shell",
-    description: "Run shell",
+    description: "运行 shell",
   },
   {
     id: "skill-debug",
@@ -176,9 +176,9 @@ function handleKeydown(e: KeyboardEvent, props: CommandPaletteProps) {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  search: "Search",
-  navigation: "Navigation",
-  skills: "Skills",
+  search: "搜索",
+  navigation: "导航",
+  skills: "技能",
 };
 
 function focusInput(el: Element | undefined) {
@@ -253,11 +253,14 @@ export function renderCommandPalette(props: CommandPaletteProps) {
           }
         </div>
         <div class="cmd-palette__footer">
-          <span><kbd>↑↓</kbd> navigate</span>
-          <span><kbd>↵</kbd> select</span>
-          <span><kbd>esc</kbd> close</span>
+          <span><kbd>↑↓</kbd> 导航</span>
+          <span><kbd>↵</kbd> 选择</span>
+          <span><kbd>esc</kbd> 关闭</span>
         </div>
       </div>
     </div>
   `;
+}
+
+
 }
