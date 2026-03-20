@@ -337,7 +337,7 @@ async function executeAgents(client: GatewayBrowserClient): Promise<SlashCommand
     for (const agent of agents) {
       const isDefault = agent.id === result?.defaultId;
       const name = agent.identity?.name || agent.name || agent.id;
-      const marker = isDefault ? " *(default)*" : "";
+      const marker = isDefault ? " *（默认）*" : "";
       lines.push(`- \`${agent.id}\` — ${name}${marker}`);
     }
     return { content: lines.join("\n") };

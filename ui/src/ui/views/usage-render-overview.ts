@@ -399,7 +399,7 @@ function renderUsageInsights(
       : "—";
   const cacheHint = "Cache hit rate = cache read / (input + cache read). Higher is better.";
   const errorHint = "错误率 = 错误数 / 总消息数，越低越好。";
-  const throughputHint = "Throughput shows tokens per minute over active time. Higher is better.";
+  const throughputHint = "吞吐量表示活跃时段内每分钟处理的 Token 数，越高越好。";
   const tokensHint = "该时间范围内每条消息的平均 token 数。";
   const costHint = showCostHint
     ? "当提供商上报费用时，每条消息的平均成本。 Cost data is missing for some or all sessions in this range."
@@ -428,7 +428,7 @@ function renderUsageInsights(
   const topProviders = aggregates.byProvider.slice(0, 5).map((entry) => ({
     label: entry.provider ?? "未知",
     value: formatCost(entry.totals.totalCost),
-    sub: `${formatTokens(entry.totals.totalTokens)} · ${entry.count} msgs`,
+    sub: `${formatTokens(entry.totals.totalTokens)} · ${entry.count} 条消息`,
   }));
   const topTools = aggregates.tools.tools.slice(0, 6).map((tool) => ({
     label: tool.name,
@@ -794,3 +794,6 @@ export {
   renderSessionsCard,
   renderUsageInsights,
 };
+;
+
+;
