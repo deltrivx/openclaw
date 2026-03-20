@@ -444,7 +444,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
           <div class="list-sub">
             ${
               isDefaults
-                ? "Applied when the UI prompt is unavailable."
+                ? "当界面提示不可用时应用。"
                 : `默认值：${defaults.askFallback}。`
             }
           </div>

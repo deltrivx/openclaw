@@ -3,11 +3,11 @@ import { DEFAULT_CRON_FORM } from "../app-defaults.ts";
 import { toNumber } from "../format.ts";
 import type { GatewayBrowserClient } from "../gateway.ts";
 import type {
-  CronJob,
+  Cron任务,
   CronDeliveryStatus,
-  CronJobsEnabledFilter,
-  CronJobsListResult,
-  CronJobsSortBy,
+  Cron任务sEnabledFilter,
+  Cron任务sListResult,
+  Cron任务sSortBy,
   CronRunScope,
   CronRunLogEntry,
   CronRunsResult,
@@ -35,31 +35,31 @@ export type CronFieldKey =
 
 export type CronFieldErrors = Partial<Record<CronFieldKey, string>>;
 
-export type CronJobsScheduleKindFilter = "all" | "at" | "every" | "cron";
-export type CronJobsLastStatusFilter = "all" | "ok" | "error" | "skipped";
+export type Cron任务sScheduleKindFilter = "all" | "at" | "every" | "cron";
+export type Cron任务sLastStatusFilter = "all" | "ok" | "error" | "skipped";
 
 export type CronState = {
   client: GatewayBrowserClient | null;
   connected: boolean;
   cronLoading: boolean;
-  cronJobsLoadingMore: boolean;
-  cronJobs: CronJob[];
-  cronJobsTotal: number;
-  cronJobsHasMore: boolean;
-  cronJobsNextOffset: number | null;
-  cronJobsLimit: number;
-  cronJobsQuery: string;
-  cronJobsEnabledFilter: CronJobsEnabledFilter;
-  cronJobsScheduleKindFilter: CronJobsScheduleKindFilter;
-  cronJobsLastStatusFilter: CronJobsLastStatusFilter;
-  cronJobsSortBy: CronJobsSortBy;
-  cronJobsSortDir: CronSortDir;
+  cron任务sLoadingMore: boolean;
+  cron任务s: Cron任务[];
+  cron任务sTotal: number;
+  cron任务sHasMore: boolean;
+  cron任务sNextOffset: number | null;
+  cron任务sLimit: number;
+  cron任务sQuery: string;
+  cron任务sEnabledFilter: Cron任务sEnabledFilter;
+  cron任务sScheduleKindFilter: Cron任务sScheduleKindFilter;
+  cron任务sLastStatusFilter: Cron任务sLastStatusFilter;
+  cron任务sSortBy: Cron任务sSortBy;
+  cron任务sSortDir: CronSortDir;
   cronStatus: CronStatus | null;
   cronError: string | null;
   cronForm: CronFormState;
   cronFieldErrors: CronFieldErrors;
-  cronEditingJobId: string | null;
-  cronRunsJobId: string | null;
+  cronEditing任务Id: string | null;
+  cronRuns任务Id: string | null;
   cronRunsLoadingMore: boolean;
   cronRuns: CronRunLogEntry[];
   cronRunsTotal: number;
@@ -157,14 +157,14 @@ export function validateCronForm(form: CronFormState): CronFieldErrors {
     if (afterRaw) {
       const after = toNumber(afterRaw, 0);
       if (!Number.isFinite(after) || after <= 0) {
-        errors.failureAlertAfter = "Failure alert threshold must be greater than 0.";
+        errors.failureAlertAfter = "失败告警阈值必须大于 0。";
       }
     }
     const cooldownRaw = form.failureAlertCooldownSeconds.trim();
     if (cooldownRaw) {
       const cooldown = toNumber(cooldownRaw, -1);
       if (!Number.isFinite(cooldown) || cooldown < 0) {
-        errors.failureAlertCooldownSeconds = "Cooldown must be 0 or greater.";
+        errors.failureAlertCooldownSeconds = "冷却时间必须大于或等于 0。";
       }
     }
   }
@@ -213,8 +213,8 @@ export async function loadCronModelSuggestions(state: CronModelSuggestionsState)
   }
 }
 
-export async function loadCronJobs(state: CronState) {
-  return await loadCronJobsPage(state, { append: false });
+export async function loadCron任务s(state: CronState) {
+  return await loadCron任务sPage(state, { append: false });
 }
 
 function normalizeCronPageMeta(params: {
@@ -250,36 +250,36 @@ function normalizeCronPageMeta(params: {
   return { total, limit, offset, hasMore, nextOffset };
 }
 
-export async function loadCronJobsPage(state: CronState, opts?: { append?: boolean }) {
+export async function loadCron任务sPage(state: CronState, opts?: { append?: boolean }) {
   if (!state.client || !state.connected) {
     return;
   }
-  if (state.cronLoading || state.cronJobsLoadingMore) {
+  if (state.cronLoading || state.cron任务sLoadingMore) {
     return;
   }
   const append = opts?.append === true;
   if (append) {
-    if (!state.cronJobsHasMore) {
+    if (!state.cron任务sHasMore) {
       return;
     }
-    state.cronJobsLoadingMore = true;
+    state.cron任务sLoadingMore = true;
   } else {
     state.cronLoading = true;
   }
   state.cronError = null;
   try {
-    const offset = append ? Math.max(0, state.cronJobsNextOffset ?? state.cronJobs.length) : 0;
-    const res = await state.client.request<CronJobsListResult>("cron.list", {
-      includeDisabled: state.cronJobsEnabledFilter === "all",
-      limit: state.cronJobsLimit,
+    const offset = append ? Math.max(0, state.cron任务sNextOffset ?? state.cron任务s.length) : 0;
+    const res = await state.client.request<Cron任务sListResult>("cron.list", {
+      includeDisabled: state.cron任务sEnabledFilter === "all",
+      limit: state.cron任务sLimit,
       offset,
-      query: state.cronJobsQuery.trim() || undefined,
-      enabled: state.cronJobsEnabledFilter,
-      sortBy: state.cronJobsSortBy,
-      sortDir: state.cronJobsSortDir,
+      query: state.cron任务sQuery.trim() || undefined,
+      enabled: state.cron任务sEnabledFilter,
+      sortBy: state.cron任务sSortBy,
+      sortDir: state.cron任务sSortDir,
     });
     const jobs = Array.isArray(res.jobs) ? res.jobs : [];
-    state.cronJobs = append ? [...state.cronJobs, ...jobs] : jobs;
+    state.cron任务s = append ? [...state.cron任务s, ...jobs] : jobs;
     const meta = normalizeCronPageMeta({
       totalRaw: res.total,
       limitRaw: res.limit,
@@ -288,12 +288,12 @@ export async function loadCronJobsPage(state: CronState, opts?: { append?: boole
       hasMoreRaw: res.hasMore,
       pageCount: jobs.length,
     });
-    state.cronJobsTotal = Math.max(meta.total, state.cronJobs.length);
-    state.cronJobsHasMore = meta.hasMore;
-    state.cronJobsNextOffset = meta.nextOffset;
+    state.cron任务sTotal = Math.max(meta.total, state.cron任务s.length);
+    state.cron任务sHasMore = meta.hasMore;
+    state.cron任务sNextOffset = meta.nextOffset;
     if (
-      state.cronEditingJobId &&
-      !state.cronJobs.some((job) => job.id === state.cronEditingJobId)
+      state.cronEditing任务Id &&
+      !state.cron任务s.some((job) => job.id === state.cronEditing任务Id)
     ) {
       clearCronEditState(state);
     }
@@ -301,68 +301,68 @@ export async function loadCronJobsPage(state: CronState, opts?: { append?: boole
     state.cronError = String(err);
   } finally {
     if (append) {
-      state.cronJobsLoadingMore = false;
+      state.cron任务sLoadingMore = false;
     } else {
       state.cronLoading = false;
     }
   }
 }
 
-export async function loadMoreCronJobs(state: CronState) {
-  await loadCronJobsPage(state, { append: true });
+export async function loadMoreCron任务s(state: CronState) {
+  await loadCron任务sPage(state, { append: true });
 }
 
-export async function reloadCronJobs(state: CronState) {
-  await loadCronJobsPage(state, { append: false });
+export async function reloadCron任务s(state: CronState) {
+  await loadCron任务sPage(state, { append: false });
 }
 
-export function updateCronJobsFilter(
+export function updateCron任务sFilter(
   state: CronState,
   patch: Partial<
     Pick<
       CronState,
-      | "cronJobsQuery"
-      | "cronJobsEnabledFilter"
-      | "cronJobsScheduleKindFilter"
-      | "cronJobsLastStatusFilter"
-      | "cronJobsSortBy"
-      | "cronJobsSortDir"
+      | "cron任务sQuery"
+      | "cron任务sEnabledFilter"
+      | "cron任务sScheduleKindFilter"
+      | "cron任务sLastStatusFilter"
+      | "cron任务sSortBy"
+      | "cron任务sSortDir"
     >
   >,
 ) {
-  if (typeof patch.cronJobsQuery === "string") {
-    state.cronJobsQuery = patch.cronJobsQuery;
+  if (typeof patch.cron任务sQuery === "string") {
+    state.cron任务sQuery = patch.cron任务sQuery;
   }
-  if (patch.cronJobsEnabledFilter) {
-    state.cronJobsEnabledFilter = patch.cronJobsEnabledFilter;
+  if (patch.cron任务sEnabledFilter) {
+    state.cron任务sEnabledFilter = patch.cron任务sEnabledFilter;
   }
-  if (patch.cronJobsScheduleKindFilter) {
-    state.cronJobsScheduleKindFilter = patch.cronJobsScheduleKindFilter;
+  if (patch.cron任务sScheduleKindFilter) {
+    state.cron任务sScheduleKindFilter = patch.cron任务sScheduleKindFilter;
   }
-  if (patch.cronJobsLastStatusFilter) {
-    state.cronJobsLastStatusFilter = patch.cronJobsLastStatusFilter;
+  if (patch.cron任务sLastStatusFilter) {
+    state.cron任务sLastStatusFilter = patch.cron任务sLastStatusFilter;
   }
-  if (patch.cronJobsSortBy) {
-    state.cronJobsSortBy = patch.cronJobsSortBy;
+  if (patch.cron任务sSortBy) {
+    state.cron任务sSortBy = patch.cron任务sSortBy;
   }
-  if (patch.cronJobsSortDir) {
-    state.cronJobsSortDir = patch.cronJobsSortDir;
+  if (patch.cron任务sSortDir) {
+    state.cron任务sSortDir = patch.cron任务sSortDir;
   }
 }
 
-export function getVisibleCronJobs(
-  state: Pick<CronState, "cronJobs" | "cronJobsScheduleKindFilter" | "cronJobsLastStatusFilter">,
-): CronJob[] {
-  return state.cronJobs.filter((job) => {
+export function getVisibleCron任务s(
+  state: Pick<CronState, "cron任务s" | "cron任务sScheduleKindFilter" | "cron任务sLastStatusFilter">,
+): Cron任务[] {
+  return state.cron任务s.filter((job) => {
     if (
-      state.cronJobsScheduleKindFilter !== "all" &&
-      job.schedule.kind !== state.cronJobsScheduleKindFilter
+      state.cron任务sScheduleKindFilter !== "all" &&
+      job.schedule.kind !== state.cron任务sScheduleKindFilter
     ) {
       return false;
     }
     if (
-      state.cronJobsLastStatusFilter !== "all" &&
-      job.state?.lastStatus !== state.cronJobsLastStatusFilter
+      state.cron任务sLastStatusFilter !== "all" &&
+      job.state?.lastStatus !== state.cron任务sLastStatusFilter
     ) {
       return false;
     }
@@ -371,7 +371,7 @@ export function getVisibleCronJobs(
 }
 
 function clearCronEditState(state: CronState) {
-  state.cronEditingJobId = null;
+  state.cronEditing任务Id = null;
 }
 
 function resetCronFormToDefaults(state: CronState) {
@@ -427,7 +427,7 @@ function parseStaggerSchedule(
   };
 }
 
-function jobToForm(job: CronJob, prev: CronFormState): CronFormState {
+function jobToForm(job: Cron任务, prev: CronFormState): CronFormState {
   const failureAlert = job.failureAlert;
   const next: CronFormState = {
     ...prev,
@@ -616,7 +616,7 @@ function buildFailureAlert(form: CronFormState) {
   return patch;
 }
 
-export async function addCronJob(state: CronState) {
+export async function addCron任务(state: CronState) {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
@@ -635,15 +635,15 @@ export async function addCronJob(state: CronState) {
 
     const schedule = buildCronSchedule(form);
     const payload = buildCronPayload(form);
-    const editingJob = state.cronEditingJobId
-      ? state.cronJobs.find((job) => job.id === state.cronEditingJobId)
+    const editing任务 = state.cronEditing任务Id
+      ? state.cron任务s.find((job) => job.id === state.cronEditing任务Id)
       : undefined;
     if (payload.kind === "agentTurn") {
       const existingLightContext =
-        editingJob?.payload.kind === "agentTurn" ? editingJob.payload.lightContext : undefined;
+        editing任务?.payload.kind === "agentTurn" ? editing任务.payload.lightContext : undefined;
       if (
         !form.payloadLightContext &&
-        state.cronEditingJobId &&
+        state.cronEditing任务Id &&
         existingLightContext !== undefined
       ) {
         payload.lightContext = false;
@@ -669,7 +669,7 @@ export async function addCronJob(state: CronState) {
     const failureAlert = buildFailureAlert(form);
     const agentId = form.clearAgent ? null : form.agentId.trim();
     const sessionKeyRaw = form.sessionKey.trim();
-    const sessionKey = sessionKeyRaw || (editingJob?.sessionKey ? null : undefined);
+    const sessionKey = sessionKeyRaw || (editing任务?.sessionKey ? null : undefined);
     const job = {
       name: form.name.trim(),
       description: form.description.trim(),
@@ -687,9 +687,9 @@ export async function addCronJob(state: CronState) {
     if (!job.name) {
       throw new Error(t("cron.errors.nameRequiredShort"));
     }
-    if (state.cronEditingJobId) {
+    if (state.cronEditing任务Id) {
       await state.client.request("cron.update", {
-        id: state.cronEditingJobId,
+        id: state.cronEditing任务Id,
         patch: job,
       });
       clearCronEditState(state);
@@ -697,7 +697,7 @@ export async function addCronJob(state: CronState) {
       await state.client.request("cron.add", job);
       resetCronFormToDefaults(state);
     }
-    await loadCronJobs(state);
+    await loadCron任务s(state);
     await loadCronStatus(state);
   } catch (err) {
     state.cronError = String(err);
@@ -706,7 +706,7 @@ export async function addCronJob(state: CronState) {
   }
 }
 
-export async function toggleCronJob(state: CronState, job: CronJob, enabled: boolean) {
+export async function toggleCron任务(state: CronState, job: Cron任务, enabled: boolean) {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
@@ -714,7 +714,7 @@ export async function toggleCronJob(state: CronState, job: CronJob, enabled: boo
   state.cronError = null;
   try {
     await state.client.request("cron.update", { id: job.id, patch: { enabled } });
-    await loadCronJobs(state);
+    await loadCron任务s(state);
     await loadCronStatus(state);
   } catch (err) {
     state.cronError = String(err);
@@ -723,7 +723,7 @@ export async function toggleCronJob(state: CronState, job: CronJob, enabled: boo
   }
 }
 
-export async function runCronJob(state: CronState, job: CronJob, mode: "force" | "due" = "force") {
+export async function runCron任务(state: CronState, job: Cron任务, mode: "force" | "due" = "force") {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
@@ -743,7 +743,7 @@ export async function runCronJob(state: CronState, job: CronJob, mode: "force" |
   }
 }
 
-export async function removeCronJob(state: CronState, job: CronJob) {
+export async function removeCron任务(state: CronState, job: Cron任务) {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
@@ -751,17 +751,17 @@ export async function removeCronJob(state: CronState, job: CronJob) {
   state.cronError = null;
   try {
     await state.client.request("cron.remove", { id: job.id });
-    if (state.cronEditingJobId === job.id) {
+    if (state.cronEditing任务Id === job.id) {
       clearCronEditState(state);
     }
-    if (state.cronRunsJobId === job.id) {
-      state.cronRunsJobId = null;
+    if (state.cronRuns任务Id === job.id) {
+      state.cronRuns任务Id = null;
       state.cronRuns = [];
       state.cronRunsTotal = 0;
       state.cronRunsHasMore = false;
       state.cronRunsNextOffset = null;
     }
-    await loadCronJobs(state);
+    await loadCron任务s(state);
     await loadCronStatus(state);
   } catch (err) {
     state.cronError = String(err);
@@ -779,8 +779,8 @@ export async function loadCronRuns(
     return;
   }
   const scope = state.cronRunsScope;
-  const activeJobId = jobId ?? state.cronRunsJobId;
-  if (scope === "job" && !activeJobId) {
+  const active任务Id = jobId ?? state.cronRuns任务Id;
+  if (scope === "job" && !active任务Id) {
     state.cronRuns = [];
     state.cronRunsTotal = 0;
     state.cronRunsHasMore = false;
@@ -798,7 +798,7 @@ export async function loadCronRuns(
     const offset = append ? Math.max(0, state.cronRunsNextOffset ?? state.cronRuns.length) : 0;
     const res = await state.client.request<CronRunsResult>("cron.runs", {
       scope,
-      id: scope === "job" ? (activeJobId ?? undefined) : undefined,
+      id: scope === "job" ? (active任务Id ?? undefined) : undefined,
       limit: state.cronRunsLimit,
       offset,
       statuses: state.cronRunsStatuses.length > 0 ? state.cronRunsStatuses : undefined,
@@ -810,11 +810,11 @@ export async function loadCronRuns(
     });
     const entries = Array.isArray(res.entries) ? res.entries : [];
     state.cronRuns =
-      append && (scope === "all" || state.cronRunsJobId === activeJobId)
+      append && (scope === "all" || state.cronRuns任务Id === active任务Id)
         ? [...state.cronRuns, ...entries]
         : entries;
     if (scope === "job") {
-      state.cronRunsJobId = activeJobId ?? null;
+      state.cronRuns任务Id = active任务Id ?? null;
     }
     const meta = normalizeCronPageMeta({
       totalRaw: res.total,
@@ -837,10 +837,10 @@ export async function loadCronRuns(
 }
 
 export async function loadMoreCronRuns(state: CronState) {
-  if (state.cronRunsScope === "job" && !state.cronRunsJobId) {
+  if (state.cronRunsScope === "job" && !state.cronRuns任务Id) {
     return;
   }
-  await loadCronRuns(state, state.cronRunsJobId, { append: true });
+  await loadCronRuns(state, state.cronRuns任务Id, { append: true });
 }
 
 export function updateCronRunsFilter(
@@ -881,15 +881,15 @@ export function updateCronRunsFilter(
   }
 }
 
-export function startCronEdit(state: CronState, job: CronJob) {
-  state.cronEditingJobId = job.id;
-  state.cronRunsJobId = job.id;
+export function startCronEdit(state: CronState, job: Cron任务) {
+  state.cronEditing任务Id = job.id;
+  state.cronRuns任务Id = job.id;
   state.cronForm = jobToForm(job, state.cronForm);
   state.cronFieldErrors = validateCronForm(state.cronForm);
 }
 
 function buildCloneName(name: string, existingNames: Set<string>) {
-  const base = name.trim() || "Job";
+  const base = name.trim() || "任务";
   const first = `${base} copy`;
   if (!existingNames.has(first.toLowerCase())) {
     return first;
@@ -905,10 +905,10 @@ function buildCloneName(name: string, existingNames: Set<string>) {
   return `${base} copy ${Date.now()}`;
 }
 
-export function startCronClone(state: CronState, job: CronJob) {
+export function startCronClone(state: CronState, job: Cron任务) {
   clearCronEditState(state);
-  state.cronRunsJobId = job.id;
-  const existingNames = new Set(state.cronJobs.map((entry) => entry.name.trim().toLowerCase()));
+  state.cronRuns任务Id = job.id;
+  const existingNames = new Set(state.cron任务s.map((entry) => entry.name.trim().toLowerCase()));
   const cloned = jobToForm(job, state.cronForm);
   cloned.name = buildCloneName(job.name, existingNames);
   state.cronForm = cloned;

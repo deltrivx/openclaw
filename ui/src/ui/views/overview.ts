@@ -237,8 +237,8 @@ export function renderOverview(props: OverviewProps) {
                       type="button"
                       class="btn btn--icon ${props.showGatewayToken ? "active" : ""}"
                       style="width: 36px; height: 36px;"
-                      title=${props.showGatewayToken ? "Hide token" : "Show token"}
-                      aria-label="Toggle token visibility"
+                      title=${props.showGatewayToken ? "隐藏令牌" : "显示令牌"}
+                      aria-label="切换令牌可见性"
                       aria-pressed=${props.showGatewayToken}
                       @click=${props.onToggleGatewayTokenVisibility}
                     >
@@ -264,8 +264,8 @@ export function renderOverview(props: OverviewProps) {
                       type="button"
                       class="btn btn--icon ${props.showGatewayPassword ? "active" : ""}"
                       style="width: 36px; height: 36px;"
-                      title=${props.showGatewayPassword ? "Hide password" : "Show password"}
-                      aria-label="Toggle password visibility"
+                      title=${props.showGatewayPassword ? "隐藏密码" : "显示密码"}
+                      aria-label="切换密码可见性"
                       aria-pressed=${props.showGatewayPassword}
                       @click=${props.onToggleGatewayPasswordVisibility}
                     >
