@@ -731,7 +731,7 @@ function renderSessionsCard(
         <button
           class="btn btn-sm sessions-action-btn icon"
           @click=${() => onSessionSortDirChange(sessionSortDir === "desc" ? "asc" : "desc")}
-          title=${sessionSortDir === "desc" ? "Descending" : "Ascending"}
+          title=${sessionSortDir === "desc" ? "降序" : "升序"}
         >
           ${sessionSortDir === "desc" ? "↓" : "↑"}
         </button>
@@ -765,7 +765,7 @@ function renderSessionsCard(
 	                  ${sortedWithDir
                       .slice(0, 50)
                       .map((s) => renderSessionBarRow(s, selectedSet.has(s.key)))}
-	                  ${sessions.length > 50 ? html`<div class="muted" style="padding: 8px; text-align: center; font-size: 11px;">+${sessions.length - 50} more</div>` : nothing}
+	                  ${sessions.length > 50 ? html`<div class="muted" style="padding: 8px; text-align: center; font-size: 11px;">另有 ${sessions.length - 50} 个</div>` : nothing}
 	                </div>
 	              `
       }
@@ -793,11 +793,5 @@ export {
   renderPeakErrorList,
   renderSessionsCard,
   renderUsageInsights,
-};
-
-hts,
-};
-
-
 };
 

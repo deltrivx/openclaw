@@ -1030,7 +1030,7 @@ function renderSessionLogsCompact(
           const { log, toolInfo, cleanContent } = entry;
           const roleClass = log.role === "user" ? "user" : "assistant";
           const roleLabel =
-            log.role === "user" ? "You" : log.role === "assistant" ? "Assistant" : "Tool";
+            log.role === "user" ? "你" : log.role === "assistant" ? "助手" : "工具";
           return html`
           <div class="session-log-entry ${roleClass}">
             <div class="session-log-meta">
@@ -1081,5 +1081,3 @@ export {
   CHART_BAR_WIDTH_RATIO,
   CHART_MAX_BAR_WIDTH,
 };
-};
-;
