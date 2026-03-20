@@ -587,7 +587,3 @@ function fmtTokens(n: number): string {
   }
   return String(n);
 }
-tring(n);
-}
-n);
-}
