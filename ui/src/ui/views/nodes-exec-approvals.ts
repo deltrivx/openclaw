@@ -198,7 +198,7 @@ export function renderExecApprovals(state: ExecApprovalsState) {
         <div>
           <div class="card-title">Exec approvals</div>
           <div class="card-sub">
-            Allowlist and approval policy for <span class="mono">exec host=gateway/node</span>.
+            <span class="mono">exec host=gateway/node</span> 的白名单与审批策略。
           </div>
         </div>
         <button
@@ -215,9 +215,9 @@ export function renderExecApprovals(state: ExecApprovalsState) {
       ${
         !ready
           ? html`<div class="row" style="margin-top: 12px; gap: 12px;">
-            <div class="muted">Load exec approvals to edit allowlists.</div>
+            <div class="muted">请先加载 exec 审批配置后再编辑白名单。</div>
             <button class="btn" ?disabled=${state.loading || !targetReady} @click=${state.onLoad}>
-              ${state.loading ? "Loading…" : "Load approvals"}
+              ${state.loading ? "加载中…" : "加载审批配置"}
             </button>
           </div>`
           : html`
@@ -614,4 +614,6 @@ function resolveExecApprovalsNodes(
   nodes: Array<Record<string, unknown>>,
 ): ExecApprovalsTargetNode[] {
   return resolveNodeTargets(nodes, ["system.execApprovals.get", "system.execApprovals.set"]);
+}
+et"]);
 }

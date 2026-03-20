@@ -47,7 +47,7 @@ export function renderDebug(props: DebugProps) {
         </div>
         <div class="stack" style="margin-top: 12px;">
           <div>
-            <div class="muted">Status</div>
+            <div class="muted">状态</div>
             ${
               securitySummary
                 ? html`<div class="callout ${securityTone}" style="margin-top: 8px;">
@@ -63,7 +63,7 @@ export function renderDebug(props: DebugProps) {
             <pre class="code-block">${JSON.stringify(props.health ?? {}, null, 2)}</pre>
           </div>
           <div>
-            <div class="muted">Last heartbeat</div>
+            <div class="muted">上次心跳</div>
             <pre class="code-block">${JSON.stringify(props.heartbeat ?? {}, null, 2)}</pre>
           </div>
         </div>
@@ -100,7 +100,7 @@ export function renderDebug(props: DebugProps) {
           </label>
         </div>
         <div class="row" style="margin-top: 12px;">
-          <button class="btn primary" @click=${props.onCall}>Call</button>
+          <button class="btn primary" @click=${props.onCall}>调用</button>
         </div>
         ${
           props.callError
@@ -158,3 +158,9 @@ export function renderDebug(props: DebugProps) {
     </section>
   `;
 }
+;
+}
+ion>
+  `;
+}
+

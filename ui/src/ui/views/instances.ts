@@ -60,7 +60,7 @@ export function renderInstances(props: InstancesProps) {
         ${
           props.entries.length === 0
             ? html`
-                <div class="muted">No instances reported yet.</div>
+                <div class="muted">尚无实例上报。</div>
               `
             : props.entries.map((entry) => renderEntry(entry, masked))
         }
@@ -107,9 +107,11 @@ function renderEntry(entry: PresenceEntry, masked: boolean) {
       </div>
       <div class="list-meta">
         <div>${formatPresenceAge(entry)}</div>
-        <div class="muted">Last input ${lastInput}</div>
-        <div class="muted">Reason ${entry.reason ?? ""}</div>
+        <div class="muted">上次输入：${lastInput}</div>
+        <div class="muted">原因：${entry.reason ?? ""}</div>
       </div>
     </div>
   `;
+}
+ `;
 }

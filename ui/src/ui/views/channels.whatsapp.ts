@@ -108,7 +108,7 @@ export function renderWhatsAppCard(params: {
           Logout
         </button>
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Refresh
+          刷新
         </button>
       </div>
 

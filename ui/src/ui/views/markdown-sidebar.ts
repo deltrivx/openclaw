@@ -31,10 +31,11 @@ export function renderMarkdownSidebar(props: MarkdownSidebarProps) {
             : props.content
               ? html`<div class="sidebar-markdown">${unsafeHTML(toSanitizedMarkdownHtml(props.content))}</div>`
               : html`
-                  <div class="muted">No content available</div>
+                  <div class="muted">没有可用内容</div>
                 `
         }
       </div>
     </div>
   `;
+}
 }

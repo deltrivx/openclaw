@@ -84,7 +84,7 @@ export function renderLogs(props: LogsProps) {
           <input
             .value=${props.filterText}
             @input=${(e: Event) => props.onFilterTextChange((e.target as HTMLInputElement).value)}
-            placeholder="Search logs"
+            placeholder="搜索日志"
           />
         </label>
         <label class="field checkbox">

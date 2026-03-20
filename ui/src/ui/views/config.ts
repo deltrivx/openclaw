@@ -787,7 +787,7 @@ export function renderConfig(props: ConfigProps) {
               ?disabled=${props.loading}
               @click=${props.onReload}
             >
-              ${props.loading ? "Loading…" : "Reload"}
+              ${props.loading ? "加载中…" : "重新加载"}
             </button>
             <button
               class="btn btn--sm primary"
