@@ -14,8 +14,8 @@ export function renderMarkdownSidebar(props: MarkdownSidebarProps) {
   return html`
     <div class="sidebar-panel">
       <div class="sidebar-header">
-        <div class="sidebar-title">Tool Output</div>
-        <button @click=${props.onClose} class="btn" title="Close sidebar">
+        <div class="sidebar-title">工具输出</div>
+        <button @click=${props.onClose} class="btn" title="关闭侧栏">
           ${icons.x}
         </button>
       </div>
@@ -37,5 +37,4 @@ export function renderMarkdownSidebar(props: MarkdownSidebarProps) {
       </div>
     </div>
   `;
-}
 }

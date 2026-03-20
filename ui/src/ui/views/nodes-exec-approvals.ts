@@ -206,7 +206,7 @@ export function renderExecApprovals(state: ExecApprovalsState) {
           ?disabled=${state.disabled || !state.dirty || !targetReady}
           @click=${state.onSave}
         >
-          ${state.saving ? "Saving…" : "Save"}
+          ${state.saving ? "保存中…" : "保存"}
         </button>
       </div>
 
@@ -614,6 +614,4 @@ function resolveExecApprovalsNodes(
   nodes: Array<Record<string, unknown>>,
 ): ExecApprovalsTargetNode[] {
   return resolveNodeTargets(nodes, ["system.execApprovals.get", "system.execApprovals.set"]);
-}
-et"]);
 }

@@ -38,11 +38,11 @@ export function renderDebug(props: DebugProps) {
       <div class="card">
         <div class="row" style="justify-content: space-between;">
           <div>
-            <div class="card-title">Snapshots</div>
-            <div class="card-sub">Status, health, and heartbeat data.</div>
+            <div class="card-title">快照</div>
+            <div class="card-sub">状态、健康检查与心跳数据。</div>
           </div>
           <button class="btn" ?disabled=${props.loading} @click=${props.onRefresh}>
-            ${props.loading ? "Refreshing…" : "Refresh"}
+            ${props.loading ? "刷新中…" : "刷新"}
           </button>
         </div>
         <div class="stack" style="margin-top: 12px;">
@@ -51,15 +51,15 @@ export function renderDebug(props: DebugProps) {
             ${
               securitySummary
                 ? html`<div class="callout ${securityTone}" style="margin-top: 8px;">
-                  Security audit: ${securityLabel}${info > 0 ? ` · ${info} info` : ""}. Run
-                  <span class="mono">openclaw security audit --deep</span> for details.
+                  安全审计：${securityLabel}${info > 0 ? ` · ${info} 条信息` : ""}。可运行
+                  <span class="mono">openclaw security audit --deep</span> 查看详情。
                 </div>`
                 : nothing
             }
             <pre class="code-block">${JSON.stringify(props.status ?? {}, null, 2)}</pre>
           </div>
           <div>
-            <div class="muted">Health</div>
+            <div class="muted">健康状态</div>
             <pre class="code-block">${JSON.stringify(props.health ?? {}, null, 2)}</pre>
           </div>
           <div>
@@ -70,8 +70,8 @@ export function renderDebug(props: DebugProps) {
       </div>
 
       <div class="card">
-        <div class="card-title">Manual RPC</div>
-        <div class="card-sub">Send a raw gateway method with JSON params.</div>
+        <div class="card-title">手动 RPC</div>
+        <div class="card-sub">使用 JSON 参数发送原始网关方法。</div>
         <div class="stack" style="margin-top: 16px;">
           <label class="field">
             <span>Method</span>
@@ -82,7 +82,7 @@ export function renderDebug(props: DebugProps) {
               ${
                 !props.callMethod
                   ? html`
-                      <option value="" disabled>Select a method…</option>
+                      <option value="" disabled>选择一个方法…</option>
                     `
                   : nothing
               }
@@ -90,7 +90,7 @@ export function renderDebug(props: DebugProps) {
             </select>
           </label>
           <label class="field">
-            <span>Params (JSON)</span>
+            <span>参数（JSON）</span>
             <textarea
               .value=${props.callParams}
               @input=${(e: Event) =>
@@ -158,9 +158,3 @@ export function renderDebug(props: DebugProps) {
     </section>
   `;
 }
-;
-}
-ion>
-  `;
-}
-
