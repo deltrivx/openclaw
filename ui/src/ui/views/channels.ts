@@ -70,8 +70,8 @@ export function renderChannels(props: ChannelsProps) {
     <section class="card" style="margin-top: 18px;">
       <div class="row" style="justify-content: space-between;">
         <div>
-          <div class="card-title">Channel health</div>
-          <div class="card-sub">Channel status snapshots from the gateway.</div>
+          <div class="card-title">通道健康状态</div>
+          <div class="card-sub">来自网关的通道状态快照。</div>
         </div>
         <div class="muted">${props.lastSuccessAt ? formatRelativeTimestamp(props.lastSuccessAt) : "n/a"}</div>
       </div>
@@ -83,7 +83,7 @@ export function renderChannels(props: ChannelsProps) {
           : nothing
       }
       <pre class="code-block" style="margin-top: 12px;">
-${props.snapshot ? JSON.stringify(props.snapshot, null, 2) : "No snapshot yet."}
+${props.snapshot ? JSON.stringify(props.snapshot, null, 2) : "暂无快照。"}
       </pre>
     </section>
   `;
@@ -212,7 +212,7 @@ function renderGenericChannelCard(
               </div>
               <div>
                 <span class="label">运行中</span>
-                <span>${running == null ? "n/a" : running ? "Yes" : "No"}</span>
+                <span>${running == null ? "暂无" : running ? "是" : "否"}</span>
               </div>
               <div>
                 <span class="label">已连接</span>
