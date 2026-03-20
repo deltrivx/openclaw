@@ -112,7 +112,7 @@ function renderSessionSummary(
   }
   const modelItems =
     usage.modelUsage?.slice(0, 6).map((entry) => ({
-      label: entry.model ?? "unknown",
+      label: entry.model ?? "未知",
       value: formatCost(entry.totals.totalCost),
       sub: formatTokens(entry.totals.totalTokens),
     })) ?? [];

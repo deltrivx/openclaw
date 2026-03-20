@@ -283,7 +283,7 @@ function renderCostBreakdownCompact(totals: UsageTotals, mode: "tokens" | "cost"
       <div class="cost-breakdown-header">${isTokenMode ? "Tokens" : "Cost"} by Type</div>
       <div class="cost-breakdown-bar">
         <div class="cost-segment output" style="width: ${(isTokenMode ? tokenPcts.output : breakdown.output.pct).toFixed(1)}%"
-          title="Output: ${isTokenMode ? formatTokens(totals.output) : formatCost(breakdown.output.cost)}"></div>
+          title="输出：${isTokenMode ? formatTokens(totals.output) : formatCost(breakdown.output.cost)}"></div>
         <div class="cost-segment input" style="width: ${(isTokenMode ? tokenPcts.input : breakdown.input.pct).toFixed(1)}%"
           title="Input: ${isTokenMode ? formatTokens(totals.input) : formatCost(breakdown.input.cost)}"></div>
         <div class="cost-segment cache-write" style="width: ${(isTokenMode ? tokenPcts.cacheWrite : breakdown.cacheWrite.pct).toFixed(1)}%"
@@ -298,7 +298,7 @@ function renderCostBreakdownCompact(totals: UsageTotals, mode: "tokens" | "cost"
         <span class="legend-item"><span class="legend-dot cache-read"></span>Cache Read ${isTokenMode ? formatTokens(totals.cacheRead) : formatCost(breakdown.cacheRead.cost)}</span>
       </div>
       <div class="cost-breakdown-total">
-        Total: ${isTokenMode ? formatTokens(totals.totalTokens) : formatCost(totals.totalCost)}
+        总计：${isTokenMode ? formatTokens(totals.totalTokens) : formatCost(totals.totalCost)}
       </div>
     </div>
   `;
@@ -426,7 +426,7 @@ function renderUsageInsights(
     sub: `${formatTokens(entry.totals.totalTokens)} · ${entry.count} msgs`,
   }));
   const topProviders = aggregates.byProvider.slice(0, 5).map((entry) => ({
-    label: entry.provider ?? "unknown",
+    label: entry.provider ?? "未知",
     value: formatCost(entry.totals.totalCost),
     sub: `${formatTokens(entry.totals.totalTokens)} · ${entry.count} msgs`,
   }));
@@ -448,12 +448,12 @@ function renderUsageInsights(
 
   return html`
     <section class="card" style="margin-top: 16px;">
-      <div class="card-title">Usage Overview</div>
+      <div class="card-title">用量概览</div>
       <div class="usage-summary-grid">
         <div class="usage-summary-card">
           <div class="usage-summary-title">
-            Messages
-            <span class="usage-summary-hint" title="Total user + assistant messages in range.">?</span>
+            消息数
+            <span class="usage-summary-hint" title="所选范围内的用户与助手消息总数。">?</span>
           </div>
           <div class="usage-summary-value">${aggregates.messages.total}</div>
           <div class="usage-summary-sub">
@@ -462,8 +462,8 @@ function renderUsageInsights(
         </div>
         <div class="usage-summary-card">
           <div class="usage-summary-title">
-            Tool Calls
-            <span class="usage-summary-hint" title="Total tool call count across sessions.">?</span>
+            工具调用
+            <span class="usage-summary-hint" title="所选会话范围内的工具调用总次数。">?</span>
           </div>
           <div class="usage-summary-value">${aggregates.tools.totalCalls}</div>
           <div class="usage-summary-sub">${aggregates.tools.uniqueTools} tools used</div>
@@ -474,7 +474,7 @@ function renderUsageInsights(
             <span class="usage-summary-hint" title="Total message/tool errors in range.">?</span>
           </div>
           <div class="usage-summary-value">${aggregates.messages.errors}</div>
-          <div class="usage-summary-sub">${aggregates.messages.toolResults} tool results</div>
+          <div class="usage-summary-sub">${aggregates.messages.toolResults} 个工具结果</div>
         </div>
         <div class="usage-summary-card">
           <div class="usage-summary-title">
@@ -502,7 +502,7 @@ function renderUsageInsights(
         </div>
         <div class="usage-summary-card">
           <div class="usage-summary-title">
-            Throughput
+            吞吐量
             <span class="usage-summary-hint" title=${throughputHint}>?</span>
           </div>
           <div class="usage-summary-value">${throughputLabel}</div>
@@ -525,18 +525,18 @@ function renderUsageInsights(
           </div>
           <div class="usage-summary-value ${cacheHitRate > 0.6 ? "good" : cacheHitRate > 0.3 ? "warn" : "bad"}">${cacheHitLabel}</div>
           <div class="usage-summary-sub">
-            ${formatTokens(totals.cacheRead)} cached · ${formatTokens(cacheBase)} prompt
+            ${formatTokens(totals.cacheRead)} 已缓存 · ${formatTokens(cacheBase)} 提示词
           </div>
         </div>
       </div>
       <div class="usage-insights-grid">
-        ${renderInsightList("Top Models", topModels, "No model data")}
-        ${renderInsightList("Top Providers", topProviders, "No provider data")}
-        ${renderInsightList("Top Tools", topTools, "No tool calls")}
-        ${renderInsightList("Top Agents", topAgents, "No agent data")}
-        ${renderInsightList("Top Channels", topChannels, "No channel data")}
-        ${renderPeakErrorList("Peak Error Days", errorDays, "No error data")}
-        ${renderPeakErrorList("Peak Error Hours", errorHours, "No error data")}
+        ${renderInsightList("高频模型", topModels, "没有模型数据")}
+        ${renderInsightList("高频提供商", topProviders, "没有提供商数据")}
+        ${renderInsightList("高频工具", topTools, "没有工具调用")}
+        ${renderInsightList("高频代理", topAgents, "没有代理数据")}
+        ${renderInsightList("高频通道", topChannels, "没有通道数据")}
+        ${renderPeakErrorList("错误高峰日期", errorDays, "没有错误数据")}
+        ${renderPeakErrorList("错误高峰时段", errorHours, "没有错误数据")}
       </div>
     </section>
   `;
@@ -793,4 +793,13 @@ export {
   renderPeakErrorList,
   renderSessionsCard,
   renderUsageInsights,
+};
+ights,
+};
+hts,
+};
+
+};
+;
+
 };
