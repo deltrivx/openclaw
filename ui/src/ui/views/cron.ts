@@ -1042,7 +1042,7 @@ export function renderCron(props: CronProps) {
                 <div class="cron-help">${t("cron.form.clearAgentHelp")}</div>
               </label>
               <label class="field cron-span-2">
-                ${renderFieldLabel("Session key")}
+                ${renderFieldLabel("会话键")}
                 <input
                   id="cron-session-key"
                   .value=${props.form.sessionKey}

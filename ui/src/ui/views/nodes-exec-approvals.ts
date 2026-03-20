@@ -361,7 +361,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
         </div>
         <div class="list-meta">
           <label class="field">
-            <span>Mode</span>
+            <span>模式</span>
             <select
               ?disabled=${state.disabled}
               @change=${(event: Event) => {
@@ -404,7 +404,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
         </div>
         <div class="list-meta">
           <label class="field">
-            <span>Mode</span>
+            <span>模式</span>
             <select
               ?disabled=${state.disabled}
               @change=${(event: Event) => {

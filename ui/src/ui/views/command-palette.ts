@@ -70,7 +70,7 @@ const PALETTE_ITEMS: PaletteItem[] = [
   },
   {
     id: "skill-debug",
-    label: "Debug Mode",
+    label: "调试模式",
     icon: "bug",
     category: "skills",
     action: "/verbose full",

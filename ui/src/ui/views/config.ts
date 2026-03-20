@@ -801,7 +801,7 @@ export function renderConfig(props: ConfigProps) {
               ?disabled=${!canApply}
               @click=${props.onApply}
             >
-              ${props.applying ? "Applying…" : "Apply"}
+              ${props.applying ? "应用中…" : "应用"}
             </button>
             <button
               class="btn btn--sm"

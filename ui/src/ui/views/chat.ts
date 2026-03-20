@@ -722,10 +722,10 @@ function renderSlashMenu(
           )}
         </div>
         <div class="slash-menu-footer">
-          <kbd>↑↓</kbd> navigate
-          <kbd>Tab</kbd> fill
-          <kbd>Enter</kbd> run
-          <kbd>Esc</kbd> close
+          <kbd>↑↓</kbd> 切换
+          <kbd>Tab</kbd> 补全
+          <kbd>Enter</kbd> 运行
+          <kbd>Esc</kbd> 关闭
         </div>
       </div>
     `;
