@@ -970,9 +970,9 @@ function renderSessionLogsCompact(
   return html`
     <div class="session-logs-compact">
       <div class="session-logs-header">
-        <span>Conversation <span style="font-weight: normal; color: var(--muted);">(${displayedCount} messages)</span></span>
+        <span>对话记录 <span style="font-weight: normal; color: var(--muted);">（${displayedCount} 条消息）</span></span>
         <button class="btn btn-sm usage-action-btn usage-secondary-btn" @click=${onToggleExpandedAll}>
-          ${expandedAll ? "Collapse All" : "Expand All"}
+          ${expandedAll ? "全部收起" : "全部展开"}
         </button>
       </div>
       <div class="usage-filters-inline" style="margin: 10px 12px;">
@@ -1022,7 +1022,7 @@ function renderSessionLogsCompact(
           @input=${(event: Event) => onFilterQueryChange((event.target as HTMLInputElement).value)}
         />
         <button class="btn btn-sm usage-action-btn usage-secondary-btn" @click=${onFilterClear}>
-          Clear
+          清除
         </button>
       </div>
       <div class="session-logs-list">
@@ -1081,8 +1081,5 @@ export {
   CHART_BAR_WIDTH_RATIO,
   CHART_MAX_BAR_WIDTH,
 };
-TH,
-};
-,
 };
 ;

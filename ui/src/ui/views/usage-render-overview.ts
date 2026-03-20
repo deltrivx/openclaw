@@ -699,8 +699,8 @@ function renderSessionsCard(
       </div>
       <div class="sessions-card-meta">
         <div class="sessions-card-stats">
-          <span>${isTokenMode ? formatTokens(avgValue) : formatCost(avgValue)} avg</span>
-          <span>${totalErrors} errors</span>
+          <span>平均 ${isTokenMode ? formatTokens(avgValue) : formatCost(avgValue)}</span>
+          <span>${totalErrors} 个错误</span>
         </div>
         <div class="chart-toggle small">
           <button
@@ -739,7 +739,7 @@ function renderSessionsCard(
           selectedCount > 0
             ? html`
                 <button class="btn btn-sm sessions-action-btn sessions-clear-btn" @click=${onClearSessions}>
-                  Clear Selection
+                  清除选择
                 </button>
               `
             : nothing
@@ -796,5 +796,8 @@ export {
 };
 
 hts,
+};
+
+
 };
 
