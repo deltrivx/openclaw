@@ -31,7 +31,7 @@ export function renderDebug(props: DebugProps) {
   const info = securitySummary?.info ?? 0;
   const securityTone = critical > 0 ? "danger" : warn > 0 ? "warn" : "success";
   const securityLabel =
-    critical > 0 ? `${critical} critical` : warn > 0 ? `${warn} warnings` : "No critical issues";
+    critical > 0 ? `${critical} critical` : warn > 0 ? `${warn} warnings` : "没有严重问题";
 
   return html`
     <section class="grid">

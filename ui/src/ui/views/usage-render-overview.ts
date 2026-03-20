@@ -398,12 +398,12 @@ function renderUsageInsights(
       ? (formatDurationCompact(stats.avgDurationMs, { spaced: true }) ?? "—")
       : "—";
   const cacheHint = "Cache hit rate = cache read / (input + cache read). Higher is better.";
-  const errorHint = "Error rate = errors / total messages. Lower is better.";
+  const errorHint = "错误率 = 错误数 / 总消息数，越低越好。";
   const throughputHint = "Throughput shows tokens per minute over active time. Higher is better.";
-  const tokensHint = "Average tokens per message in this range.";
+  const tokensHint = "该时间范围内每条消息的平均 token 数。";
   const costHint = showCostHint
-    ? "Average cost per message when providers report costs. Cost data is missing for some or all sessions in this range."
-    : "Average cost per message when providers report costs.";
+    ? "当提供商上报费用时，每条消息的平均成本。 Cost data is missing for some or all sessions in this range."
+    : "当提供商上报费用时，每条消息的平均成本。";
 
   const errorDays = aggregates.daily
     .filter((day) => day.messages > 0 && day.errors > 0)
