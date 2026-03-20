@@ -213,7 +213,7 @@ export async function loadCronModelSuggestions(state: CronModelSuggestionsState)
   }
 }
 
-export async function loadCron任务s(state: CronState) {
+export async function loadCronJobs(state: CronState) {
   return await loadCron任务sPage(state, { append: false });
 }
 
@@ -316,7 +316,7 @@ export async function reloadCronJobs(state: CronState) {
   await loadCron任务sPage(state, { append: false });
 }
 
-export function updateCron任务sFilter(
+export function updateCronJobsFilter(
   state: CronState,
   patch: Partial<
     Pick<
@@ -723,7 +723,7 @@ export async function toggleCronJob(state: CronState, job: Cron任务, enabled: 
   }
 }
 
-export async function runCron任务(state: CronState, job: Cron任务, mode: "force" | "due" = "force") {
+export async function runCronJob(state: CronState, job: Cron任务, mode: "force" | "due" = "force") {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
