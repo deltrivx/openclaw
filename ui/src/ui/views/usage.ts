@@ -444,7 +444,7 @@ export function renderUsage(props: UsageProps) {
       <div class="usage-page-subtitle">查看 Token 花在哪里、会话何时激增，以及成本由什么驱动。</div>
     </section>
 
-    <section class="card usage-header ${props.headerPinned ? "pinned" : ""}">
+    <section class="card usage-header ${props.header已固定 ? "pinned" : ""}">
       <div class="usage-header-row">
         <div class="usage-header-title">
           <div class="card-title" style="margin: 0;">Filters</div>
@@ -481,11 +481,11 @@ export function renderUsage(props: UsageProps) {
               : nothing
           }
           <button
-            class="usage-pin-btn ${props.headerPinned ? "active" : ""}"
-            title=${props.headerPinned ? "Unpin filters" : "Pin filters"}
-            @click=${props.onToggleHeaderPinned}
+            class="usage-pin-btn ${props.header已固定 ? "active" : ""}"
+            title=${props.header已固定 ? "取消固定筛选" : "固定筛选"}
+            @click=${props.onToggleHeader已固定}
           >
-            ${props.headerPinned ? "Pinned" : "Pin"}
+            ${props.header已固定 ? "已固定" : "固定"}
           </button>
           <details
             class="usage-export-menu"
