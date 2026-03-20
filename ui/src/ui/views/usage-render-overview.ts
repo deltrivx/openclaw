@@ -673,7 +673,7 @@ function renderSessionsCard(
               void copySessionName(s);
             }}
           >
-            Copy
+            复制
           </button>
           <div class="session-bar-value">${isTokenMode ? formatTokens(value) : formatCost(value)}</div>
         </div>

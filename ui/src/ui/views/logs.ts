@@ -62,7 +62,7 @@ export function renderLogs(props: LogsProps) {
         </div>
         <div class="row" style="gap: 8px;">
           <button class="btn" ?disabled=${props.loading} @click=${props.onRefresh}>
-            ${props.loading ? "Loading…" : "Refresh"}
+            ${props.loading ? "加载中…" : "刷新"}
           </button>
           <button
             class="btn"
@@ -153,7 +153,3 @@ export function renderLogs(props: LogsProps) {
     </section>
   `;
 }
-
-
-
-

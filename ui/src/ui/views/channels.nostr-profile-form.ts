@@ -277,9 +277,7 @@ export function renderNostrProfileForm(params: {
       ${
         isDirty
           ? html`
-              <div style="font-size: 12px; color: var(--warning-color); margin-top: 8px">
-                You have unsaved changes
-              </div>
+              <div style="font-size: 12px; color: var(--warning-color); margin-top: 8px">你有未保存的更改</div>
             `
           : nothing
       }

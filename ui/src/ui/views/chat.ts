@@ -790,10 +790,10 @@ function renderSlashMenu(
     <div class="slash-menu">
       ${sections}
       <div class="slash-menu-footer">
-        <kbd>↑↓</kbd> navigate
-        <kbd>Tab</kbd> fill
-        <kbd>Enter</kbd> select
-        <kbd>Esc</kbd> close
+        <kbd>↑↓</kbd> 切换
+        <kbd>Tab</kbd> 补全
+        <kbd>Enter</kbd> 选择
+        <kbd>Esc</kbd> 关闭
       </div>
     </div>
   `;
@@ -864,7 +864,7 @@ export function renderChat(props: ChatProps) {
       ${
         props.loading
           ? html`
-              <div class="chat-loading-skeleton" aria-label="Loading chat">
+              <div class="chat-loading-skeleton" aria-label="聊天加载中">
                 <div class="chat-line assistant">
                   <div class="chat-msg">
                     <div class="chat-bubble">

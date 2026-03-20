@@ -147,7 +147,7 @@ export function renderChannelConfigSection(params: { channelId: string; props: C
           ?disabled=${disabled}
           @click=${() => props.onConfigReload()}
         >
-          Reload
+          重新加载
         </button>
       </div>
     </div>

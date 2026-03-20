@@ -98,7 +98,9 @@ function executeHelp(): SlashCommandResult {
     const cat = cmd.category ?? "session";
     if (cat !== currentCategory) {
       currentCategory = cat;
-      lines.push(`**${cat === "session" ? "会话" : cat === "model" ? "模型" : cat === "tools" ? "工具" : cat === "agents" ? "代理" : cat}**`);
+      lines.push(
+        `**${cat === "session" ? "会话" : cat === "model" ? "模型" : cat === "tools" ? "工具" : cat === "agents" ? "代理" : cat}**`,
+      );
     }
     const argStr = cmd.args ? ` ${cmd.args}` : "";
     const local = cmd.executeLocal ? "" : " *(agent)*";
@@ -307,13 +309,13 @@ async function executeUsage(
     const pct = ctx > 0 ? Math.round((input / ctx) * 100) : null;
 
     const lines = [
-      "**Session Usage**",
-      `Input: **${fmtTokens(input)}** tokens`,
-      `Output: **${fmtTokens(output)}** tokens`,
-      `Total: **${fmtTokens(total)}** tokens`,
+      "**会话用量**",
+      `输入：**${fmtTokens(input)}** tokens`,
+      `输出：**${fmtTokens(output)}** tokens`,
+      `总计：**${fmtTokens(total)}** tokens`,
     ];
     if (pct !== null) {
-      lines.push(`Context: **${pct}%** of ${fmtTokens(ctx)}`);
+      lines.push(`上下文：**${pct}%** / ${fmtTokens(ctx)}`);
     }
     if (session.model) {
       lines.push(`模型：\`${session.model}\``);
@@ -585,4 +587,3 @@ function fmtTokens(n: number): string {
   }
   return String(n);
 }
-
