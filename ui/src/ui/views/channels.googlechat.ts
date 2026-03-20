@@ -19,19 +19,19 @@ export function renderGoogleChatCard(params: {
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
-          <span>${googleChat ? (googleChat.configured ? "Yes" : "No") : "n/a"}</span>
+          <span class="label">已配置</span>
+          <span>${googleChat ? (googleChat.configured ? "是" : "否") : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
-          <span>${googleChat ? (googleChat.running ? "Yes" : "No") : "n/a"}</span>
+          <span class="label">运行中</span>
+          <span>${googleChat ? (googleChat.running ? "是" : "否") : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Credential</span>
+          <span class="label">凭据</span>
           <span>${googleChat?.credentialSource ?? "n/a"}</span>
         </div>
         <div>
-          <span class="label">Audience</span>
+          <span class="label">受众</span>
           <span>
             ${
               googleChat?.audienceType
@@ -41,7 +41,7 @@ export function renderGoogleChatCard(params: {
           </span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">最近启动</span>
           <span>${googleChat?.lastStartAt ? formatRelativeTimestamp(googleChat.lastStartAt) : "n/a"}</span>
         </div>
         <div>
@@ -61,7 +61,7 @@ export function renderGoogleChatCard(params: {
       ${
         googleChat?.probe
           ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${googleChat.probe.ok ? "ok" : "failed"} ·
+            探测 ${googleChat.probe.ok ? "成功" : "失败"} ·
             ${googleChat.probe.status ?? ""} ${googleChat.probe.error ?? ""}
           </div>`
           : nothing
@@ -76,12 +76,4 @@ export function renderGoogleChatCard(params: {
       </div>
     </div>
   `;
-}
-`;
-}
-;
-}
-
-}
-
 }

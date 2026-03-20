@@ -14,20 +14,20 @@ export function renderIMessageCard(params: {
   return html`
     <div class="card">
       <div class="card-title">iMessage</div>
-      <div class="card-sub">macOS bridge status and channel configuration.</div>
+      <div class="card-sub">macOS 桥接状态与通道配置。</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
-          <span>${imessage?.configured ? "Yes" : "No"}</span>
+          <span class="label">已配置</span>
+          <span>${imessage?.configured ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">运行中</span>
           <span>${imessage?.running ? "是" : "否"}</span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">最近启动</span>
           <span>${imessage?.lastStartAt ? formatRelativeTimestamp(imessage.lastStartAt) : "n/a"}</span>
         </div>
         <div>
@@ -47,7 +47,7 @@ export function renderIMessageCard(params: {
       ${
         imessage?.probe
           ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${imessage.probe.ok ? "ok" : "failed"} ·
+            探测 ${imessage.probe.ok ? "成功" : "失败"} ·
             ${imessage.probe.error ?? ""}
           </div>`
           : nothing
@@ -57,11 +57,9 @@ export function renderIMessageCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          探测
         </button>
       </div>
     </div>
   `;
-}
-
 }
