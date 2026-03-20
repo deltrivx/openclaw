@@ -271,7 +271,7 @@ export const usageStylesPart3 = `
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
-    /* Separate "Usage Over Time" from the summary + Top Tools/Model Mix cards above. */
+    /* Separate "用量趋势" from the summary + Top Tools/Model Mix cards above. */
     margin-top: 12px;
     margin-bottom: 10px;
   }

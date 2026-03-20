@@ -581,7 +581,7 @@ export function renderUsage(props: UsageProps) {
           <input
             type="date"
             .value=${props.startDate}
-            title="Start Date"
+            title="开始日期"
             @change=${(e: Event) => props.onStartDateChange((e.target as HTMLInputElement).value)}
           />
           <span style="color: var(--muted);">to</span>
