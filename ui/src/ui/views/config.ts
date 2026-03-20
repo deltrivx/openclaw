@@ -774,10 +774,10 @@ export function renderConfig(props: ConfigProps) {
                 ? html`
                     <button
                       class="btn btn--sm"
-                      title=${props.configPath ? `Open ${props.configPath}` : "Open config file"}
+                      title=${props.configPath ? `打开 ${props.configPath}` : "打开配置文件"}
                       @click=${props.onOpenFile}
                     >
-                      ${icons.fileText} Open
+                      ${icons.fileText} 打开
                     </button>
                   `
                 : nothing
@@ -855,7 +855,7 @@ export function renderConfig(props: ConfigProps) {
               : nothing
           }
 
-          <div class="config-top-tabs__scroller" role="tablist" aria-label="Settings sections">
+          <div class="config-top-tabs__scroller" role="tablist" aria-label="设置分区">
             ${topTabs.map(
               (tab) => html`
                 <button
@@ -1115,4 +1115,6 @@ ${JSON.stringify(props.issues, null, 2)}</pre
       </main>
     </div>
   `;
+}
+`;
 }

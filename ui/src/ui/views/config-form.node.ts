@@ -154,16 +154,16 @@ function renderSensitiveToggleButton(params: {
       title=${
         state.canReveal
           ? state.isRevealed
-            ? "Hide value"
-            : "Reveal value"
-          : "Disable stream mode to reveal value"
+            ? "隐藏值"
+            : "显示值"
+          : "请先禁用流式模式后再显示值"
       }
       aria-label=${
         state.canReveal
           ? state.isRevealed
-            ? "Hide value"
-            : "Reveal value"
-          : "Disable stream mode to reveal value"
+            ? "隐藏值"
+            : "显示值"
+          : "请先禁用流式模式后再显示值"
       }
       aria-pressed=${state.isRevealed}
       ?disabled=${params.disabled || !state.canReveal}

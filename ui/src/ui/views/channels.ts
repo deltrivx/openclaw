@@ -207,8 +207,8 @@ function renderGenericChannelCard(
           : html`
             <div class="status-list" style="margin-top: 16px;">
               <div>
-                <span class="label">Configured</span>
-                <span>${configured == null ? "n/a" : configured ? "Yes" : "No"}</span>
+                <span class="label">已配置</span>
+                <span>${configured == null ? "n/a" : configured ? "是" : "否"}</span>
               </div>
               <div>
                 <span class="label">Running</span>
@@ -258,9 +258,9 @@ function hasRecentActivity(account: ChannelAccountSnapshot): boolean {
   return Date.now() - account.lastInboundAt < RECENT_ACTIVITY_THRESHOLD_MS;
 }
 
-function deriveRunningStatus(account: ChannelAccountSnapshot): "Yes" | "No" | "Active" {
+function deriveRunningStatus(account: ChannelAccountSnapshot): "是" | "否" | "活跃" {
   if (account.running) {
-    return "Yes";
+    return "是";
   }
   // If we have recent inbound activity, the channel is effectively running
   if (hasRecentActivity(account)) {
@@ -303,11 +303,11 @@ function renderGenericAccount(account: ChannelAccountSnapshot) {
           <span>${account.configured ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Connected</span>
+          <span class="label">已连接</span>
           <span>${connectedStatus}</span>
         </div>
         <div>
-          <span class="label">Last inbound</span>
+          <span class="label">最近入站</span>
           <span>${account.lastInboundAt ? formatRelativeTimestamp(account.lastInboundAt) : "n/a"}</span>
         </div>
         ${
@@ -323,3 +323,6 @@ function renderGenericAccount(account: ChannelAccountSnapshot) {
     </div>
   `;
 }
+
+}
+

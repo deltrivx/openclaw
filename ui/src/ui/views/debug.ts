@@ -118,8 +118,8 @@ export function renderDebug(props: DebugProps) {
     </section>
 
     <section class="card" style="margin-top: 18px;">
-      <div class="card-title">Models</div>
-      <div class="card-sub">Catalog from models.list.</div>
+      <div class="card-title">模型</div>
+      <div class="card-sub">来自 models.list 的目录。</div>
       <pre class="code-block" style="margin-top: 12px;">${JSON.stringify(
         props.models ?? [],
         null,
@@ -133,7 +133,7 @@ export function renderDebug(props: DebugProps) {
       ${
         props.eventLog.length === 0
           ? html`
-              <div class="muted" style="margin-top: 12px">No events yet.</div>
+              <div class="muted" style="margin-top: 12px">暂时没有事件。</div>
             `
           : html`
             <div class="list debug-event-log" style="margin-top: 12px;">
@@ -157,4 +157,5 @@ export function renderDebug(props: DebugProps) {
       }
     </section>
   `;
+}
 }

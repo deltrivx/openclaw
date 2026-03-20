@@ -14,7 +14,7 @@ export function renderWhatsAppCard(params: {
   return html`
     <div class="card">
       <div class="card-title">WhatsApp</div>
-      <div class="card-sub">Link WhatsApp Web and monitor connection health.</div>
+      <div class="card-sub">连接 WhatsApp Web 并监控连接健康状态。</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
@@ -31,8 +31,8 @@ export function renderWhatsAppCard(params: {
           <span>${whatsapp?.running ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Connected</span>
-          <span>${whatsapp?.connected ? "Yes" : "No"}</span>
+          <span class="label">已连接</span>
+          <span>${whatsapp?.connected ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">Last connect</span>
@@ -41,7 +41,7 @@ export function renderWhatsAppCard(params: {
           </span>
         </div>
         <div>
-          <span class="label">Last message</span>
+          <span class="label">最近消息</span>
           <span>
             ${whatsapp?.lastMessageAt ? formatRelativeTimestamp(whatsapp.lastMessageAt) : "n/a"}
           </span>
@@ -98,7 +98,7 @@ export function renderWhatsAppCard(params: {
           ?disabled=${props.whatsappBusy}
           @click=${() => props.onWhatsAppWait()}
         >
-          Wait for scan
+          等待扫码
         </button>
         <button
           class="btn danger"
@@ -116,3 +116,13 @@ export function renderWhatsAppCard(params: {
     </div>
   `;
 }
+}
+
+  `;
+}
+}
+
+;
+}
+}
+

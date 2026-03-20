@@ -384,7 +384,7 @@ export function renderConfigForm(props: ConfigFormProps) {
       <div class="config-empty">
         <div class="config-empty__icon">${icons.search}</div>
         <div class="config-empty__text">
-          ${searchQuery ? `No settings match "${searchQuery}"` : "No settings in this section"}
+          ${searchQuery ? `没有设置项匹配“${searchQuery}”` : "该分区下没有设置项"}
         </div>
       </div>
     `;
