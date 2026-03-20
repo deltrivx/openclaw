@@ -1149,7 +1149,7 @@ export function renderChat(props: ChatProps) {
                       <button
                         class="btn chat-queue__remove"
                         type="button"
-                        aria-label="Remove queued message"
+                        aria-label="移除待发送消息"
                         @click=${() => props.onQueueRemove(item.id)}
                       >
                         ${icons.x}

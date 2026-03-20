@@ -211,7 +211,7 @@ function renderGenericChannelCard(
                 <span>${configured == null ? "n/a" : configured ? "是" : "否"}</span>
               </div>
               <div>
-                <span class="label">Running</span>
+                <span class="label">运行中</span>
                 <span>${running == null ? "n/a" : running ? "Yes" : "No"}</span>
               </div>
               <div>

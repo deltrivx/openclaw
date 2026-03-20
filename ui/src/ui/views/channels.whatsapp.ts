@@ -105,7 +105,7 @@ export function renderWhatsAppCard(params: {
           ?disabled=${props.whatsappBusy}
           @click=${() => props.onWhatsAppLogout()}
         >
-          Logout
+          退出登录
         </button>
         <button class="btn" @click=${() => props.onRefresh(true)}>
           刷新

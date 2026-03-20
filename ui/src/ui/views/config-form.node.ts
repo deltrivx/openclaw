@@ -1086,7 +1086,7 @@ function renderArray(params: {
                 <button
                   type="button"
                   class="cfg-array__item-remove"
-                  title="Remove item"
+                  title="移除项目"
                   ?disabled=${disabled}
                   @click=${() => {
                     const next = [...arr];

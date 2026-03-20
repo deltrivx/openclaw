@@ -420,7 +420,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
               ${
                 !isDefaults
                   ? html`<option value="__default__" ?selected=${askValue === "__default__"}>
-                    Use default (${defaults.ask})
+                    使用默认值（${defaults.ask}）
                   </option>`
                   : nothing
               }
@@ -440,7 +440,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
 
       <div class="list-item">
         <div class="list-main">
-          <div class="list-title">Ask fallback</div>
+          <div class="list-title">询问回退</div>
           <div class="list-sub">
             ${
               isDefaults
@@ -467,7 +467,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
               ${
                 !isDefaults
                   ? html`<option value="__default__" ?selected=${askFallbackValue === "__default__"}>
-                    Use default (${defaults.askFallback})
+                    使用默认值（${defaults.askFallback}）
                   </option>`
                   : nothing
               }
@@ -603,7 +603,7 @@ function renderAllowlistEntry(
             state.onRemove(["agents", state.selectedScope, "allowlist", index]);
           }}
         >
-          Remove
+          移除
         </button>
       </div>
     </div>

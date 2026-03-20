@@ -73,7 +73,7 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
       { id: "sessions_history", label: "sessions_history", description: "Session history" },
       { id: "sessions_send", label: "sessions_send", description: "Send to session" },
       { id: "sessions_spawn", label: "sessions_spawn", description: "Spawn sub-agent" },
-      { id: "session_status", label: "session_status", description: "Session status" },
+      { id: "session_status", label: "session_status", description: "会话状态" },
     ],
   },
   {
