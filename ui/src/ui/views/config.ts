@@ -1019,7 +1019,7 @@ export function renderConfig(props: ConfigProps) {
                     ? html`
                         <div class="config-loading">
                           <div class="config-loading__spinner"></div>
-                          <span>Loading schema…</span>
+                          <span>正在加载配置结构…</span>
                         </div>
                       `
                     : renderConfigForm({

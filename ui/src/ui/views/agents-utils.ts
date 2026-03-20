@@ -346,7 +346,7 @@ export function buildAgentContext(
     model: modelLabel,
     identityName,
     identityAvatar,
-    skillsLabel: skillFilter ? `${skillCount} selected` : "all skills",
+    skillsLabel: skillFilter ? `已选择 ${skillCount} 项` : "全部技能",
     isDefault: Boolean(defaultId && agent.id === defaultId),
   };
 }
