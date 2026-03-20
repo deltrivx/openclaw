@@ -310,9 +310,9 @@ async function executeUsage(
 
     const lines = [
       "**会话用量**",
-      `输入：**${fmtTokens(input)}** tokens`,
-      `输出：**${fmtTokens(output)}** tokens`,
-      `总计：**${fmtTokens(total)}** tokens`,
+      `输入：**${fmtTokens(input)}** Token`,
+      `输出：**${fmtTokens(output)}** Token`,
+      `总计：**${fmtTokens(total)}** Token`,
     ];
     if (pct !== null) {
       lines.push(`上下文：**${pct}%** / ${fmtTokens(ctx)}`);
@@ -586,4 +586,8 @@ function fmtTokens(n: number): string {
     return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}k`;
   }
   return String(n);
+}
+tring(n);
+}
+n);
 }

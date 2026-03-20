@@ -280,7 +280,7 @@ function renderCostBreakdownCompact(totals: UsageTotals, mode: "tokens" | "cost"
 
   return html`
     <div class="cost-breakdown cost-breakdown-compact">
-      <div class="cost-breakdown-header">按类型划分的${isTokenMode ? " Token" : "成本"}</div>
+      <div class="cost-breakdown-header">按类型划分的${isTokenMode ? " Token 用量" : "成本"}</div>
       <div class="cost-breakdown-bar">
         <div class="cost-segment output" style="width: ${(isTokenMode ? tokenPcts.output : breakdown.output.pct).toFixed(1)}%"
           title="输出：${isTokenMode ? formatTokens(totals.output) : formatCost(breakdown.output.cost)}"></div>
