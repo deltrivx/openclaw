@@ -137,7 +137,7 @@ export async function saveConfig(state: ConfigState) {
     const raw = serializeFormForSubmit(state);
     const baseHash = state.configSnapshot?.hash;
     if (!baseHash) {
-      state.lastError = "Config hash missing; reload and retry.";
+      state.lastError = "配置哈希缺失，请重新加载后再试。";
       return;
     }
     await state.client.request("config.set", { raw, baseHash });
@@ -193,7 +193,7 @@ export async function runUpdate(state: ConfigState) {
     if (res && res.ok === false) {
       const status = res.result?.status ?? "error";
       const reason = res.result?.reason ?? "更新失败。";
-      state.lastError = `Update ${status}: ${reason}`;
+      state.lastError = `更新 ${status}：${reason}`;
     }
   } catch (err) {
     state.lastError = String(err);

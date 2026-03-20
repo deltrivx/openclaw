@@ -82,7 +82,7 @@ export async function updateSkillEnabled(state: SkillsState, skillKey: string, e
     await loadSkills(state);
     setSkillMessage(state, skillKey, {
       kind: "success",
-      message: enabled ? "Skill enabled" : "Skill disabled",
+      message: enabled ? "技能已启用" : "技能已禁用",
     });
   } catch (err) {
     const message = getErrorMessage(err);
@@ -108,7 +108,7 @@ export async function saveSkillApiKey(state: SkillsState, skillKey: string) {
     await loadSkills(state);
     setSkillMessage(state, skillKey, {
       kind: "success",
-      message: "API key saved",
+      message: "API Key 已保存",
     });
   } catch (err) {
     const message = getErrorMessage(err);
