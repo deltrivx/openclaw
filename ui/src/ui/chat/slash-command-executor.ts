@@ -141,7 +141,7 @@ async function executeModel(
           `**可用：** ${available
             .slice(0, 10)
             .map((m: string) => `\`${m}\``)
-            .join(", ")}${available.length > 10 ? ` +${available.length - 10} more` : ""}`,
+            .join(", ")}${available.length > 10 ? ` 另外还有 ${available.length - 10} 个` : ""}`,
         );
       }
       return { content: lines.join("\n") };
@@ -360,8 +360,8 @@ async function executeKill(
       return {
         content:
           target.toLowerCase() === "all"
-            ? "No active sub-agent sessions found."
-            : `No matching sub-agent sessions found for \`${target}\`.`,
+            ? "未找到活动中的子代理会话。"
+            : `未找到与 \`${target}\` 匹配的子代理会话。`,
       };
     }
 
@@ -391,8 +391,8 @@ async function executeKill(
       return {
         content:
           successCount === matched.length
-            ? `Aborted ${successCount} sub-agent session${successCount === 1 ? "" : "s"}.`
-            : `Aborted ${successCount} of ${matched.length} sub-agent sessions.`,
+            ? `已终止 ${successCount} 个子代理会话。`
+            : `已终止 ${successCount} / ${matched.length} 个子代理会话。`,
       };
     }
 
@@ -584,6 +584,11 @@ function fmtTokens(n: number): string {
     return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}k`;
   }
   return String(n);
+}
+(n);
+}
+
+ return String(n);
 }
 (n);
 }
