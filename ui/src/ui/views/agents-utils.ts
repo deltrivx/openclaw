@@ -70,7 +70,7 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
     label: "Sessions",
     tools: [
       { id: "sessions_list", label: "sessions_list", description: "List sessions" },
-      { id: "sessions_history", label: "sessions_history", description: "Session history" },
+      { id: "sessions_history", label: "sessions_history", description: "会话历史" },
       { id: "sessions_send", label: "sessions_send", description: "Send to session" },
       { id: "sessions_spawn", label: "sessions_spawn", description: "Spawn sub-agent" },
       { id: "session_status", label: "session_status", description: "会话状态" },
@@ -80,14 +80,14 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
     id: "ui",
     label: "UI",
     tools: [
-      { id: "browser", label: "browser", description: "Control web browser" },
-      { id: "canvas", label: "canvas", description: "Control canvases" },
+      { id: "browser", label: "browser", description: "控制网页浏览器" },
+      { id: "canvas", label: "canvas", description: "控制画布" },
     ],
   },
   {
     id: "messaging",
-    label: "Messaging",
-    tools: [{ id: "message", label: "message", description: "Send messages" }],
+    label: "消息",
+    tools: [{ id: "message", label: "message", description: "发送消息" }],
   },
   {
     id: "automation",

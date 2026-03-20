@@ -361,7 +361,7 @@ const SECTION_CATEGORIES: SectionCategory[] = [
     label: "Infrastructure",
     sections: [
       { key: "gateway", label: "Gateway" },
-      { key: "web", label: "Web" },
+      { key: "web", label: "网页" },
       { key: "browser", label: "Browser" },
       { key: "nodeHost", label: "NodeHost" },
       { key: "canvasHost", label: "CanvasHost" },
@@ -605,7 +605,7 @@ function renderAppearanceSection(props: ConfigProps) {
             <span class="settings-info-row__label">Status</span>
             <span class="settings-info-row__value">
               <span class="settings-status-dot ${props.connected ? "settings-status-dot--ok" : ""}"></span>
-              ${props.connected ? "Connected" : "Offline"}
+              ${props.connected ? "已连接" : "离线"}
             </span>
           </div>
           ${

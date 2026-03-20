@@ -270,7 +270,7 @@ export const SECTION_META: Record<string, { label: string; description: string }
   audio: { label: "音频", description: "音频输入/输出设置" },
   session: { label: "Session", description: "Session management and persistence" },
   cron: { label: "Cron", description: "Scheduled tasks and automation" },
-  web: { label: "Web", description: "Web server and API settings" },
+  web: { label: "网页", description: "Web 服务与 API 设置" },
   discovery: { label: "Discovery", description: "Service discovery and networking" },
   canvasHost: { label: "Canvas Host", description: "Canvas rendering and display" },
   talk: { label: "语音", description: "语音与朗读设置" },

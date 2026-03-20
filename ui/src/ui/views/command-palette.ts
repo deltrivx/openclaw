@@ -33,7 +33,7 @@ const PALETTE_ITEMS: PaletteItem[] = [
   },
   {
     id: "nav-sessions",
-    label: "Sessions",
+    label: "会话",
     icon: "fileText",
     category: "navigation",
     action: "nav:sessions",
