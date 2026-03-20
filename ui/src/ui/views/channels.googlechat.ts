@@ -14,7 +14,7 @@ export function renderGoogleChatCard(params: {
   return html`
     <div class="card">
       <div class="card-title">Google Chat</div>
-      <div class="card-sub">Chat API webhook status and channel configuration.</div>
+      <div class="card-sub">Chat API webhook 状态与通道配置。</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
@@ -45,7 +45,7 @@ export function renderGoogleChatCard(params: {
           <span>${googleChat?.lastStartAt ? formatRelativeTimestamp(googleChat.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">最近探测</span>
           <span>${googleChat?.lastProbeAt ? formatRelativeTimestamp(googleChat.lastProbeAt) : "n/a"}</span>
         </div>
       </div>
@@ -71,9 +71,17 @@ export function renderGoogleChatCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          探测
         </button>
       </div>
     </div>
   `;
+}
+`;
+}
+;
+}
+
+}
+
 }

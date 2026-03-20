@@ -27,8 +27,8 @@ export function renderTelegramCard(params: {
         </div>
         <div class="status-list account-card-status">
           <div>
-            <span class="label">Running</span>
-            <span>${account.running ? "Yes" : "No"}</span>
+            <span class="label">运行中</span>
+            <span>${account.running ? "是" : "否"}</span>
           </div>
           <div>
             <span class="label">Configured</span>
@@ -84,7 +84,7 @@ export function renderTelegramCard(params: {
                 <span>${telegram?.lastStartAt ? formatRelativeTimestamp(telegram.lastStartAt) : "n/a"}</span>
               </div>
               <div>
-                <span class="label">Last probe</span>
+                <span class="label">最近探测</span>
                 <span>${telegram?.lastProbeAt ? formatRelativeTimestamp(telegram.lastProbeAt) : "n/a"}</span>
               </div>
             </div>
@@ -102,7 +102,7 @@ export function renderTelegramCard(params: {
       ${
         telegram?.probe
           ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${telegram.probe.ok ? "ok" : "failed"} ·
+            探测 ${telegram.probe.ok ? "成功" : "失败"} ·
             ${telegram.probe.status ?? ""} ${telegram.probe.error ?? ""}
           </div>`
           : nothing

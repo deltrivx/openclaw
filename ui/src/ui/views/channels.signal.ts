@@ -23,8 +23,8 @@ export function renderSignalCard(params: {
           <span>${signal?.configured ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
-          <span>${signal?.running ? "Yes" : "No"}</span>
+          <span class="label">运行中</span>
+          <span>${signal?.running ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">Base URL</span>
@@ -51,7 +51,7 @@ export function renderSignalCard(params: {
       ${
         signal?.probe
           ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${signal.probe.ok ? "ok" : "failed"} ·
+            探测 ${signal.probe.ok ? "成功" : "失败"} ·
             ${signal.probe.status ?? ""} ${signal.probe.error ?? ""}
           </div>`
           : nothing
@@ -61,7 +61,7 @@ export function renderSignalCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          探测
         </button>
       </div>
     </div>

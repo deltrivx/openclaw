@@ -73,7 +73,7 @@ export function renderLogs(props: LogsProps) {
                 exportLabel,
               )}
           >
-            Export ${exportLabel}
+            导出 ${exportLabel}
           </button>
         </div>
       </div>
@@ -136,7 +136,7 @@ export function renderLogs(props: LogsProps) {
         ${
           filtered.length === 0
             ? html`
-                <div class="muted" style="padding: 12px">No log entries.</div>
+                <div class="muted" style="padding: 12px">没有日志记录。</div>
               `
             : filtered.map(
                 (entry) => html`
@@ -153,4 +153,7 @@ export function renderLogs(props: LogsProps) {
     </section>
   `;
 }
+
+
+
 

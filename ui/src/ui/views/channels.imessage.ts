@@ -23,15 +23,15 @@ export function renderIMessageCard(params: {
           <span>${imessage?.configured ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
-          <span>${imessage?.running ? "Yes" : "No"}</span>
+          <span class="label">运行中</span>
+          <span>${imessage?.running ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">Last start</span>
           <span>${imessage?.lastStartAt ? formatRelativeTimestamp(imessage.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">最近探测</span>
           <span>${imessage?.lastProbeAt ? formatRelativeTimestamp(imessage.lastProbeAt) : "n/a"}</span>
         </div>
       </div>
@@ -62,4 +62,6 @@ export function renderIMessageCard(params: {
       </div>
     </div>
   `;
+}
+
 }

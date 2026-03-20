@@ -27,7 +27,7 @@ export function renderDiscordCard(params: {
           <span>${discord?.running ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">最近启动</span>
           <span>${discord?.lastStartAt ? formatRelativeTimestamp(discord.lastStartAt) : "n/a"}</span>
         </div>
         <div>
@@ -57,9 +57,10 @@ export function renderDiscordCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          探测
         </button>
       </div>
     </div>
   `;
 }
+
