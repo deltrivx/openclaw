@@ -14,28 +14,28 @@ export function renderSignalCard(params: {
   return html`
     <div class="card">
       <div class="card-title">Signal</div>
-      <div class="card-sub">signal-cli status and channel configuration.</div>
+      <div class="card-sub">signal-cli 状态与通道配置。</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
-          <span>${signal?.configured ? "Yes" : "No"}</span>
+          <span class="label">已配置</span>
+          <span>${signal?.configured ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">运行中</span>
           <span>${signal?.running ? "是" : "否"}</span>
         </div>
         <div>
-          <span class="label">Base URL</span>
+          <span class="label">基础 URL</span>
           <span>${signal?.baseUrl ?? "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">最近启动</span>
           <span>${signal?.lastStartAt ? formatRelativeTimestamp(signal.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">最近探测</span>
           <span>${signal?.lastProbeAt ? formatRelativeTimestamp(signal.lastProbeAt) : "n/a"}</span>
         </div>
       </div>

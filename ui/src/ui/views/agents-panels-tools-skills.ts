@@ -146,7 +146,7 @@ export function renderAgentTools(params: {
     <section class="card">
       <div class="row" style="justify-content: space-between;">
         <div>
-          <div class="card-title">Tool Access</div>
+          <div class="card-title">工具访问</div>
           <div class="card-sub">
             此代理的配置档案与逐工具覆盖。
             <span class="mono">${enabledCount}/${toolIds.length}</span> 已启用。
@@ -175,9 +175,7 @@ export function renderAgentTools(params: {
       ${
         !params.configForm
           ? html`
-              <div class="callout info" style="margin-top: 12px">
-                请先加载网关配置后再调整工具配置档案。
-              </div>
+              <div class="callout info" style="margin-top: 12px">请先加载网关配置后再调整工具配置档案。</div>
             `
           : nothing
       }
@@ -398,9 +396,7 @@ export function renderAgentSkills(params: {
       ${
         !params.configForm
           ? html`
-              <div class="callout info" style="margin-top: 12px">
-                请先加载网关配置后再设置代理级技能。
-              </div>
+              <div class="callout info" style="margin-top: 12px">请先加载网关配置后再设置代理级技能。</div>
             `
           : nothing
       }

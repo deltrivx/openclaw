@@ -31,11 +31,11 @@ export function renderTelegramCard(params: {
             <span>${account.running ? "是" : "否"}</span>
           </div>
           <div>
-            <span class="label">Configured</span>
-            <span>${account.configured ? "Yes" : "No"}</span>
+            <span class="label">已配置</span>
+            <span>${account.configured ? "是" : "否"}</span>
           </div>
           <div>
-            <span class="label">Last inbound</span>
+            <span class="label">最近入站</span>
             <span>${account.lastInboundAt ? formatRelativeTimestamp(account.lastInboundAt) : "n/a"}</span>
           </div>
           ${

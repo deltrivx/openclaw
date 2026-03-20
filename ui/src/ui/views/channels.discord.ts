@@ -23,15 +23,15 @@ export function renderDiscordCard(params: {
           <span>${discord?.configured ? "是" : "否"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
-          <span>${discord?.running ? "Yes" : "No"}</span>
+          <span class="label">运行中</span>
+          <span>${discord?.running ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">最近启动</span>
           <span>${discord?.lastStartAt ? formatRelativeTimestamp(discord.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">最近探测</span>
           <span>${discord?.lastProbeAt ? formatRelativeTimestamp(discord.lastProbeAt) : "n/a"}</span>
         </div>
       </div>
@@ -63,4 +63,3 @@ export function renderDiscordCard(params: {
     </div>
   `;
 }
-
