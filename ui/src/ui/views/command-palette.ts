@@ -261,6 +261,3 @@ export function renderCommandPalette(props: CommandPaletteProps) {
     </div>
   `;
 }
-
-
-}

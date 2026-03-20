@@ -128,8 +128,8 @@ export function renderDebug(props: DebugProps) {
     </section>
 
     <section class="card" style="margin-top: 18px;">
-      <div class="card-title">Event Log</div>
-      <div class="card-sub">Latest gateway events.</div>
+      <div class="card-title">事件日志</div>
+      <div class="card-sub">最新的网关事件。</div>
       ${
         props.eventLog.length === 0
           ? html`
@@ -157,5 +157,4 @@ export function renderDebug(props: DebugProps) {
       }
     </section>
   `;
-}
 }

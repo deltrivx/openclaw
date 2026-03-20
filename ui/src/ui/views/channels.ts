@@ -295,12 +295,12 @@ function renderGenericAccount(account: ChannelAccountSnapshot) {
       </div>
       <div class="status-list account-card-status">
         <div>
-          <span class="label">Running</span>
+          <span class="label">运行状态</span>
           <span>${runningStatus}</span>
         </div>
         <div>
-          <span class="label">Configured</span>
-          <span>${account.configured ? "Yes" : "No"}</span>
+          <span class="label">已配置</span>
+          <span>${account.configured ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">已连接</span>
@@ -323,6 +323,3 @@ function renderGenericAccount(account: ChannelAccountSnapshot) {
     </div>
   `;
 }
-
-}
-

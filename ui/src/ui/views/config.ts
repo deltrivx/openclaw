@@ -1116,5 +1116,3 @@ ${JSON.stringify(props.issues, null, 2)}</pre
     </div>
   `;
 }
-`;
-}

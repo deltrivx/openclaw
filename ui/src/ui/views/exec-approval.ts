@@ -66,7 +66,7 @@ export function renderExecApprovalPrompt(state: AppViewState) {
             ?disabled=${state.execApprovalBusy}
             @click=${() => state.handleExecApprovalDecision("allow-once")}
           >
-            Allow once
+            允许一次
           </button>
           <button
             class="btn"
@@ -80,11 +80,10 @@ export function renderExecApprovalPrompt(state: AppViewState) {
             ?disabled=${state.execApprovalBusy}
             @click=${() => state.handleExecApprovalDecision("deny")}
           >
-            Deny
+            拒绝
           </button>
         </div>
       </div>
     </div>
   `;
-}
 }
