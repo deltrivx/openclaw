@@ -749,7 +749,7 @@ function renderSessionsCard(
         sessionsTab === "recent"
           ? recentEntries.length === 0
             ? html`
-                <div class="muted" style="padding: 20px; text-align: center">No recent sessions</div>
+                <div class="muted" style="padding: 20px; text-align: center">暂无最近会话</div>
               `
             : html`
 	                <div class="session-bars" style="max-height: 220px; margin-top: 6px;">
@@ -773,7 +773,7 @@ function renderSessionsCard(
         selectedCount > 1
           ? html`
               <div style="margin-top: 10px;">
-                <div class="sessions-card-count">Selected (${selectedCount})</div>
+                <div class="sessions-card-count">已选中（${selectedCount}）</div>
                 <div class="session-bars" style="max-height: 160px; margin-top: 6px;">
                   ${selectedEntries.map((s) => renderSessionBarRow(s, true))}
                 </div>
@@ -794,12 +794,6 @@ export {
   renderSessionsCard,
   renderUsageInsights,
 };
-ights,
-};
-hts,
+ts,
 };
 
-};
-;
-
-};

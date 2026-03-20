@@ -1061,7 +1061,7 @@ function renderSessionLogsCompact(
         ${
           filteredEntries.length === 0
             ? html`
-                <div class="muted" style="padding: 12px">No messages match the filters.</div>
+                <div class="muted" style="padding: 12px">没有消息匹配当前筛选条件。</div>
               `
             : nothing
         }
@@ -1080,6 +1080,4 @@ export {
   renderTimeSeriesCompact,
   CHART_BAR_WIDTH_RATIO,
   CHART_MAX_BAR_WIDTH,
-};
-
 };
