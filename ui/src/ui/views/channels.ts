@@ -323,4 +323,3 @@ function renderGenericAccount(account: ChannelAccountSnapshot) {
     </div>
   `;
 }
-}
