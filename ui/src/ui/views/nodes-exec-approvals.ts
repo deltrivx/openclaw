@@ -1,6 +1,6 @@
 import { html, nothing } from "lit";
 import type {
-  ExecApprovalsAllowlistEntry,
+  ExecApprovals白名单Entry,
   ExecApprovalsFile,
 } from "../controllers/exec-approvals.ts";
 import { clampText, formatRelativeTimestamp } from "../format.ts";
@@ -40,7 +40,7 @@ type ExecApprovalsState = {
   selectedScope: string;
   selectedAgent: Record<string, unknown> | null;
   agents: ExecApprovalsAgentOption[];
-  allowlist: ExecApprovalsAllowlistEntry[];
+  allowlist: ExecApprovals白名单Entry[];
   target: "gateway" | "node";
   targetNodeId: string | null;
   targetNodes: ExecApprovalsTargetNode[];
@@ -55,15 +55,15 @@ type ExecApprovalsState = {
 const EXEC_APPROVALS_DEFAULT_SCOPE = "__defaults__";
 
 const SECURITY_OPTIONS: Array<{ value: ExecSecurity; label: string }> = [
-  { value: "deny", label: "Deny" },
-  { value: "allowlist", label: "Allowlist" },
-  { value: "full", label: "Full" },
+  { value: "deny", label: "拒绝" },
+  { value: "allowlist", label: "白名单" },
+  { value: "full", label: "完全开放" },
 ];
 
 const ASK_OPTIONS: Array<{ value: ExecAsk; label: string }> = [
-  { value: "off", label: "Off" },
-  { value: "on-miss", label: "On miss" },
-  { value: "always", label: "Always" },
+  { value: "off", label: "关闭" },
+  { value: "on-miss", label: "缺失时询问" },
+  { value: "always", label: "始终询问" },
 ];
 
 function normalizeSecurity(value?: string): ExecSecurity {
@@ -163,7 +163,7 @@ export function resolveExecApprovalsState(props: NodesProps): ExecApprovalsState
       ? (((form?.agents ?? {})[selectedScope] as Record<string, unknown> | undefined) ?? null)
       : null;
   const allowlist = Array.isArray((selectedAgent as { allowlist?: unknown })?.allowlist)
-    ? ((selectedAgent as { allowlist?: ExecApprovalsAllowlistEntry[] }).allowlist ?? [])
+    ? ((selectedAgent as { allowlist?: ExecApprovals白名单Entry[] }).allowlist ?? [])
     : [];
   return {
     ready,
@@ -226,7 +226,7 @@ export function renderExecApprovals(state: ExecApprovalsState) {
             ${
               state.selectedScope === EXEC_APPROVALS_DEFAULT_SCOPE
                 ? nothing
-                : renderExecApprovalsAllowlist(state)
+                : renderExecApprovals白名单(state)
             }
           `
       }
@@ -356,7 +356,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
         <div class="list-main">
           <div class="list-title">Security</div>
           <div class="list-sub">
-            ${isDefaults ? "Default security mode." : `Default: ${defaults.security}.`}
+            ${isDefaults ? "默认安全模式。" : `Default: ${defaults.security}.`}
           </div>
         </div>
         <div class="list-meta">
@@ -399,7 +399,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
         <div class="list-main">
           <div class="list-title">Ask</div>
           <div class="list-sub">
-            ${isDefaults ? "Default prompt policy." : `Default: ${defaults.ask}.`}
+            ${isDefaults ? "默认提示策略。" : `Default: ${defaults.ask}.`}
           </div>
         </div>
         <div class="list-meta">
@@ -491,7 +491,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
           <div class="list-sub">
             ${
               isDefaults
-                ? "Allow skill executables listed by the Gateway."
+                ? "允许网关列出的技能可执行文件。"
                 : autoIsDefault
                   ? `Using default (${defaults.autoAllowSkills ? "on" : "off"}).`
                   : `Override (${autoEffective ? "on" : "off"}).`
@@ -528,7 +528,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
   `;
 }
 
-function renderExecApprovalsAllowlist(state: ExecApprovalsState) {
+function renderExecApprovals白名单(state: ExecApprovalsState) {
   const allowlistPath = ["agents", state.selectedScope, "allowlist"];
   const entries = state.allowlist;
   return html`
@@ -554,15 +554,15 @@ function renderExecApprovalsAllowlist(state: ExecApprovalsState) {
           ? html`
               <div class="muted">No allowlist entries yet.</div>
             `
-          : entries.map((entry, index) => renderAllowlistEntry(state, entry, index))
+          : entries.map((entry, index) => render白名单Entry(state, entry, index))
       }
     </div>
   `;
 }
 
-function renderAllowlistEntry(
+function render白名单Entry(
   state: ExecApprovalsState,
-  entry: ExecApprovalsAllowlistEntry,
+  entry: ExecApprovals白名单Entry,
   index: number,
 ) {
   const lastUsed = entry.lastUsedAt ? formatRelativeTimestamp(entry.lastUsedAt) : "never";
@@ -571,7 +571,7 @@ function renderAllowlistEntry(
   return html`
     <div class="list-item">
       <div class="list-main">
-        <div class="list-title">${entry.pattern?.trim() ? entry.pattern : "New pattern"}</div>
+        <div class="list-title">${entry.pattern?.trim() ? entry.pattern : "新增模式"}</div>
         <div class="list-sub">Last used: ${lastUsed}</div>
         ${lastCommand ? html`<div class="list-sub mono">${lastCommand}</div>` : nothing}
         ${lastPath ? html`<div class="list-sub mono">${lastPath}</div>` : nothing}

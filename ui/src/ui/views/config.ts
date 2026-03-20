@@ -926,7 +926,7 @@ export function renderConfig(props: ConfigProps) {
               <details class="config-diff">
                 <summary class="config-diff__summary">
                   <span
-                    >View ${diff.length} pending
+                    >查看 ${diff.length} 项待处理变更
                     change${diff.length !== 1 ? "s" : ""}</span
                   >
                   <svg
