@@ -598,7 +598,7 @@ function renderAppearanceSection(props: ConfigProps) {
         <h3 class="settings-appearance__heading">Connection</h3>
         <div class="settings-info-grid">
           <div class="settings-info-row">
-            <span class="settings-info-row__label">Gateway</span>
+            <span class="settings-info-row__label">网关</span>
             <span class="settings-info-row__value mono">${props.gatewayUrl || "-"}</span>
           </div>
           <div class="settings-info-row">
@@ -1116,3 +1116,4 @@ ${JSON.stringify(props.issues, null, 2)}</pre
     </div>
   `;
 }
+

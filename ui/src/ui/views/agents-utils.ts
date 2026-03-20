@@ -67,12 +67,12 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
   },
   {
     id: "sessions",
-    label: "Sessions",
+    label: "会话",
     tools: [
-      { id: "sessions_list", label: "sessions_list", description: "List sessions" },
+      { id: "sessions_list", label: "sessions_list", description: "列出会话" },
       { id: "sessions_history", label: "sessions_history", description: "会话历史" },
-      { id: "sessions_send", label: "sessions_send", description: "Send to session" },
-      { id: "sessions_spawn", label: "sessions_spawn", description: "Spawn sub-agent" },
+      { id: "sessions_send", label: "sessions_send", description: "发送到会话" },
+      { id: "sessions_spawn", label: "sessions_spawn", description: "启动子代理" },
       { id: "session_status", label: "session_status", description: "会话状态" },
     ],
   },
@@ -673,4 +673,7 @@ export function matchesList(name: string, list?: string[]) {
 
 export function resolveToolProfile(profile: string) {
   return resolveToolProfilePolicy(profile) ?? undefined;
+}
+
+;
 }
