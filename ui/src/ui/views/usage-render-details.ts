@@ -59,7 +59,7 @@ function renderSessionSummary(
   const usage = filteredUsage || session.usage;
   if (!usage) {
     return html`
-      <div class="muted">No usage data for this session.</div>
+      <div class="muted">该会话没有用量数据。</div>
     `;
   }
 
@@ -121,9 +121,9 @@ function renderSessionSummary(
     ${badges.length > 0 ? html`<div class="usage-badges">${badges.map((b) => html`<span class="usage-badge">${b}</span>`)}</div>` : nothing}
     <div class="session-summary-grid">
       <div class="session-summary-card">
-        <div class="session-summary-title">Messages</div>
+        <div class="session-summary-title">消息数</div>
         <div class="session-summary-value">${usage.messageCounts?.total ?? 0}</div>
-        <div class="session-summary-meta">${usage.messageCounts?.user ?? 0} user · ${usage.messageCounts?.assistant ?? 0} assistant</div>
+        <div class="session-summary-meta">${usage.messageCounts?.user ?? 0} 用户 · ${usage.messageCounts?.assistant ?? 0} 助手</div>
       </div>
       <div class="session-summary-card">
         <div class="session-summary-title">Tool Calls</div>
@@ -142,8 +142,8 @@ function renderSessionSummary(
       </div>
     </div>
     <div class="usage-insights-grid" style="margin-top: 12px;">
-      ${renderInsightList("Top Tools", toolItems, "No tool calls")}
-      ${renderInsightList("Model Mix", modelItems, "No model data")}
+      ${renderInsightList("高频工具", toolItems, "没有工具调用")}
+      ${renderInsightList("模型分布", modelItems, "没有模型数据")}
     </div>
   `;
 }
@@ -1080,4 +1080,6 @@ export {
   renderTimeSeriesCompact,
   CHART_BAR_WIDTH_RATIO,
   CHART_MAX_BAR_WIDTH,
+};
+
 };

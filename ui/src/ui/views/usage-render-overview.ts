@@ -91,8 +91,8 @@ function renderFilterChips(
         selectedDays.length > 0
           ? html`
             <div class="filter-chip">
-              <span class="filter-chip-label">Days: ${daysLabel}</span>
-              <button class="filter-chip-remove" @click=${onClearDays} title="Remove filter">×</button>
+              <span class="filter-chip-label">日期：${daysLabel}</span>
+              <button class="filter-chip-remove" @click=${onClearDays} title="移除筛选">×</button>
             </div>
           `
           : nothing
@@ -121,7 +121,7 @@ function renderFilterChips(
         (selectedDays.length > 0 || selectedHours.length > 0) && selectedSessions.length > 0
           ? html`
             <button class="btn btn-sm filter-clear-btn" @click=${onClearFilters}>
-              Clear All
+              清除全部
             </button>
           `
           : nothing
@@ -204,16 +204,16 @@ function renderDailyChartCompact(
               dailyChartMode === "by-type"
                 ? isTokenMode
                   ? [
-                      `Output ${formatTokens(d.output)}`,
-                      `Input ${formatTokens(d.input)}`,
-                      `Cache write ${formatTokens(d.cacheWrite)}`,
-                      `Cache read ${formatTokens(d.cacheRead)}`,
+                      `输出 ${formatTokens(d.output)}`,
+                      `输入 ${formatTokens(d.input)}`,
+                      `缓存写入 ${formatTokens(d.cacheWrite)}`,
+                      `缓存读取 ${formatTokens(d.cacheRead)}`,
                     ]
                   : [
-                      `Output ${formatCost(d.outputCost ?? 0)}`,
-                      `Input ${formatCost(d.inputCost ?? 0)}`,
-                      `Cache write ${formatCost(d.cacheWriteCost ?? 0)}`,
-                      `Cache read ${formatCost(d.cacheReadCost ?? 0)}`,
+                      `输出 ${formatCost(d.outputCost ?? 0)}`,
+                      `输入 ${formatCost(d.inputCost ?? 0)}`,
+                      `缓存写入 ${formatCost(d.cacheWriteCost ?? 0)}`,
+                      `缓存读取 ${formatCost(d.cacheReadCost ?? 0)}`,
                     ]
                 : [];
             const totalLabel = isTokenMode ? formatTokens(d.totalTokens) : formatCost(d.totalCost);
