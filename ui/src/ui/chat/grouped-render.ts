@@ -128,11 +128,11 @@ export function renderMessageGroup(
   const userLabel = group.senderLabel?.trim();
   const who =
     normalizedRole === "user"
-      ? (userLabel ?? "You")
+      ? (userLabel ?? "你")
       : normalizedRole === "assistant"
         ? assistantName
         : normalizedRole === "tool"
-          ? "Tool"
+          ? "工具"
           : normalizedRole;
   const roleClass =
     normalizedRole === "user"
@@ -608,7 +608,7 @@ function detectJson(text: string): { parsed: unknown; pretty: string } | null {
 /** Build a short summary label for collapsed JSON (type + key count or array length). */
 function jsonSummaryLabel(parsed: unknown): string {
   if (Array.isArray(parsed)) {
-    return `Array (${parsed.length} item${parsed.length === 1 ? "" : "s"})`;
+    return `数组（${parsed.length} 项）`;
   }
   if (parsed && typeof parsed === "object") {
     const keys = Object.keys(parsed as Record<string, unknown>);
@@ -625,8 +625,8 @@ function renderExpandButton(markdown: string, onOpenSidebar: (content: string) =
     <button
       class="chat-expand-btn"
       type="button"
-      title="Open in canvas"
-      aria-label="Open in canvas"
+      title="在画布中打开"
+      aria-label="在画布中打开"
       @click=${() => onOpenSidebar(markdown)}
     >
       <span class="chat-expand-btn__icon" aria-hidden="true">${icons.panelRightOpen}</span>
@@ -685,7 +685,7 @@ function renderGroupedMessage(
   const toolSummaryLabel =
     toolNames.length <= 3
       ? toolNames.join(", ")
-      : `${toolNames.slice(0, 2).join(", ")} +${toolNames.length - 2} more`;
+      : `${toolNames.slice(0, 2).join(", ")} 等另外 ${toolNames.length - 2} 个`;
   const toolPreview =
     markdown && !toolSummaryLabel ? markdown.trim().replace(/\s+/g, " ").slice(0, 120) : "";
 
@@ -707,7 +707,7 @@ function renderGroupedMessage(
             <details class="chat-tool-msg-collapse">
               <summary class="chat-tool-msg-summary">
                 <span class="chat-tool-msg-summary__icon">${icons.zap}</span>
-                <span class="chat-tool-msg-summary__label">Tool output</span>
+                <span class="chat-tool-msg-summary__label">工具输出</span>
                 ${
                   toolSummaryLabel
                     ? html`<span class="chat-tool-msg-summary__names">${toolSummaryLabel}</span>`
