@@ -794,6 +794,4 @@ export {
   renderSessionsCard,
   renderUsageInsights,
 };
-ts,
-};
 
