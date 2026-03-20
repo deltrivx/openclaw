@@ -674,6 +674,3 @@ export function matchesList(name: string, list?: string[]) {
 export function resolveToolProfile(profile: string) {
   return resolveToolProfilePolicy(profile) ?? undefined;
 }
-
-;
-}
