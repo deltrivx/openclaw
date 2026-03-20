@@ -132,7 +132,7 @@ export function renderUsage(props: UsageProps) {
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
             <div style="display: flex; gap: 8px; align-items: center;">
               <input type="date" .value=${props.startDate} disabled style="padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; opacity: 0.6;" />
-              <span style="color: var(--muted);">to</span>
+              <span style="color: var(--muted);">至</span>
               <input type="date" .value=${props.endDate} disabled style="padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; opacity: 0.6;" />
             </div>
           </div>
@@ -504,7 +504,7 @@ export function renderUsage(props: UsageProps) {
               window.addEventListener("click", onClick, true);
             }}
           >
-            <summary class="usage-export-button">Export ▾</summary>
+            <summary class="usage-export-button">导出 ▾</summary>
             <div class="usage-export-popover">
               <div class="usage-export-list">
                 <button
@@ -588,7 +588,7 @@ export function renderUsage(props: UsageProps) {
           <input
             type="date"
             .value=${props.endDate}
-            title="End Date"
+            title="结束日期"
             @change=${(e: Event) => props.onEndDateChange((e.target as HTMLInputElement).value)}
           />
           <select
@@ -611,7 +611,7 @@ export function renderUsage(props: UsageProps) {
               class="toggle-btn ${!isTokenMode ? "active" : ""}"
               @click=${() => props.onChartModeChange("cost")}
             >
-              Cost
+              成本
             </button>
           </div>
           <button
@@ -669,7 +669,7 @@ export function renderUsage(props: UsageProps) {
           ${renderFilterSelect("model", "模型", modelOptions)}
           ${renderFilterSelect("tool", "工具", toolOptions)}
           <span class="usage-query-hint">
-            Tip: use filters or click bars to filter days.
+            提示：可使用筛选器，或点击柱条按天筛选。
           </span>
         </div>
         ${
@@ -682,7 +682,7 @@ export function renderUsage(props: UsageProps) {
                       <span class="usage-query-chip">
                         ${label}
                         <button
-                          title="Remove filter"
+                          title="移除筛选"
                           @click=${() =>
                             props.onQueryDraftChange(removeQueryToken(props.queryDraft, label))}
                         >
@@ -834,4 +834,5 @@ export function renderUsage(props: UsageProps) {
 }
 
 // Exposed for Playwright/Vitest browser unit tests.
+
 

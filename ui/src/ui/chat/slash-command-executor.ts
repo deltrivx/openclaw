@@ -316,11 +316,11 @@ async function executeUsage(
       lines.push(`Context: **${pct}%** of ${fmtTokens(ctx)}`);
     }
     if (session.model) {
-      lines.push(`Model: \`${session.model}\``);
+      lines.push(`模型：\`${session.model}\``);
     }
     return { content: lines.join("\n") };
   } catch (err) {
-    return { content: `Failed to get usage: ${String(err)}` };
+    return { content: `获取用量失败：${String(err)}` };
   }
 }
 
@@ -340,7 +340,7 @@ async function executeAgents(client: GatewayBrowserClient): Promise<SlashCommand
     }
     return { content: lines.join("\n") };
   } catch (err) {
-    return { content: `Failed to list agents: ${String(err)}` };
+    return { content: `获取代理列表失败：${String(err)}` };
   }
 }
 
@@ -351,7 +351,7 @@ async function executeKill(
 ): Promise<SlashCommandResult> {
   const target = args.trim();
   if (!target) {
-    return { content: "Usage: `/kill <id|all>`" };
+    return { content: "用法：`/kill <id|all>`" };
   }
   try {
     const sessions = await client.request<SessionsListResult>("sessions.list", {});
@@ -380,8 +380,8 @@ async function executeKill(
         return {
           content:
             target.toLowerCase() === "all"
-              ? "No active sub-agent runs to abort."
-              : `No active runs matched \`${target}\`.`,
+              ? "没有可终止的活动子代理运行。"
+              : `没有活动运行与 \`${target}\` 匹配。`,
         };
       }
       throw rejected[0]?.reason ?? new Error("abort failed");
@@ -399,8 +399,8 @@ async function executeKill(
     return {
       content:
         successCount === matched.length
-          ? `Aborted ${successCount} matching sub-agent session${successCount === 1 ? "" : "s"} for \`${target}\`.`
-          : `Aborted ${successCount} of ${matched.length} matching sub-agent sessions for \`${target}\`.`,
+          ? `已终止与 \`${target}\` 匹配的 ${successCount} 个子代理会话。`
+          : `已终止与 \`${target}\` 匹配的 ${successCount} / ${matched.length} 个子代理会话。`,
     };
   } catch (err) {
     return { content: `终止失败：${String(err)}` };
@@ -585,3 +585,6 @@ function fmtTokens(n: number): string {
   }
   return String(n);
 }
+(n);
+}
+
