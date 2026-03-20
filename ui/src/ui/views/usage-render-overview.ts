@@ -692,7 +692,7 @@ function renderSessionsCard(
   return html`
     <div class="card sessions-card">
       <div class="sessions-card-header">
-        <div class="card-title">Sessions</div>
+        <div class="card-title">会话列表</div>
         <div class="sessions-card-count">
           ${sessions.length} shown${totalSessions !== sessions.length ? ` · ${totalSessions} total` : ""}
         </div>
@@ -713,7 +713,7 @@ function renderSessionsCard(
             class="toggle-btn ${sessionsTab === "recent" ? "active" : ""}"
             @click=${() => onSessionsTabChange("recent")}
           >
-            Recently viewed
+            最近查看
           </button>
         </div>
         <label class="sessions-sort">
@@ -721,11 +721,11 @@ function renderSessionsCard(
           <select
             @change=${(e: Event) => onSessionSortChange((e.target as HTMLSelectElement).value as typeof sessionSort)}
           >
-            <option value="cost" ?selected=${sessionSort === "cost"}>Cost</option>
-            <option value="errors" ?selected=${sessionSort === "errors"}>Errors</option>
-            <option value="messages" ?selected=${sessionSort === "messages"}>Messages</option>
-            <option value="recent" ?selected=${sessionSort === "recent"}>Recent</option>
-            <option value="tokens" ?selected=${sessionSort === "tokens"}>Tokens</option>
+            <option value="cost" ?selected=${sessionSort === "cost"}>成本</option>
+            <option value="errors" ?selected=${sessionSort === "errors"}>错误数</option>
+            <option value="messages" ?selected=${sessionSort === "messages"}>消息数</option>
+            <option value="recent" ?selected=${sessionSort === "recent"}>最近</option>
+            <option value="tokens" ?selected=${sessionSort === "tokens"}>Token</option>
           </select>
         </label>
         <button
@@ -758,7 +758,7 @@ function renderSessionsCard(
 	              `
           : sessions.length === 0
             ? html`
-                <div class="muted" style="padding: 20px; text-align: center">No sessions in range</div>
+                <div class="muted" style="padding: 20px; text-align: center">当前范围内没有会话</div>
               `
             : html`
 	                <div class="session-bars">
@@ -793,5 +793,8 @@ export {
   renderPeakErrorList,
   renderSessionsCard,
   renderUsageInsights,
+};
+
+hts,
 };
 

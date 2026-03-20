@@ -274,7 +274,7 @@ function renderSessionDetailPanel(
               : nothing
           }
         </div>
-        <button class="session-close-btn" @click=${onClose} title="Close session details">×</button>
+        <button class="session-close-btn" @click=${onClose} title="关闭会话详情">×</button>
       </div>
       <div class="session-detail-content">
         ${renderSessionSummary(
@@ -724,7 +724,7 @@ function renderContextPanel(
   if (!contextWeight) {
     return html`
       <div class="context-details-panel">
-        <div class="muted" style="padding: 20px; text-align: center">No context data</div>
+        <div class="muted" style="padding: 20px; text-align: center">没有上下文数据</div>
       </div>
     `;
   }
@@ -776,7 +776,7 @@ function renderContextPanel(
         }
       </div>
       <p class="context-weight-desc">
-        ${contextPct || "Base context per message"}
+        ${contextPct || "每条消息的基础上下文"}
       </p>
       <div class="context-stacked-bar">
         <div class="context-segment system" style="width: ${pct(systemTokens, totalContextTokens).toFixed(1)}%" title="System: ~${formatTokens(systemTokens)}"></div>
@@ -798,7 +798,7 @@ function renderContextPanel(
                 const more = skillsList.length - skillsTop.length;
                 return html`
                   <div class="context-breakdown-card">
-                    <div class="context-breakdown-title">Skills (${skillsList.length})</div>
+                    <div class="context-breakdown-title">技能（${skillsList.length}）</div>
                     <div class="context-breakdown-list">
                       ${skillsTop.map(
                         (s) => html`
@@ -825,7 +825,7 @@ function renderContextPanel(
                 const more = toolsList.length - toolsTop.length;
                 return html`
                   <div class="context-breakdown-card">
-                    <div class="context-breakdown-title">Tools (${toolsList.length})</div>
+                    <div class="context-breakdown-title">工具（${toolsList.length}）</div>
                     <div class="context-breakdown-list">
                       ${toolsTop.map(
                         (t) => html`
@@ -986,10 +986,10 @@ function renderSessionLogsCompact(
               ),
             )}
         >
-          <option value="user" ?selected=${roleSelected.has("user")}>User</option>
-          <option value="assistant" ?selected=${roleSelected.has("assistant")}>Assistant</option>
-          <option value="tool" ?selected=${roleSelected.has("tool")}>Tool</option>
-          <option value="toolResult" ?selected=${roleSelected.has("toolResult")}>Tool result</option>
+          <option value="user" ?selected=${roleSelected.has("user")}>用户</option>
+          <option value="assistant" ?selected=${roleSelected.has("assistant")}>助手</option>
+          <option value="tool" ?selected=${roleSelected.has("tool")}>工具</option>
+          <option value="toolResult" ?selected=${roleSelected.has("toolResult")}>工具结果</option>
         </select>
         <select
           multiple
@@ -1081,3 +1081,8 @@ export {
   CHART_BAR_WIDTH_RATIO,
   CHART_MAX_BAR_WIDTH,
 };
+TH,
+};
+,
+};
+;
