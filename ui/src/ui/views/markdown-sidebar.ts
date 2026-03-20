@@ -25,7 +25,7 @@ export function renderMarkdownSidebar(props: MarkdownSidebarProps) {
             ? html`
               <div class="callout danger">${props.error}</div>
               <button @click=${props.onViewRawText} class="btn" style="margin-top: 12px;">
-                View Raw Text
+                查看原始文本
               </button>
             `
             : props.content

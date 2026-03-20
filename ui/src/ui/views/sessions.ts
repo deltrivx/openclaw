@@ -49,15 +49,15 @@ export type SessionsProps = {
 const THINK_LEVELS = ["", "off", "minimal", "low", "medium", "high", "xhigh"] as const;
 const BINARY_THINK_LEVELS = ["", "off", "on"] as const;
 const VERBOSE_LEVELS = [
-  { value: "", label: "inherit" },
-  { value: "off", label: "off (explicit)" },
-  { value: "on", label: "on" },
-  { value: "full", label: "full" },
+  { value: "", label: "继承" },
+  { value: "off", label: "关闭（显式）" },
+  { value: "on", label: "开启" },
+  { value: "full", label: "完整" },
 ] as const;
 const FAST_LEVELS = [
-  { value: "", label: "inherit" },
-  { value: "on", label: "on" },
-  { value: "off", label: "off" },
+  { value: "", label: "继承" },
+  { value: "on", label: "开启" },
+  { value: "off", label: "关闭" },
 ] as const;
 const REASONING_LEVELS = ["", "off", "on", "stream"] as const;
 const PAGE_SIZES = [10, 25, 50, 100] as const;
@@ -101,7 +101,7 @@ function withCurrentLabeledOption(
   if (options.some((option) => option.value === current)) {
     return [...options];
   }
-  return [...options, { value: current, label: `${current} (custom)` }];
+  return [...options, { value: current, label: `${current}（自定义）` }];
 }
 
 function resolveThinkLevelDisplay(value: string, isBinary: boolean): string {
@@ -217,20 +217,20 @@ export function renderSessions(props: SessionsProps) {
     <section class="card" style=${props.actionsOpenKey ? "position: relative; z-index: 41;" : ""}>
       <div class="row" style="justify-content: space-between; margin-bottom: 12px;">
         <div>
-          <div class="card-title">Sessions</div>
-          <div class="card-sub">${props.result ? `Store: ${props.result.path}` : "Active session keys and per-session overrides."}</div>
+          <div class="card-title">会话</div>
+          <div class="card-sub">${props.result ? `存储：${props.result.path}` : "活动会话键与按会话覆盖设置。"}</div>
         </div>
         <button class="btn" ?disabled=${props.loading} @click=${props.onRefresh}>
-          ${props.loading ? "Loading…" : "Refresh"}
+          ${props.loading ? "加载中…" : "刷新"}
         </button>
       </div>
 
       <div class="filters" style="margin-bottom: 12px;">
         <label class="field-inline">
-          <span>Active</span>
+          <span>活跃</span>
           <input
             style="width: 72px;"
-            placeholder="min"
+            placeholder="分钟"
             .value=${props.activeMinutes}
             @input=${(e: Event) =>
               props.onFiltersChange({
@@ -242,7 +242,7 @@ export function renderSessions(props: SessionsProps) {
           />
         </label>
         <label class="field-inline">
-          <span>Limit</span>
+          <span>数量</span>
           <input
             style="width: 64px;"
             .value=${props.limit}
@@ -267,7 +267,7 @@ export function renderSessions(props: SessionsProps) {
                 includeUnknown: props.includeUnknown,
               })}
           />
-          <span>Global</span>
+          <span>全局</span>
         </label>
         <label class="field-inline checkbox">
           <input
@@ -281,7 +281,7 @@ export function renderSessions(props: SessionsProps) {
                 includeUnknown: (e.target as HTMLInputElement).checked,
               })}
           />
-          <span>Unknown</span>
+          <span>未知</span>
         </label>
       </div>
 
@@ -296,7 +296,7 @@ export function renderSessions(props: SessionsProps) {
           <div class="data-table-search">
             <input
               type="text"
-              placeholder="Filter by key, label, kind…"
+              placeholder="按 key、标签、类型筛选…"
               .value=${props.searchQuery}
               @input=${(e: Event) => props.onSearchChange((e.target as HTMLInputElement).value)}
             />
@@ -307,15 +307,15 @@ export function renderSessions(props: SessionsProps) {
           <table class="data-table">
             <thead>
               <tr>
-                ${sortHeader("key", "Key")}
-                <th>Label</th>
-                ${sortHeader("kind", "Kind")}
-                ${sortHeader("updated", "Updated")}
-                ${sortHeader("tokens", "Tokens")}
-                <th>Thinking</th>
-                <th>Fast</th>
-                <th>Verbose</th>
-                <th>Reasoning</th>
+                ${sortHeader("key", "键")}
+                <th>标签</th>
+                ${sortHeader("kind", "类型")}
+                ${sortHeader("updated", "更新时间")}
+                ${sortHeader("tokens", "Token")}
+                <th>思考</th>
+                <th>快速</th>
+                <th>详细</th>
+                <th>推理</th>
                 <th style="width: 60px;"></th>
               </tr>
             </thead>
@@ -325,7 +325,7 @@ export function renderSessions(props: SessionsProps) {
                   ? html`
                       <tr>
                         <td colspan="10" style="text-align: center; padding: 48px 16px; color: var(--muted)">
-                          No sessions found.
+                          未找到会话。
                         </td>
                       </tr>
                     `
@@ -352,7 +352,7 @@ export function renderSessions(props: SessionsProps) {
                 <div class="data-table-pagination">
                   <div class="data-table-pagination__info">
                     ${page * props.pageSize + 1}-${Math.min((page + 1) * props.pageSize, totalRows)}
-                    of ${totalRows} row${totalRows === 1 ? "" : "s"}
+                    / 共 ${totalRows} 行
                   </div>
                   <div class="data-table-pagination__controls">
                     <select
@@ -361,19 +361,19 @@ export function renderSessions(props: SessionsProps) {
                       @change=${(e: Event) =>
                         props.onPageSizeChange(Number((e.target as HTMLSelectElement).value))}
                     >
-                      ${PAGE_SIZES.map((s) => html`<option value=${s}>${s} per page</option>`)}
+                      ${PAGE_SIZES.map((s) => html`<option value=${s}>每页 ${s} 条</option>`)}
                     </select>
                     <button
                       ?disabled=${page <= 0}
                       @click=${() => props.onPageChange(page - 1)}
                     >
-                      Previous
+                      上一页
                     </button>
                     <button
                       ?disabled=${page >= totalPages - 1}
                       @click=${() => props.onPageChange(page + 1)}
                     >
-                      Next
+                      下一页
                     </button>
                   </div>
                 </div>
@@ -468,7 +468,7 @@ function renderRow(
         <input
           .value=${row.label ?? ""}
           ?disabled=${disabled}
-          placeholder="(optional)"
+          placeholder="（可选）"
           style="width: 100%; max-width: 140px; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--radius-sm);"
           @change=${(e: Event) => {
             const value = (e.target as HTMLInputElement).value.trim();
@@ -495,7 +495,7 @@ function renderRow(
           ${thinkLevels.map(
             (level) =>
               html`<option value=${level} ?selected=${thinking === level}>
-                ${level || "inherit"}
+                ${level || "继承"}
               </option>`,
           )}
         </select>
@@ -546,7 +546,7 @@ function renderRow(
           ${reasoningLevels.map(
             (level) =>
               html`<option value=${level} ?selected=${reasoning === level}>
-                ${level || "inherit"}
+                ${level || "继承"}
               </option>`,
           )}
         </select>
@@ -556,7 +556,7 @@ function renderRow(
           <button
             type="button"
             class="data-table-row-actions__trigger"
-            aria-label="Open menu"
+            aria-label="打开菜单"
             @click=${(e: Event) => {
               e.stopPropagation();
               onActionsOpenChange(isMenuOpen ? null : row.key);
@@ -592,7 +592,7 @@ function renderRow(
                                 }
                               }}
                             >
-                              Open in Chat
+                              在聊天中打开
                             </a>
                           `
                         : nothing
@@ -605,7 +605,7 @@ function renderRow(
                         onDelete(row.key);
                       }}
                     >
-                      Delete
+                      删除
                     </button>
                   </div>
                 `
