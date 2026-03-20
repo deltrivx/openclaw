@@ -131,7 +131,7 @@ export async function saveExecApprovals(
     const file = state.execApprovalsForm ?? state.execApprovalsSnapshot?.file ?? {};
     const rpc = resolveExecApprovalsSaveRpc(target, { file, baseHash });
     if (!rpc) {
-      state.lastError = "Select a node before saving exec approvals.";
+      state.lastError = "请先选择节点，再保存执行审批。";
       return;
     }
     await state.client.request(rpc.method, rpc.params);
@@ -167,4 +167,6 @@ export function removeExecApprovalsFormValue(
   removePathValue(base, path);
   state.execApprovalsForm = base;
   state.execApprovalsDirty = true;
+}
+ue;
 }

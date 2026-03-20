@@ -142,7 +142,7 @@ export async function installSkill(
     await loadSkills(state);
     setSkillMessage(state, skillKey, {
       kind: "success",
-      message: result?.message ?? "Installed",
+      message: result?.message ?? "已安装",
     });
   } catch (err) {
     const message = getErrorMessage(err);
@@ -154,4 +154,6 @@ export async function installSkill(
   } finally {
     state.skillsBusyKey = null;
   }
+}
+}
 }

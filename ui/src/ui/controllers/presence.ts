@@ -27,7 +27,7 @@ export async function loadPresence(state: PresenceState) {
       state.presenceStatus = res.length === 0 ? "No instances yet." : null;
     } else {
       state.presenceEntries = [];
-      state.presenceStatus = "No presence payload.";
+      state.presenceStatus = "没有在线状态载荷。";
     }
   } catch (err) {
     state.presenceError = String(err);
