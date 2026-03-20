@@ -397,12 +397,12 @@ function renderUsageInsights(
     stats.durationCount > 0
       ? (formatDurationCompact(stats.avgDurationMs, { spaced: true }) ?? "—")
       : "—";
-  const cacheHint = "Cache hit rate = cache read / (input + cache read). Higher is better.";
+  const cacheHint = "缓存命中率 = 缓存读取 /（输入 + 缓存读取），越高越好。";
   const errorHint = "错误率 = 错误数 / 总消息数，越低越好。";
   const throughputHint = "吞吐量表示活跃时段内每分钟处理的 Token 数，越高越好。";
   const tokensHint = "该时间范围内每条消息的平均 token 数。";
   const costHint = showCostHint
-    ? "当提供商上报费用时，每条消息的平均成本。 Cost data is missing for some or all sessions in this range."
+    ? "当提供商上报费用时，每条消息的平均成本。 该范围内部分或全部会话缺少成本数据。"
     : "当提供商上报费用时，每条消息的平均成本。";
 
   const errorDays = aggregates.daily
@@ -412,7 +412,7 @@ function renderUsageInsights(
       return {
         label: formatDayLabel(day.date),
         value: `${(rate * 100).toFixed(2)}%`,
-        sub: `${day.errors} errors · ${day.messages} msgs · ${formatTokens(day.tokens)}`,
+        sub: `${day.errors} 个错误 · ${day.messages} 条消息 · ${formatTokens(day.tokens)}`,
         rate,
       };
     })
@@ -423,7 +423,7 @@ function renderUsageInsights(
   const topModels = aggregates.byModel.slice(0, 5).map((entry) => ({
     label: entry.model ?? "未知",
     value: formatCost(entry.totals.totalCost),
-    sub: `${formatTokens(entry.totals.totalTokens)} · ${entry.count} msgs`,
+    sub: `${formatTokens(entry.totals.totalTokens)} · ${entry.count} 条消息`,
   }));
   const topProviders = aggregates.byProvider.slice(0, 5).map((entry) => ({
     label: entry.provider ?? "未知",
@@ -490,7 +490,7 @@ function renderUsageInsights(
             <span class="usage-summary-hint" title=${costHint}>?</span>
           </div>
           <div class="usage-summary-value">${formatCost(avgCost, 4)}</div>
-          <div class="usage-summary-sub">${formatCost(totals.totalCost)} total</div>
+          <div class="usage-summary-sub">${formatCost(totals.totalCost)} </div>
         </div>
         <div class="usage-summary-card">
           <div class="usage-summary-title">
