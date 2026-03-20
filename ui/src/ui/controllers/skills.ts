@@ -155,5 +155,3 @@ export async function installSkill(
     state.skillsBusyKey = null;
   }
 }
-}
-}
