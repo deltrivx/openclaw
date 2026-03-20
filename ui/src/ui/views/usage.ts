@@ -592,7 +592,7 @@ export function renderUsage(props: UsageProps) {
             @change=${(e: Event) => props.onEndDateChange((e.target as HTMLInputElement).value)}
           />
           <select
-            title="Time zone"
+            title="时区"
             .value=${props.timeZone}
             @change=${(e: Event) =>
               props.onTimeZoneChange((e.target as HTMLSelectElement).value as "local" | "utc")}
@@ -605,7 +605,7 @@ export function renderUsage(props: UsageProps) {
               class="toggle-btn ${isTokenMode ? "active" : ""}"
               @click=${() => props.onChartModeChange("tokens")}
             >
-              Tokens
+              Token
             </button>
             <button
               class="toggle-btn ${!isTokenMode ? "active" : ""}"
@@ -631,7 +631,7 @@ export function renderUsage(props: UsageProps) {
             class="usage-query-input"
             type="text"
             .value=${props.queryDraft}
-            placeholder="Filter sessions (e.g. key:agent:main:cron* model:gpt-4o has:errors minTokens:2000)"
+            placeholder="筛选会话（例如 key:agent:main:cron* model:gpt-4o has:errors minTokens:2000）"
             @input=${(e: Event) => props.onQueryDraftChange((e.target as HTMLInputElement).value)}
             @keydown=${(e: KeyboardEvent) => {
               if (e.key === "Enter") {
@@ -663,11 +663,11 @@ export function renderUsage(props: UsageProps) {
           </div>
         </div>
         <div class="usage-filter-row">
-          ${renderFilterSelect("agent", "Agent", agentOptions)}
-          ${renderFilterSelect("channel", "Channel", channelOptions)}
-          ${renderFilterSelect("provider", "Provider", providerOptions)}
-          ${renderFilterSelect("model", "Model", modelOptions)}
-          ${renderFilterSelect("tool", "Tool", toolOptions)}
+          ${renderFilterSelect("agent", "代理", agentOptions)}
+          ${renderFilterSelect("channel", "通道", channelOptions)}
+          ${renderFilterSelect("provider", "提供商", providerOptions)}
+          ${renderFilterSelect("model", "模型", modelOptions)}
+          ${renderFilterSelect("tool", "工具", toolOptions)}
           <span class="usage-query-hint">
             Tip: use filters or click bars to filter days.
           </span>
@@ -737,7 +737,7 @@ export function renderUsage(props: UsageProps) {
         props.sessionsLimitReached
           ? html`
               <div class="callout warning" style="margin-top: 12px">
-                Showing first 1,000 sessions. Narrow date range for complete results.
+                当前仅显示前 1,000 个会话。缩小日期范围可获得完整结果。
               </div>
             `
           : nothing
@@ -834,3 +834,5 @@ export function renderUsage(props: UsageProps) {
 }
 
 // Exposed for Playwright/Vitest browser unit tests.
+tests.
+.

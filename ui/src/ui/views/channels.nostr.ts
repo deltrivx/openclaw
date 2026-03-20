@@ -174,7 +174,7 @@ export function renderNostrCard(params: {
             `
             : html`
                 <div style="color: var(--text-muted); font-size: 13px">
-                  No profile set. Click "Edit Profile" to add your name, bio, and avatar.
+                  尚未设置资料。点击“编辑资料”以添加名称、简介和头像。
                 </div>
               `
         }
@@ -202,8 +202,8 @@ export function renderNostrCard(params: {
                 <span>${summaryConfigured ? "Yes" : "No"}</span>
               </div>
               <div>
-                <span class="label">Running</span>
-                <span>${summaryRunning ? "Yes" : "No"}</span>
+                <span class="label">运行中</span>
+                <span>${summaryRunning ? "是" : "否"}</span>
               </div>
               <div>
                 <span class="label">Public Key</span>
@@ -230,8 +230,13 @@ export function renderNostrCard(params: {
       ${renderChannelConfigSection({ channelId: "nostr", props })}
 
       <div class="row" style="margin-top: 12px;">
-        <button class="btn" @click=${() => props.onRefresh(false)}>Refresh</button>
+        <button class="btn" @click=${() => props.onRefresh(false)}>刷新</button>
       </div>
     </div>
   `;
+}
+iv>
+  `;
+}
+
 }

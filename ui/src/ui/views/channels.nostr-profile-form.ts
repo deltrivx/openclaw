@@ -247,7 +247,7 @@ export function renderNostrProfileForm(params: {
           @click=${callbacks.onSave}
           ?disabled=${state.saving || !isDirty}
         >
-          ${state.saving ? "Saving..." : "Save & Publish"}
+          ${state.saving ? "保存中..." : "保存并发布"}
         </button>
 
         <button
@@ -262,7 +262,7 @@ export function renderNostrProfileForm(params: {
           class="btn"
           @click=${callbacks.onToggleAdvanced}
         >
-          ${state.showAdvanced ? "Hide Advanced" : "Show Advanced"}
+          ${state.showAdvanced ? "隐藏高级选项" : "显示高级选项"}
         </button>
 
         <button
