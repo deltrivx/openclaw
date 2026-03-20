@@ -612,7 +612,7 @@ function renderAppearanceSection(props: ConfigProps) {
             props.assistantName
               ? html`
                 <div class="settings-info-row">
-                  <span class="settings-info-row__label">Assistant</span>
+                  <span class="settings-info-row__label">助手</span>
                   <span class="settings-info-row__value">${props.assistantName}</span>
                 </div>
               `
@@ -832,7 +832,7 @@ export function renderConfig(props: ConfigProps) {
                       <input
                         type="text"
                         class="config-search__input"
-                        placeholder="Search settings..."
+                        placeholder="搜索设置..."
                         .value=${props.searchQuery}
                         @input=${(e: Event) =>
                           props.onSearchChange((e.target as HTMLInputElement).value)}

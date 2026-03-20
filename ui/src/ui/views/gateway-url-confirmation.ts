@@ -12,7 +12,7 @@ export function renderGatewayUrlConfirmation(state: AppViewState) {
       <div class="exec-approval-card">
         <div class="exec-approval-header">
           <div>
-            <div class="exec-approval-title">Change Gateway URL</div>
+            <div class="exec-approval-title">更改网关 URL</div>
             <div class="exec-approval-sub">This will reconnect to a different gateway server</div>
           </div>
         </div>

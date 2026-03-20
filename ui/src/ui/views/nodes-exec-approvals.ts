@@ -445,7 +445,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
             ${
               isDefaults
                 ? "Applied when the UI prompt is unavailable."
-                : `Default: ${defaults.askFallback}.`
+                : `默认值：${defaults.askFallback}。`
             }
           </div>
         </div>
@@ -500,7 +500,7 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
         </div>
         <div class="list-meta">
           <label class="field">
-            <span>Enabled</span>
+            <span>已启用</span>
             <input
               type="checkbox"
               ?disabled=${state.disabled}
@@ -534,8 +534,8 @@ function renderExecApprovalsAllowlist(state: ExecApprovalsState) {
   return html`
     <div class="row" style="margin-top: 18px; justify-content: space-between;">
       <div>
-        <div class="card-title">Allowlist</div>
-        <div class="card-sub">Case-insensitive glob patterns.</div>
+        <div class="card-title">允许列表</div>
+        <div class="card-sub">不区分大小写的 glob 模式。</div>
       </div>
       <button
         class="btn btn--sm"
@@ -545,7 +545,7 @@ function renderExecApprovalsAllowlist(state: ExecApprovalsState) {
           state.onPatch(allowlistPath, next);
         }}
       >
-        Add pattern
+        添加模式
       </button>
     </div>
     <div class="list" style="margin-top: 12px;">

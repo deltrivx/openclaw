@@ -78,7 +78,7 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
   },
   {
     id: "ui",
-    label: "UI",
+    label: "界面",
     tools: [
       { id: "browser", label: "browser", description: "控制网页浏览器" },
       { id: "canvas", label: "canvas", description: "控制画布" },
@@ -117,7 +117,7 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
 export const PROFILE_OPTIONS = [
   { id: "minimal", label: "Minimal" },
   { id: "coding", label: "Coding" },
-  { id: "messaging", label: "Messaging" },
+  { id: "messaging", label: "消息" },
   { id: "full", label: "Full" },
 ] as const;
 

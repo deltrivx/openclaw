@@ -440,7 +440,7 @@ function renderAvatar(
   basePath?: string,
 ) {
   const normalized = normalizeRoleForGrouping(role);
-  const assistantName = assistant?.name?.trim() || "Assistant";
+  const assistantName = assistant?.name?.trim() || "助手";
   const assistantAvatar = assistant?.avatar?.trim() || "";
   const initial =
     normalized === "user"

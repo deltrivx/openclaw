@@ -693,7 +693,7 @@ function renderTimeSeriesCompact(
                   <div class="cost-segment cache-read" style="width: ${pct(filteredCacheRead, totalTypeTokens).toFixed(1)}%"></div>
                 </div>
                 <div class="cost-breakdown-legend">
-                  <div class="legend-item" title="Assistant output tokens">
+                  <div class="legend-item" title="助手输出 Token">
                     <span class="legend-dot output"></span>输出 ${formatTokens(filteredOutput)}
                   </div>
                   <div class="legend-item" title="用户与工具输入的 Token">

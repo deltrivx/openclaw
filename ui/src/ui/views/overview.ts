@@ -126,8 +126,8 @@ export function renderOverview(props: OverviewProps) {
               href="https://docs.openclaw.ai/web/dashboard"
               target=${EXTERNAL_LINK_TARGET}
               rel=${buildExternalLinkRel()}
-              title="Control UI auth docs (opens in new tab)"
-              >Docs: Control UI auth</a
+              title="Control UI 认证文档（在新标签页打开）"
+              >文档：Control UI 认证</a
             >
           </div>
         </div>
@@ -142,8 +142,8 @@ export function renderOverview(props: OverviewProps) {
             href="https://docs.openclaw.ai/web/dashboard"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
-            title="Control UI auth docs (opens in new tab)"
-            >Docs: Control UI auth</a
+            title="Control UI 认证文档（在新标签页打开）"
+            >文档：Control UI 认证</a
           >
         </div>
       </div>

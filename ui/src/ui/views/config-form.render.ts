@@ -257,10 +257,10 @@ export const SECTION_META: Record<string, { label: string; description: string }
   hooks: { label: "Hooks", description: "Webhooks and event hooks" },
   skills: { label: "Skills", description: "Skill packs and capabilities" },
   tools: { label: "工具", description: "工具配置（浏览器、搜索等）" },
-  gateway: { label: "Gateway", description: "Gateway server settings (port, auth, binding)" },
+  gateway: { label: "网关", description: "网关服务设置（端口、认证、绑定）" },
   wizard: { label: "Setup Wizard", description: "Setup wizard state and history" },
   // Additional sections
-  meta: { label: "Metadata", description: "Gateway metadata and version information" },
+  meta: { label: "元数据", description: "网关元数据与版本信息" },
   logging: { label: "Logging", description: "Log levels and output configuration" },
   browser: { label: "Browser", description: "Browser automation settings" },
   ui: { label: "UI", description: "User interface preferences" },

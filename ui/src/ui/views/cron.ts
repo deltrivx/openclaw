@@ -1293,7 +1293,7 @@ export function renderCron(props: CronProps) {
                                     })}
                                 >
                                   <option value="announce">Announce (via channel)</option>
-                                  <option value="webhook">Webhook (HTTP POST)</option>
+                                  <option value="webhook">Webhook（HTTP POST）</option>
                                 </select>
                               </label>
                               <label class="field">

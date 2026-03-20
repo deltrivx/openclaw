@@ -636,7 +636,7 @@ function renderTextInput(params: {
     ? REDACTED_PLACEHOLDER
     : (hint?.placeholder ??
       // oxlint-disable typescript/no-base-to-string
-      (schema.default !== undefined ? `Default: ${String(schema.default)}` : ""));
+      (schema.default !== undefined ? `默认值：${String(schema.default)}` : ""));
   const displayValue = sensitiveState.isRedacted ? "" : (value ?? "");
   const effectiveInputType =
     sensitiveState.isSensitive && !sensitiveState.isRedacted ? "text" : inputType;
@@ -1236,7 +1236,7 @@ function renderMapField(params: {
                   <button
                     type="button"
                     class="cfg-map__item-remove"
-                    title="Remove entry"
+                    title="移除条目"
                     ?disabled=${disabled}
                     @click=${() => {
                       const next = { ...value };

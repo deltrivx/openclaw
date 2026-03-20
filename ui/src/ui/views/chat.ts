@@ -408,7 +408,7 @@ function renderAttachmentPreview(props: ChatProps): TemplateResult | typeof noth
             <button
               class="chat-attachment-remove"
               type="button"
-              aria-label="Remove attachment"
+              aria-label="移除附件"
               @click=${() => {
                 const next = (props.attachments ?? []).filter((a) => a.id !== att.id);
                 props.onAttachmentsChange?.(next);
@@ -617,7 +617,7 @@ function renderSearchBar(requestUpdate: () => void): TemplateResult | typeof not
       ${icons.search}
       <input
         type="text"
-        placeholder="Search messages..."
+        placeholder="搜索消息..."
         .value=${vs.searchQuery}
         @input=${(e: Event) => {
           vs.searchQuery = (e.target as HTMLInputElement).value;
@@ -671,7 +671,7 @@ function renderPinnedSection(
               ${entries.map(
                 ({ index, text, role }) => html`
                 <div class="agent-chat__pinned-item">
-                  <span class="agent-chat__pinned-role">${role === "user" ? "You" : "Assistant"}</span>
+                  <span class="agent-chat__pinned-role">${role === "user" ? "你" : "助手"}</span>
                   <span class="agent-chat__pinned-text">${text.slice(0, 100)}${text.length > 100 ? "..." : ""}</span>
                   <button class="btn-ghost" @click=${() => {
                     pinned.unpin(index);
