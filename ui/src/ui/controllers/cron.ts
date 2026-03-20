@@ -213,7 +213,7 @@ export async function loadCronModelSuggestions(state: CronModelSuggestionsState)
   }
 }
 
-export async function loadCron任务s(state: CronState) {
+export async function loadCronJobs(state: CronState) {
   return await loadCron任务sPage(state, { append: false });
 }
 
@@ -308,15 +308,15 @@ export async function loadCron任务sPage(state: CronState, opts?: { append?: bo
   }
 }
 
-export async function loadMoreCron任务s(state: CronState) {
+export async function loadMoreCronJobs(state: CronState) {
   await loadCron任务sPage(state, { append: true });
 }
 
-export async function reloadCron任务s(state: CronState) {
+export async function reloadCronJobs(state: CronState) {
   await loadCron任务sPage(state, { append: false });
 }
 
-export function updateCron任务sFilter(
+export function updateCronJobsFilter(
   state: CronState,
   patch: Partial<
     Pick<
@@ -350,7 +350,7 @@ export function updateCron任务sFilter(
   }
 }
 
-export function getVisibleCron任务s(
+export function getVisibleCronJobs(
   state: Pick<CronState, "cron任务s" | "cron任务sScheduleKindFilter" | "cron任务sLastStatusFilter">,
 ): Cron任务[] {
   return state.cron任务s.filter((job) => {
@@ -616,7 +616,7 @@ function buildFailureAlert(form: CronFormState) {
   return patch;
 }
 
-export async function addCron任务(state: CronState) {
+export async function addCronJob(state: CronState) {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
@@ -706,7 +706,7 @@ export async function addCron任务(state: CronState) {
   }
 }
 
-export async function toggleCron任务(state: CronState, job: Cron任务, enabled: boolean) {
+export async function toggleCronJob(state: CronState, job: Cron任务, enabled: boolean) {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
@@ -723,7 +723,7 @@ export async function toggleCron任务(state: CronState, job: Cron任务, enable
   }
 }
 
-export async function runCron任务(state: CronState, job: Cron任务, mode: "force" | "due" = "force") {
+export async function runCronJob(state: CronState, job: Cron任务, mode: "force" | "due" = "force") {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
@@ -743,7 +743,7 @@ export async function runCron任务(state: CronState, job: Cron任务, mode: "fo
   }
 }
 
-export async function removeCron任务(state: CronState, job: Cron任务) {
+export async function removeCronJob(state: CronState, job: Cron任务) {
   if (!state.client || !state.connected || state.cronBusy) {
     return;
   }
