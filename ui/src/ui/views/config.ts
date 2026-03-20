@@ -602,7 +602,7 @@ function renderAppearanceSection(props: ConfigProps) {
             <span class="settings-info-row__value mono">${props.gatewayUrl || "-"}</span>
           </div>
           <div class="settings-info-row">
-            <span class="settings-info-row__label">Status</span>
+            <span class="settings-info-row__label">状态</span>
             <span class="settings-info-row__value">
               <span class="settings-status-dot ${props.connected ? "settings-status-dot--ok" : ""}"></span>
               ${props.connected ? "已连接" : "离线"}
@@ -717,7 +717,7 @@ export function renderConfig(props: ConfigProps) {
   const effectiveSubsection = null;
 
   const topTabs = [
-    { key: null as string | null, label: props.navRootLabel ?? "Settings" },
+    { key: null as string | null, label: props.navRootLabel ?? "设置" },
     ...[...visibleCategories, ...(otherCategory ? [otherCategory] : [])].flatMap((cat) =>
       cat.sections.map((s) => ({ key: s.key, label: s.label })),
     ),

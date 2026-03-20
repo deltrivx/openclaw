@@ -91,34 +91,34 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
   },
   {
     id: "automation",
-    label: "Automation",
+    label: "自动化",
     tools: [
-      { id: "cron", label: "cron", description: "Schedule tasks" },
-      { id: "gateway", label: "gateway", description: "Gateway control" },
+      { id: "cron", label: "cron", description: "调度任务" },
+      { id: "gateway", label: "gateway", description: "网关控制" },
     ],
   },
   {
     id: "nodes",
-    label: "Nodes",
-    tools: [{ id: "nodes", label: "nodes", description: "Nodes + devices" }],
+    label: "节点",
+    tools: [{ id: "nodes", label: "nodes", description: "节点与设备" }],
   },
   {
     id: "agents",
-    label: "Agents",
-    tools: [{ id: "agents_list", label: "agents_list", description: "List agents" }],
+    label: "代理",
+    tools: [{ id: "agents_list", label: "agents_list", description: "列出代理" }],
   },
   {
     id: "media",
-    label: "Media",
-    tools: [{ id: "image", label: "image", description: "Image understanding" }],
+    label: "媒体",
+    tools: [{ id: "image", label: "image", description: "图像理解" }],
   },
 ];
 
 export const PROFILE_OPTIONS = [
-  { id: "minimal", label: "Minimal" },
-  { id: "coding", label: "Coding" },
+  { id: "minimal", label: "极简" },
+  { id: "coding", label: "编码" },
   { id: "messaging", label: "消息" },
-  { id: "full", label: "Full" },
+  { id: "full", label: "完整" },
 ] as const;
 
 export function resolveToolSections(
