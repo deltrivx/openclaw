@@ -1251,7 +1251,7 @@ export function renderCron(props: CronProps) {
                                 )}
                               </label>
                               <label class="field">
-                                ${renderFieldLabel("Alert channel")}
+                                ${renderFieldLabel("告警通道")}
                                 <select
                                   .value=${props.form.failureAlertChannel || "last"}
                                   @change=${(e: Event) =>
@@ -1777,4 +1777,10 @@ function renderRun(
       </div>
     </div>
   `;
+}
+}
+
+`;
+}
+;
 }
