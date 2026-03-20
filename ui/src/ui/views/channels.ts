@@ -216,7 +216,7 @@ function renderGenericChannelCard(
               </div>
               <div>
                 <span class="label">已连接</span>
-                <span>${connected == null ? "n/a" : connected ? "Yes" : "No"}</span>
+                <span>${connected == null ? "暂无" : connected ? "是" : "否"}</span>
               </div>
             </div>
           `
