@@ -328,9 +328,9 @@ const SECTION_CATEGORIES: SectionCategory[] = [
       { key: "agents", label: "Agents" },
       { key: "models", label: "Models" },
       { key: "skills", label: "Skills" },
-      { key: "tools", label: "Tools" },
-      { key: "memory", label: "Memory" },
-      { key: "session", label: "Session" },
+      { key: "tools", label: "工具" },
+      { key: "memory", label: "记忆" },
+      { key: "session", label: "会话" },
     ],
   },
   {

@@ -667,7 +667,7 @@ function renderSessionsCard(
         <div class="session-bar-actions">
           <button
             class="session-copy-btn"
-            title="Copy session name"
+            title="复制会话名称"
             @click=${(e: MouseEvent) => {
               e.stopPropagation();
               void copySessionName(s);

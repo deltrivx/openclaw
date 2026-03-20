@@ -68,19 +68,19 @@ export function renderTelegramCard(params: {
           : html`
             <div class="status-list" style="margin-top: 16px;">
               <div>
-                <span class="label">Configured</span>
-                <span>${telegram?.configured ? "Yes" : "No"}</span>
+                <span class="label">已配置</span>
+                <span>${telegram?.configured ? "是" : "否"}</span>
               </div>
               <div>
                 <span class="label">运行中</span>
                 <span>${telegram?.running ? "是" : "否"}</span>
               </div>
               <div>
-                <span class="label">Mode</span>
+                <span class="label">模式</span>
                 <span>${telegram?.mode ?? "n/a"}</span>
               </div>
               <div>
-                <span class="label">Last start</span>
+                <span class="label">最近启动</span>
                 <span>${telegram?.lastStartAt ? formatRelativeTimestamp(telegram.lastStartAt) : "n/a"}</span>
               </div>
               <div>

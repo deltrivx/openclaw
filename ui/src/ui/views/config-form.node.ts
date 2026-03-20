@@ -152,18 +152,10 @@ function renderSensitiveToggleButton(params: {
       class="btn btn--icon ${state.isRevealed ? "active" : ""}"
       style="width:28px;height:28px;padding:0;"
       title=${
-        state.canReveal
-          ? state.isRevealed
-            ? "隐藏值"
-            : "显示值"
-          : "请先禁用流式模式后再显示值"
+        state.canReveal ? (state.isRevealed ? "隐藏值" : "显示值") : "请先禁用流式模式后再显示值"
       }
       aria-label=${
-        state.canReveal
-          ? state.isRevealed
-            ? "隐藏值"
-            : "显示值"
-          : "请先禁用流式模式后再显示值"
+        state.canReveal ? (state.isRevealed ? "隐藏值" : "显示值") : "请先禁用流式模式后再显示值"
       }
       aria-pressed=${state.isRevealed}
       ?disabled=${params.disabled || !state.canReveal}
@@ -703,7 +695,7 @@ function renderTextInput(params: {
           <button
             type="button"
             class="cfg-input__reset"
-            title="Reset to default"
+            title="重置为默认值"
             ?disabled=${disabled || sensitiveState.isRedacted}
             @click=${() => onPatch(path, schema.default)}
           >↺</button>

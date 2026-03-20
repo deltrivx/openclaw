@@ -19,16 +19,16 @@ export function renderWhatsAppCard(params: {
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
-          <span>${whatsapp?.configured ? "Yes" : "No"}</span>
+          <span class="label">已配置</span>
+          <span>${whatsapp?.configured ? "是" : "否"}</span>
         </div>
         <div>
-          <span class="label">Linked</span>
-          <span>${whatsapp?.linked ? "Yes" : "No"}</span>
+          <span class="label">已绑定</span>
+          <span>${whatsapp?.linked ? "是" : "否"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
-          <span>${whatsapp?.running ? "Yes" : "No"}</span>
+          <span class="label">运行中</span>
+          <span>${whatsapp?.running ? "是" : "否"}</span>
         </div>
         <div>
           <span class="label">已连接</span>

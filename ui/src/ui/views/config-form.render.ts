@@ -256,7 +256,7 @@ export const SECTION_META: Record<string, { label: string; description: string }
   commands: { label: "Commands", description: "Custom slash commands" },
   hooks: { label: "Hooks", description: "Webhooks and event hooks" },
   skills: { label: "Skills", description: "Skill packs and capabilities" },
-  tools: { label: "Tools", description: "Tool configurations (browser, search, etc.)" },
+  tools: { label: "工具", description: "工具配置（浏览器、搜索等）" },
   gateway: { label: "Gateway", description: "Gateway server settings (port, auth, binding)" },
   wizard: { label: "Setup Wizard", description: "Setup wizard state and history" },
   // Additional sections

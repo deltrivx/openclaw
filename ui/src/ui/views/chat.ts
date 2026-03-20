@@ -772,10 +772,10 @@ function renderSlashMenu(
               <span class="slash-menu-desc">${cmd.description}</span>
               ${
                 cmd.argOptions?.length
-                  ? html`<span class="slash-menu-badge">${cmd.argOptions.length} options</span>`
+                  ? html`<span class="slash-menu-badge">${cmd.argOptions.length} 个选项</span>`
                   : cmd.executeLocal && !cmd.args
                     ? html`
-                        <span class="slash-menu-badge">instant</span>
+                        <span class="slash-menu-badge">即时</span>
                       `
                     : nothing
               }

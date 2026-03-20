@@ -517,7 +517,7 @@ function resolveEquivalentSessionKeys(
 }
 
 function formatDirectiveOptions(text: string, options: string): string {
-  return `${text}\nOptions: ${options}.`;
+  return `${text}\n可用选项：${options}。`;
 }
 
 async function loadCurrentSession(
