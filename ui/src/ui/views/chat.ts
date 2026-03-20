@@ -1301,7 +1301,7 @@ export function renderChat(props: ChatProps) {
             ${
               canAbort && (isBusy || props.sending)
                 ? html`
-                  <button class="chat-send-btn chat-send-btn--stop" @click=${props.onAbort} title="Stop">
+                  <button class="chat-send-btn chat-send-btn--stop" @click=${props.onAbort} title="停止">
                     ${icons.stop}
                   </button>
                 `
@@ -1388,7 +1388,7 @@ function buildChatItems(props: ChatProps): Array<ChatItem | MessageGroup> {
       key: "chat:history:notice",
       message: {
         role: "system",
-        content: `Showing last ${CHAT_HISTORY_RENDER_LIMIT} messages (${historyStart} hidden).`,
+        content: `当前仅显示最近 ${CHAT_HISTORY_RENDER_LIMIT} 条消息（另有 ${historyStart} 条已隐藏）。`,
         timestamp: Date.now(),
       },
     });
