@@ -1778,9 +1778,3 @@ function renderRun(
     </div>
   `;
 }
-}
-
-`;
-}
-;
-}
