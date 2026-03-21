@@ -123,7 +123,7 @@ export function renderChannelConfigSection(params: { channelId: string; props: C
       ${
         props.configSchemaLoading
           ? html`
-              <div class="muted">正在加载配置 schema…</div>
+              <div class="muted">正在加载配置 Schema…</div>
             `
           : renderChannelConfigForm({
               channelId,

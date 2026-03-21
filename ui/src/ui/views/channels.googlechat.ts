@@ -14,7 +14,7 @@ export function renderGoogleChatCard(params: {
   return html`
     <div class="card">
       <div class="card-title">Google Chat</div>
-      <div class="card-sub">Chat API webhook 状态与通道配置。</div>
+      <div class="card-sub">Chat API Webhook 状态与通道配置。</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">

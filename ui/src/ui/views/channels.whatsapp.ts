@@ -35,21 +35,21 @@ export function renderWhatsAppCard(params: {
           <span>${whatsapp?.connected ? "是" : "否"}</span>
         </div>
         <div>
-          <span class="label">Last connect</span>
+          <span class="label">最近连接</span>
           <span>
-            ${whatsapp?.lastConnectedAt ? formatRelativeTimestamp(whatsapp.lastConnectedAt) : "n/a"}
+            ${whatsapp?.lastConnectedAt ? formatRelativeTimestamp(whatsapp.lastConnectedAt) : "不适用"}
           </span>
         </div>
         <div>
           <span class="label">最近消息</span>
           <span>
-            ${whatsapp?.lastMessageAt ? formatRelativeTimestamp(whatsapp.lastMessageAt) : "n/a"}
+            ${whatsapp?.lastMessageAt ? formatRelativeTimestamp(whatsapp.lastMessageAt) : "不适用"}
           </span>
         </div>
         <div>
-          <span class="label">Auth age</span>
+          <span class="label">认证时长</span>
           <span>
-            ${whatsapp?.authAgeMs != null ? formatDurationHuman(whatsapp.authAgeMs) : "n/a"}
+            ${whatsapp?.authAgeMs != null ? formatDurationHuman(whatsapp.authAgeMs) : "不适用"}
           </span>
         </div>
       </div>

@@ -77,15 +77,15 @@ export function renderTelegramCard(params: {
               </div>
               <div>
                 <span class="label">模式</span>
-                <span>${telegram?.mode ?? "n/a"}</span>
+                <span>${telegram?.mode ?? "不适用"}</span>
               </div>
               <div>
                 <span class="label">最近启动</span>
-                <span>${telegram?.lastStartAt ? formatRelativeTimestamp(telegram.lastStartAt) : "n/a"}</span>
+                <span>${telegram?.lastStartAt ? formatRelativeTimestamp(telegram.lastStartAt) : "不适用"}</span>
               </div>
               <div>
                 <span class="label">最近探测</span>
-                <span>${telegram?.lastProbeAt ? formatRelativeTimestamp(telegram.lastProbeAt) : "n/a"}</span>
+                <span>${telegram?.lastProbeAt ? formatRelativeTimestamp(telegram.lastProbeAt) : "不适用"}</span>
               </div>
             </div>
           `
