@@ -256,7 +256,7 @@ export function renderAgentCron(params: {
         <div class="row" style="justify-content: space-between;">
           <div>
             <div class="card-title">调度器</div>
-            <div class="card-sub">网关 cron 状态。</div>
+            <div class="card-sub">网关定时任务状态。</div>
           </div>
           <button class="btn btn--sm" ?disabled=${params.loading} @click=${params.onRefresh}>
             ${params.loading ? "刷新中…" : "刷新"}
@@ -266,12 +266,12 @@ export function renderAgentCron(params: {
           <div class="stat">
             <div class="stat-label">已启用</div>
             <div class="stat-value">
-              ${params.status ? (params.status.enabled ? "是" : "否") : "n/a"}
+              ${params.status ? (params.status.enabled ? "是" : "否") : "不适用"}
             </div>
           </div>
           <div class="stat">
             <div class="stat-label">任务数</div>
-            <div class="stat-value">${params.status?.jobs ?? "n/a"}</div>
+            <div class="stat-value">${params.status?.jobs ?? "不适用"}</div>
           </div>
           <div class="stat">
             <div class="stat-label">下次唤醒</div>
