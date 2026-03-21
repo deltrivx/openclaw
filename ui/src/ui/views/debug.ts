@@ -74,7 +74,7 @@ export function renderDebug(props: DebugProps) {
         <div class="card-sub">使用 JSON 参数发送原始网关方法。</div>
         <div class="stack" style="margin-top: 16px;">
           <label class="field">
-            <span>Method</span>
+            <span>方法</span>
             <select
               .value=${props.callMethod}
               @change=${(e: Event) => props.onCallMethodChange((e.target as HTMLSelectElement).value)}

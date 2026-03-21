@@ -70,7 +70,7 @@ export function renderInstances(props: InstancesProps) {
 }
 
 function renderEntry(entry: PresenceEntry, masked: boolean) {
-  const lastInput = entry.lastInputSeconds != null ? `${entry.lastInputSeconds} 秒前` : "n/a";
+  const lastInput = entry.lastInputSeconds != null ? `${entry.lastInputSeconds} 秒前` : "不适用";
   const mode = entry.mode ?? "unknown";
   const host = entry.host ?? "未知主机";
   const ip = entry.ip ?? null;

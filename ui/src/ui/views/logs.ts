@@ -88,7 +88,7 @@ export function renderLogs(props: LogsProps) {
           />
         </label>
         <label class="field checkbox">
-          <span>Auto-follow</span>
+          <span>自动跟随</span>
           <input
             type="checkbox"
             .checked=${props.autoFollow}

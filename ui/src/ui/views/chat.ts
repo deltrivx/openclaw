@@ -585,7 +585,7 @@ function renderWelcomeState(props: ChatProps): TemplateResult {
       }
       <h2>${name}</h2>
       <div class="agent-chat__badges">
-        <span class="agent-chat__badge"><img src=${logoUrl} alt="" /> Ready to chat</span>
+        <span class="agent-chat__badge"><img src=${logoUrl} alt="" /> 可以开始对话</span>
       </div>
       <p class="agent-chat__hint">
         Type a message below &middot; <kbd>/</kbd> for commands
@@ -897,7 +897,7 @@ export function renderChat(props: ChatProps) {
       ${
         isEmpty && vs.searchOpen
           ? html`
-              <div class="agent-chat__empty">No matching messages</div>
+              <div class="agent-chat__empty">没有匹配的消息</div>
             `
           : nothing
       }
@@ -1487,3 +1487,4 @@ function messageKey(message: unknown, index: number): string {
   }
   return `msg:${role}:${index}`;
 }
+
