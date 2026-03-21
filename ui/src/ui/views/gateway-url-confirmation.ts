@@ -13,7 +13,7 @@ export function renderGatewayUrlConfirmation(state: AppViewState) {
         <div class="exec-approval-header">
           <div>
             <div class="exec-approval-title">更改网关 URL</div>
-            <div class="exec-approval-sub">This will reconnect to a different gateway server</div>
+            <div class="exec-approval-sub">这会重新连接到另一个网关服务器</div>
           </div>
         </div>
         <div class="exec-approval-command mono">${pendingGatewayUrl}</div>
@@ -37,4 +37,7 @@ export function renderGatewayUrlConfirmation(state: AppViewState) {
       </div>
     </div>
   `;
+}
+
+}
 }

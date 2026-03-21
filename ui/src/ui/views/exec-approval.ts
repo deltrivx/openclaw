@@ -41,7 +41,7 @@ export function renderExecApprovalPrompt(state: AppViewState) {
           </div>
           ${
             queueCount > 1
-              ? html`<div class="exec-approval-queue">${queueCount} pending</div>`
+              ? html`<div class="exec-approval-queue">${queueCount} 个待处理</div>`
               : nothing
           }
         </div>
