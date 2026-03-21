@@ -93,8 +93,8 @@ export function renderOverview(props: OverviewProps) {
             href="https://docs.openclaw.ai/web/control-ui#device-pairing-first-connection"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
-            title="Device pairing docs (opens in new tab)"
-            >Docs: Device pairing</a
+            title="设备配对文档（在新标签页打开）"
+            >文档：设备配对</a
           >
         </div>
       </div>
@@ -407,4 +407,6 @@ export function renderOverview(props: OverviewProps) {
     </div>
 
   `;
+}
+`;
 }

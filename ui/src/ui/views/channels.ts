@@ -269,18 +269,18 @@ function deriveRunningStatus(account: ChannelAccountSnapshot): "是" | "否" | "
   return "否";
 }
 
-function deriveConnectedStatus(account: ChannelAccountSnapshot): "Yes" | "No" | "Active" | "n/a" {
+function deriveConnectedStatus(account: ChannelAccountSnapshot): "是" | "否" | "活跃" | "暂无" {
   if (account.connected === true) {
-    return "Yes";
+    return "是";
   }
   if (account.connected === false) {
-    return "No";
+    return "否";
   }
   // If connected is null/undefined but we have recent activity, show as active
   if (hasRecentActivity(account)) {
-    return "Active";
+    return "活跃";
   }
-  return "n/a";
+  return "暂无";
 }
 
 function renderGenericAccount(account: ChannelAccountSnapshot) {

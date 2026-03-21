@@ -535,7 +535,7 @@ function renderTimeSeriesCompact(
                 hour: "2-digit",
                 minute: "2-digit",
               }),
-              `${formatTokens(val)} tokens`,
+              `${formatTokens(val)} Token`,
             ];
             if (breakdownByType) {
               tooltipLines.push(`Out ${formatTokens(p.output)}`);
@@ -1078,5 +1078,8 @@ export {
   renderSessionSummary,
   renderTimeSeriesCompact,
   CHART_BAR_WIDTH_RATIO,
+  CHART_MAX_BAR_WIDTH,
+};
+,
   CHART_MAX_BAR_WIDTH,
 };

@@ -274,7 +274,7 @@ export const SECTION_META: Record<string, { label: string; description: string }
   discovery: { label: "Discovery", description: "Service discovery and networking" },
   canvasHost: { label: "画布宿主", description: "画布渲染与显示" },
   talk: { label: "语音", description: "语音与朗读设置" },
-  plugins: { label: "Plugins", description: "Plugin management and extensions" },
+  plugins: { label: "插件", description: "插件管理与扩展" },
 };
 
 function getSectionIcon(key: string) {
@@ -477,5 +477,10 @@ export function renderConfigForm(props: ConfigFormProps) {
             })
       }
     </div>
+  `;
+}
+;
+}
+v>
   `;
 }
