@@ -59,10 +59,10 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
   },
   {
     id: "memory",
-    label: "Memory",
+    label: "记忆",
     tools: [
-      { id: "memory_search", label: "memory_search", description: "Semantic search" },
-      { id: "memory_get", label: "memory_get", description: "Read memory files" },
+      { id: "memory_search", label: "memory_search", description: "语义搜索" },
+      { id: "memory_get", label: "memory_get", description: "读取记忆文件" },
     ],
   },
   {
@@ -673,4 +673,6 @@ export function matchesList(name: string, list?: string[]) {
 
 export function resolveToolProfile(profile: string) {
   return resolveToolProfilePolicy(profile) ?? undefined;
+}
+;
 }
