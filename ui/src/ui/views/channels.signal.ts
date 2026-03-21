@@ -28,11 +28,11 @@ export function renderSignalCard(params: {
         </div>
         <div>
           <span class="label">基础 URL</span>
-          <span>${signal?.baseUrl ?? "n/a"}</span>
+          <span>${signal?.baseUrl ?? "不适用"}</span>
         </div>
         <div>
           <span class="label">最近启动</span>
-          <span>${signal?.lastStartAt ? formatRelativeTimestamp(signal.lastStartAt) : "n/a"}</span>
+          <span>${signal?.lastStartAt ? formatRelativeTimestamp(signal.lastStartAt) : "不适用"}</span>
         </div>
         <div>
           <span class="label">最近探测</span>

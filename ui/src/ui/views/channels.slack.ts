@@ -28,11 +28,11 @@ export function renderSlackCard(params: {
         </div>
         <div>
           <span class="label">最近启动</span>
-          <span>${slack?.lastStartAt ? formatRelativeTimestamp(slack.lastStartAt) : "n/a"}</span>
+          <span>${slack?.lastStartAt ? formatRelativeTimestamp(slack.lastStartAt) : "不适用"}</span>
         </div>
         <div>
           <span class="label">最近探测</span>
-          <span>${slack?.lastProbeAt ? formatRelativeTimestamp(slack.lastProbeAt) : "n/a"}</span>
+          <span>${slack?.lastProbeAt ? formatRelativeTimestamp(slack.lastProbeAt) : "不适用"}</span>
         </div>
       </div>
 

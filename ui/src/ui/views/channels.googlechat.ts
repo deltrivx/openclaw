@@ -20,7 +20,7 @@ export function renderGoogleChatCard(params: {
       <div class="status-list" style="margin-top: 16px;">
         <div>
           <span class="label">已配置</span>
-          <span>${googleChat ? (googleChat.configured ? "是" : "否") : "n/a"}</span>
+          <span>${googleChat ? (googleChat.configured ? "是" : "否") : "不适用"}</span>
         </div>
         <div>
           <span class="label">运行中</span>
@@ -42,11 +42,11 @@ export function renderGoogleChatCard(params: {
         </div>
         <div>
           <span class="label">最近启动</span>
-          <span>${googleChat?.lastStartAt ? formatRelativeTimestamp(googleChat.lastStartAt) : "n/a"}</span>
+          <span>${googleChat?.lastStartAt ? formatRelativeTimestamp(googleChat.lastStartAt) : "不适用"}</span>
         </div>
         <div>
           <span class="label">最近探测</span>
-          <span>${googleChat?.lastProbeAt ? formatRelativeTimestamp(googleChat.lastProbeAt) : "n/a"}</span>
+          <span>${googleChat?.lastProbeAt ? formatRelativeTimestamp(googleChat.lastProbeAt) : "不适用"}</span>
         </div>
       </div>
 

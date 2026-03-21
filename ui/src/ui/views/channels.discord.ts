@@ -28,11 +28,11 @@ export function renderDiscordCard(params: {
         </div>
         <div>
           <span class="label">最近启动</span>
-          <span>${discord?.lastStartAt ? formatRelativeTimestamp(discord.lastStartAt) : "n/a"}</span>
+          <span>${discord?.lastStartAt ? formatRelativeTimestamp(discord.lastStartAt) : "不适用"}</span>
         </div>
         <div>
           <span class="label">最近探测</span>
-          <span>${discord?.lastProbeAt ? formatRelativeTimestamp(discord.lastProbeAt) : "n/a"}</span>
+          <span>${discord?.lastProbeAt ? formatRelativeTimestamp(discord.lastProbeAt) : "不适用"}</span>
         </div>
       </div>
 

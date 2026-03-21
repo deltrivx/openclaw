@@ -28,11 +28,11 @@ export function renderIMessageCard(params: {
         </div>
         <div>
           <span class="label">最近启动</span>
-          <span>${imessage?.lastStartAt ? formatRelativeTimestamp(imessage.lastStartAt) : "n/a"}</span>
+          <span>${imessage?.lastStartAt ? formatRelativeTimestamp(imessage.lastStartAt) : "不适用"}</span>
         </div>
         <div>
           <span class="label">最近探测</span>
-          <span>${imessage?.lastProbeAt ? formatRelativeTimestamp(imessage.lastProbeAt) : "n/a"}</span>
+          <span>${imessage?.lastProbeAt ? formatRelativeTimestamp(imessage.lastProbeAt) : "不适用"}</span>
         </div>
       </div>
 
