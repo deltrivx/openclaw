@@ -262,7 +262,7 @@ export const SECTION_META: Record<string, { label: string; description: string }
   // Additional sections
   meta: { label: "元数据", description: "网关元数据与版本信息" },
   logging: { label: "日志", description: "日志级别与输出配置" },
-  browser: { label: "浏览器", description: "浏览器 automation settings" },
+  browser: { label: "浏览器", description: "浏览器自动化设置" },
   ui: { label: "UI", description: "用户界面偏好" },
   models: { label: "模型", description: "AI 模型配置与提供商" },
   bindings: { label: "绑定", description: "按键绑定与快捷键" },

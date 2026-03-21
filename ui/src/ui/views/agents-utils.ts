@@ -53,8 +53,8 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
     id: "web",
     label: "Web",
     tools: [
-      { id: "web_search", label: "web_search", description: "Search the web" },
-      { id: "web_fetch", label: "web_fetch", description: "Fetch web content" },
+      { id: "web_search", label: "web_search", description: "搜索网页" },
+      { id: "web_fetch", label: "web_fetch", description: "抓取网页内容" },
     ],
   },
   {
@@ -674,3 +674,4 @@ export function matchesList(name: string, list?: string[]) {
 export function resolveToolProfile(profile: string) {
   return resolveToolProfilePolicy(profile) ?? undefined;
 }
+

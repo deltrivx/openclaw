@@ -223,11 +223,11 @@ function renderFallbackIndicator(status: FallbackIndicatorStatus | null | undefi
     return nothing;
   }
   const details = [
-    `Selected: ${status.selected}`,
-    phase === "cleared" ? `Active: ${status.selected}` : `Active: ${status.active}`,
-    phase === "cleared" && status.previous ? `Previous fallback: ${status.previous}` : null,
-    status.reason ? `Reason: ${status.reason}` : null,
-    status.attempts.length > 0 ? `Attempts: ${status.attempts.slice(0, 3).join(" | ")}` : null,
+    `已选择：${status.selected}`,
+    phase === "cleared" ? `当前生效：${status.selected}` : `当前生效：${status.active}`,
+    phase === "cleared" && status.previous ? `上一个回退：${status.previous}` : null,
+    status.reason ? `原因：${status.reason}` : null,
+    status.attempts.length > 0 ? `尝试记录：${status.attempts.slice(0, 3).join(" | ")}` : null,
   ]
     .filter(Boolean)
     .join(" • ");
