@@ -588,7 +588,7 @@ function renderWelcomeState(props: ChatProps): TemplateResult {
         <span class="agent-chat__badge"><img src=${logoUrl} alt="" /> 可以开始对话</span>
       </div>
       <p class="agent-chat__hint">
-        Type a message below &middot; <kbd>/</kbd> for commands
+        在下方输入消息 &middot; <kbd>/</kbd> 可调出命令
       </p>
       <div class="agent-chat__suggestions">
         ${WELCOME_SUGGESTIONS.map(
@@ -1215,7 +1215,7 @@ export function renderChat(props: ChatProps) {
               @click=${() => {
                 document.querySelector<HTMLInputElement>(".agent-chat__file-input")?.click();
               }}
-              title="Attach file"
+              title="附加文件"
               ?disabled=${!props.connected}
             >
               ${icons.paperclip}

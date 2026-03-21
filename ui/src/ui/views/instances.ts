@@ -71,7 +71,7 @@ export function renderInstances(props: InstancesProps) {
 
 function renderEntry(entry: PresenceEntry, masked: boolean) {
   const lastInput = entry.lastInputSeconds != null ? `${entry.lastInputSeconds} 秒前` : "不适用";
-  const mode = entry.mode ?? "unknown";
+  const mode = entry.mode ?? "未知";
   const host = entry.host ?? "未知主机";
   const ip = entry.ip ?? null;
   const roles = Array.isArray(entry.roles) ? entry.roles.filter(Boolean) : [];
@@ -79,8 +79,8 @@ function renderEntry(entry: PresenceEntry, masked: boolean) {
   const scopesLabel =
     scopes.length > 0
       ? scopes.length > 3
-        ? `${scopes.length} scopes`
-        : `scopes: ${scopes.join(", ")}`
+        ? `${scopes.length} 个 scope`
+        : `权限范围：${scopes.join(", ")}`
       : null;
   return html`
     <div class="list-item">
