@@ -215,7 +215,7 @@ export function renderExecApprovals(state: ExecApprovalsState) {
       ${
         !ready
           ? html`<div class="row" style="margin-top: 12px; gap: 12px;">
-            <div class="muted">请先加载 exec 审批配置后再编辑白名单。</div>
+            <div class="muted">请先加载执行审批配置后再编辑白名单。</div>
             <button class="btn" ?disabled=${state.loading || !targetReady} @click=${state.onLoad}>
               ${state.loading ? "加载中…" : "加载审批配置"}
             </button>
@@ -263,7 +263,7 @@ function renderExecApprovalsTarget(state: ExecApprovalsState) {
               }}
             >
               <option value="gateway" ?selected=${state.target === "gateway"}>Gateway</option>
-              <option value="node" ?selected=${state.target === "node"}>Node</option>
+              <option value="node" ?selected=${state.target === "node"}>节点</option>
             </select>
           </label>
           ${
@@ -354,9 +354,9 @@ function renderExecApprovalsPolicy(state: ExecApprovalsState) {
     <div class="list" style="margin-top: 16px;">
       <div class="list-item">
         <div class="list-main">
-          <div class="list-title">Security</div>
+          <div class="list-title">安全策略</div>
           <div class="list-sub">
-            ${isDefaults ? "默认安全模式。" : `Default: ${defaults.security}.`}
+            ${isDefaults ? "默认安全模式。" : `默认值：${defaults.security}。`}
           </div>
         </div>
         <div class="list-meta">
@@ -615,3 +615,4 @@ function resolveExecApprovalsNodes(
 ): ExecApprovalsTargetNode[] {
   return resolveNodeTargets(nodes, ["system.execApprovals.get", "system.execApprovals.set"]);
 }
+

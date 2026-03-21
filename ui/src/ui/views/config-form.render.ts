@@ -323,7 +323,7 @@ export function renderConfigForm(props: ConfigFormProps) {
   const value = props.value ?? {};
   if (schemaType(schema) !== "object" || !schema.properties) {
     return html`
-      <div class="callout danger">Unsupported schema. Use Raw.</div>
+      <div class="callout danger">不支持的 Schema。请改用原始模式。</div>
     `;
   }
   const unsupported = new Set(props.unsupportedPaths ?? []);

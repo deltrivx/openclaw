@@ -1187,14 +1187,14 @@ function renderMapField(params: {
           }}
         >
           <span class="cfg-map__add-icon">${icons.plus}</span>
-          Add Entry
+          添加条目
         </button>
       </div>
 
       ${
         visibleEntries.length === 0
           ? html`
-              <div class="cfg-map__empty">No custom entries.</div>
+              <div class="cfg-map__empty">暂无自定义条目。</div>
             `
           : html`
         <div class="cfg-map__items">
@@ -1215,7 +1215,7 @@ function renderMapField(params: {
                     <input
                       type="text"
                       class="cfg-input cfg-input--sm"
-                      placeholder="Key"
+                      placeholder="键名"
                       .value=${key}
                       ?disabled=${disabled}
                       @change=${(e: Event) => {
@@ -1316,3 +1316,4 @@ function renderMapField(params: {
     </div>
   `;
 }
+
