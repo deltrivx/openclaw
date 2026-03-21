@@ -557,7 +557,7 @@ function renderAppearanceSection(props: ConfigProps) {
           <div class="settings-slider__header">
             <span class="settings-slider__label">
               <span class="settings-slider__key-swatch settings-slider__key-swatch--sharp"></span>
-              Square
+              方角
             </span>
             <span class="settings-slider__value">${props.borderRadius}%</span>
             <span class="settings-slider__label">
@@ -595,7 +595,7 @@ function renderAppearanceSection(props: ConfigProps) {
       </div>
 
       <div class="settings-appearance__section">
-        <h3 class="settings-appearance__heading">Connection</h3>
+        <h3 class="settings-appearance__heading">连接</h3>
         <div class="settings-info-grid">
           <div class="settings-info-row">
             <span class="settings-info-row__label">网关</span>
@@ -1116,4 +1116,3 @@ ${JSON.stringify(props.issues, null, 2)}</pre
     </div>
   `;
 }
-

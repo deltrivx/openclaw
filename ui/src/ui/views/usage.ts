@@ -471,7 +471,7 @@ export function renderUsage(props: UsageProps) {
                   <strong>${formatTokens(displayTotals.totalTokens)}</strong> tokens
                 </span>
                 <span class="usage-metric-badge">
-                  <strong>${formatCost(displayTotals.totalCost)}</strong> cost
+                  <strong>${formatCost(displayTotals.totalCost)}</strong> 成本
                 </span>
                 <span class="usage-metric-badge">
                   <strong>${displaySessionCount}</strong>

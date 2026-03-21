@@ -279,7 +279,7 @@ function renderExecApprovalsTarget(state: ExecApprovalsState) {
                       state.onSelectTarget("node", value ? value : null);
                     }}
                   >
-                    <option value="" ?selected=${nodeValue === ""}>Select node</option>
+                    <option value="" ?selected=${nodeValue === ""}>选择节点</option>
                     ${state.targetNodes.map(
                       (node) =>
                         html`<option
@@ -552,7 +552,7 @@ function renderExecApprovals白名单(state: ExecApprovalsState) {
       ${
         entries.length === 0
           ? html`
-              <div class="muted">No allowlist entries yet.</div>
+              <div class="muted">暂无白名单条目。</div>
             `
           : entries.map((entry, index) => render白名单Entry(state, entry, index))
       }

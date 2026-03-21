@@ -717,7 +717,7 @@ function renderSessionsCard(
           </button>
         </div>
         <label class="sessions-sort">
-          <span>Sort</span>
+          <span>排序</span>
           <select
             @change=${(e: Event) => onSessionSortChange((e.target as HTMLSelectElement).value as typeof sessionSort)}
           >

@@ -241,12 +241,12 @@ function renderUsageMosaic(
             })}
           </div>
           <div class="usage-hour-labels">
-            <span>Midnight</span>
-            <span>4am</span>
-            <span>8am</span>
-            <span>Noon</span>
-            <span>4pm</span>
-            <span>8pm</span>
+            <span>午夜</span>
+            <span>凌晨4点</span>
+            <span>上午8点</span>
+            <span>中午</span>
+            <span>下午4点</span>
+            <span>晚上8点</span>
           </div>
           <div class="usage-hour-legend">
             <span></span>
