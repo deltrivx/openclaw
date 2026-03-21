@@ -572,7 +572,7 @@ function render白名单Entry(
     <div class="list-item">
       <div class="list-main">
         <div class="list-title">${entry.pattern?.trim() ? entry.pattern : "新增模式"}</div>
-        <div class="list-sub">上次使用： ${lastUsed}</div>
+        <div class="list-sub">上次使用：${lastUsed}</div>
         ${lastCommand ? html`<div class="list-sub mono">${lastCommand}</div>` : nothing}
         ${lastPath ? html`<div class="list-sub mono">${lastPath}</div>` : nothing}
       </div>

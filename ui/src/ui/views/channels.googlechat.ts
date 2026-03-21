@@ -24,7 +24,7 @@ export function renderGoogleChatCard(params: {
         </div>
         <div>
           <span class="label">运行中</span>
-          <span>${googleChat ? (googleChat.running ? "是" : "否") : "n/a"}</span>
+          <span>${googleChat ? (googleChat.running ? "是" : "否") : "不适用"}</span>
         </div>
         <div>
           <span class="label">凭据</span>

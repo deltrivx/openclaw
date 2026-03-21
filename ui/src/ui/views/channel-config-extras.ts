@@ -19,7 +19,7 @@ export function resolveChannelConfigValue(
 
 export function formatChannelExtraValue(raw: unknown): string {
   if (raw == null) {
-    return "n/a";
+    return "不适用";
   }
   if (typeof raw === "string" || typeof raw === "number" || typeof raw === "boolean") {
     return String(raw);
@@ -27,7 +27,7 @@ export function formatChannelExtraValue(raw: unknown): string {
   try {
     return JSON.stringify(raw);
   } catch {
-    return "n/a";
+    return "不适用";
   }
 }
 

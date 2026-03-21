@@ -7,7 +7,7 @@ import type { ChannelsProps } from "./channels.types.ts";
 
 function truncatePubkey(pubkey?: string | null) {
   if (!pubkey) {
-    return "n/a";
+    return "不适用";
   }
   if (pubkey.length <= 18) {
     return pubkey;

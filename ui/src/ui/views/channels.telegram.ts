@@ -36,7 +36,7 @@ export function renderTelegramCard(params: {
           </div>
           <div>
             <span class="label">最近入站</span>
-            <span>${account.lastInboundAt ? formatRelativeTimestamp(account.lastInboundAt) : "n/a"}</span>
+            <span>${account.lastInboundAt ? formatRelativeTimestamp(account.lastInboundAt) : "不适用"}</span>
           </div>
           ${
             account.lastError
