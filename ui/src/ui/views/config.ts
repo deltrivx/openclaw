@@ -511,17 +511,17 @@ function renderDiffValue(path: string, value: unknown, _uiHints: ConfigUiHints):
 
 type ThemeOption = { id: ThemeName; label: string; description: string; icon: TemplateResult };
 const THEME_OPTIONS: ThemeOption[] = [
-  { id: "claw", label: "Claw", description: "Chroma family", icon: icons.zap },
-  { id: "knot", label: "Knot", description: "Blue contrast", icon: icons.link },
-  { id: "dash", label: "Dash", description: "Chocolate blueprint", icon: icons.barChart },
+  { id: "claw", label: "利爪", description: "高饱和色彩系", icon: icons.zap },
+  { id: "knot", label: "绳结", description: "蓝色高对比系", icon: icons.link },
+  { id: "dash", label: "仪表", description: "可可色蓝图系", icon: icons.barChart },
 ];
 
 function renderAppearanceSection(props: ConfigProps) {
   return html`
     <div class="settings-appearance">
       <div class="settings-appearance__section">
-        <h3 class="settings-appearance__heading">Theme</h3>
-        <p class="settings-appearance__hint">Choose a theme family.</p>
+        <h3 class="settings-appearance__heading">主题</h3>
+        <p class="settings-appearance__hint">选择主题风格。</p>
         <div class="settings-theme-grid">
           ${THEME_OPTIONS.map(
             (opt) => html`

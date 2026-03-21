@@ -527,7 +527,7 @@ export function renderApp(state: AppViewState) {
                   href="https://docs.openclaw.ai"
                   target=${EXTERNAL_LINK_TARGET}
                   rel=${buildExternalLinkRel()}
-                  title="${t("common.docs")} (opens in new tab)"
+                  title="${t("common.docs")}（在新标签页打开）"
                 >
                   <span class="nav-item__icon" aria-hidden="true">${icons.book}</span>
                   ${

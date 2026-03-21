@@ -943,7 +943,7 @@ export function renderTopbarThemeModeToggle(state: AppViewState) {
             type="button"
             class="topbar-theme-mode__btn ${opt.id === state.themeMode ? "topbar-theme-mode__btn--active" : ""}"
             title=${opt.label}
-            aria-label="Color mode: ${opt.label}"
+            aria-label="颜色模式：${opt.label}"
             aria-pressed=${opt.id === state.themeMode}
             @click=${(e: Event) => applyMode(opt.id, e)}
           >
@@ -966,8 +966,8 @@ export function renderSidebarConnectionStatus(state: AppViewState) {
       class="sidebar-version__status ${toneClass}"
       role="img"
       aria-live="polite"
-      aria-label="Gateway status: ${label}"
-      title="Gateway status: ${label}"
+      aria-label="网关状态：${label}"
+      title="网关状态：${label}"
     ></span>
   `;
 }
