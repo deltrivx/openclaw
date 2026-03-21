@@ -48,7 +48,7 @@ export function renderNostrCard(params: {
           </div>
           <div>
             <span class="label">最近启动</span>
-            <span>${account.lastStartAt ? formatRelativeTimestamp(account.lastStartAt) : "n/a"}</span>
+            <span>${account.lastStartAt ? formatRelativeTimestamp(account.lastStartAt) : "不适用"}</span>
           </div>
           ${name ? html`<div><span class="label">名称</span><span>${name}</span></div>` : nothing}
           ${
@@ -111,7 +111,7 @@ export function renderNostrCard(params: {
                 </div>
                 <div>
                   <span class="label">最近启动</span>
-                  <span>${summaryLastStartAt ? formatRelativeTimestamp(summaryLastStartAt) : "n/a"}</span>
+                  <span>${summaryLastStartAt ? formatRelativeTimestamp(summaryLastStartAt) : "不适用"}</span>
                 </div>
               </div>
             `

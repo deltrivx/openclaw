@@ -167,7 +167,7 @@ export function renderNostrProfileForm(params: {
     <div class="nostr-profile-form" style="padding: 16px; background: var(--bg-secondary); border-radius: 8px; margin-top: 12px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
         <div style="font-weight: 600; font-size: 16px;">编辑资料</div>
-        <div style="font-size: 12px; color: var(--text-muted);">Account: ${accountId}</div>
+        <div style="font-size: 12px; color: var(--text-muted);">账户：${accountId}</div>
       </div>
 
       ${
@@ -200,7 +200,7 @@ export function renderNostrProfileForm(params: {
         type: "textarea",
         placeholder: "向大家介绍一下你自己……",
         maxLength: 2000,
-        help: "A brief bio or description",
+        help: "简短的个人简介或说明",
       })}
 
       ${renderField("picture", "头像 URL", {
@@ -213,12 +213,12 @@ export function renderNostrProfileForm(params: {
         state.showAdvanced
           ? html`
             <div style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 12px;">
-              <div style="font-weight: 500; margin-bottom: 12px; color: var(--text-muted);">Advanced</div>
+              <div style="font-weight: 500; margin-bottom: 12px; color: var(--text-muted);">高级选项</div>
 
-              ${renderField("banner", "Banner URL", {
+              ${renderField("banner", "横幅 URL", {
                 type: "url",
                 placeholder: "https://example.com/banner.jpg",
-                help: "HTTPS URL to a banner image",
+                help: "横幅图片的 HTTPS URL",
               })}
 
               ${renderField("website", "网站", {
@@ -247,7 +247,7 @@ export function renderNostrProfileForm(params: {
           @click=${callbacks.onSave}
           ?disabled=${state.saving || !isDirty}
         >
-          ${state.saving ? "保存中..." : "保存并发布"}
+          ${state.saving ? "保存中…" : "保存并发布"}
         </button>
 
         <button
@@ -255,7 +255,7 @@ export function renderNostrProfileForm(params: {
           @click=${callbacks.onImport}
           ?disabled=${state.importing || state.saving}
         >
-          ${state.importing ? "导入中..." : "从中继导入"}
+          ${state.importing ? "导入中…" : "从中继导入"}
         </button>
 
         <button
@@ -316,5 +316,4 @@ export function createNostrProfileFormState(
     fieldErrors: {},
     showAdvanced: Boolean(profile?.banner || profile?.website || profile?.nip05 || profile?.lud16),
   };
-
 }
