@@ -316,11 +316,3 @@ export function createNostrProfileFormState(
     fieldErrors: {},
     showAdvanced: Boolean(profile?.banner || profile?.website || profile?.nip05 || profile?.lud16),
   };
-}
-,
-  };
-}
-
-}
-
-}
