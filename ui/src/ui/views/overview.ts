@@ -173,8 +173,8 @@ export function renderOverview(props: OverviewProps) {
             href="https://docs.openclaw.ai/gateway/tailscale"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
-            title="Tailscale Serve docs (opens in new tab)"
-            >Docs: Tailscale Serve</a
+            title="Tailscale Serve 文档（在新标签页打开）"
+            >文档：Tailscale Serve</a
           >
           <span class="muted"> · </span>
           <a

@@ -43,10 +43,10 @@ export const FALLBACK_TOOL_SECTIONS: AgentToolSection[] = [
   },
   {
     id: "runtime",
-    label: "Runtime",
+    label: "运行时",
     tools: [
-      { id: "exec", label: "exec", description: "Run shell commands" },
-      { id: "process", label: "process", description: "Manage background processes" },
+      { id: "exec", label: "exec", description: "运行 shell 命令" },
+      { id: "process", label: "process", description: "管理后台进程" },
     ],
   },
   {
@@ -673,4 +673,6 @@ export function matchesList(name: string, list?: string[]) {
 
 export function resolveToolProfile(profile: string) {
   return resolveToolProfilePolicy(profile) ?? undefined;
+}
+ined;
 }
