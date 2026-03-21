@@ -203,10 +203,10 @@ export function renderNostrProfileForm(params: {
         help: "A brief bio or description",
       })}
 
-      ${renderField("picture", "Avatar URL", {
+      ${renderField("picture", "头像 URL", {
         type: "url",
         placeholder: "https://example.com/avatar.jpg",
-        help: "HTTPS URL to your profile picture",
+        help: "你的头像 HTTPS URL",
       })}
 
       ${
@@ -316,4 +316,11 @@ export function createNostrProfileFormState(
     fieldErrors: {},
     showAdvanced: Boolean(profile?.banner || profile?.website || profile?.nip05 || profile?.lud16),
   };
+}
+,
+  };
+}
+
+}
+
 }

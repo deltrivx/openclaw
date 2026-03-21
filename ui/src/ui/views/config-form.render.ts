@@ -272,7 +272,7 @@ export const SECTION_META: Record<string, { label: string; description: string }
   cron: { label: "Cron", description: "Scheduled tasks and automation" },
   web: { label: "网页", description: "Web 服务与 API 设置" },
   discovery: { label: "Discovery", description: "Service discovery and networking" },
-  canvasHost: { label: "Canvas Host", description: "Canvas rendering and display" },
+  canvasHost: { label: "画布宿主", description: "画布渲染与显示" },
   talk: { label: "语音", description: "语音与朗读设置" },
   plugins: { label: "Plugins", description: "Plugin management and extensions" },
 };
