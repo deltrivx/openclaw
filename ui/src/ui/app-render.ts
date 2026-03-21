@@ -1948,7 +1948,3 @@ export function renderApp(state: AppViewState) {
     </div>
   `;
 }
-
-    </div>
-  `;
-}
