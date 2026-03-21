@@ -479,8 +479,3 @@ export function renderConfigForm(props: ConfigFormProps) {
     </div>
   `;
 }
-;
-}
-v>
-  `;
-}
