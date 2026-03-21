@@ -215,7 +215,7 @@ export function renderAgents(props: AgentsProps) {
             ? html`
                 <div class="card">
                   <div class="card-title">选择代理</div>
-                  <div class="card-sub">选择一个代理以查看其工作区和工具。</div>
+                  <div class="card-sub">选择一个代理以查看其工作区与工具。</div>
                 </div>
               `
             : html`
@@ -361,7 +361,7 @@ function renderAgentTabs(
     { id: "tools", label: "工具" },
     { id: "skills", label: "技能" },
     { id: "channels", label: "通道" },
-    { id: "cron", label: "Cron 任务" },
+    { id: "cron", label: "定时任务" },
   ];
   return html`
     <div class="agent-tabs">

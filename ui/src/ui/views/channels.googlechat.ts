@@ -36,7 +36,7 @@ export function renderGoogleChatCard(params: {
             ${
               googleChat?.audienceType
                 ? `${googleChat.audienceType}${googleChat.audience ? ` · ${googleChat.audience}` : ""}`
-                : "n/a"
+                : "不适用"
             }
           </span>
         </div>

@@ -36,7 +36,7 @@ export function renderSignalCard(params: {
         </div>
         <div>
           <span class="label">最近探测</span>
-          <span>${signal?.lastProbeAt ? formatRelativeTimestamp(signal.lastProbeAt) : "n/a"}</span>
+          <span>${signal?.lastProbeAt ? formatRelativeTimestamp(signal.lastProbeAt) : "不适用"}</span>
         </div>
       </div>
 
