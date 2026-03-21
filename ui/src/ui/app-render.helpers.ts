@@ -901,16 +901,16 @@ function resolveSessionScopedOptionLabel(
 
 type ThemeOption = { id: ThemeName; label: string; icon: string };
 const THEME_OPTIONS: ThemeOption[] = [
-  { id: "claw", label: "Claw", icon: "🦀" },
-  { id: "knot", label: "Knot", icon: "🪢" },
-  { id: "dash", label: "Dash", icon: "📊" },
+  { id: "claw", label: "利爪", icon: "🦀" },
+  { id: "knot", label: "绳结", icon: "🪢" },
+  { id: "dash", label: "仪表", icon: "📊" },
 ];
 
 type ThemeModeOption = { id: ThemeMode; label: string; short: string };
 const THEME_MODE_OPTIONS: ThemeModeOption[] = [
-  { id: "system", label: "System", short: "SYS" },
-  { id: "light", label: "Light", short: "LIGHT" },
-  { id: "dark", label: "Dark", short: "DARK" },
+  { id: "system", label: "跟随系统", short: "系统" },
+  { id: "light", label: "浅色", short: "浅色" },
+  { id: "dark", label: "深色", short: "深色" },
 ];
 
 function currentThemeIcon(theme: ThemeName): string {
@@ -1017,11 +1017,11 @@ export function renderThemeToggle(state: AppViewState) {
   };
 
   return html`
-    <div class="theme-orb" aria-label="Theme">
+    <div class="theme-orb" aria-label="主题">
       <button
         type="button"
         class="theme-orb__trigger"
-        title="Theme"
+        title="主题"
         aria-haspopup="menu"
         aria-expanded="false"
         @click=${toggleOpen}
